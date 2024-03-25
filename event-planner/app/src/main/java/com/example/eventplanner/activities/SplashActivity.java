@@ -22,7 +22,7 @@ public class SplashActivity extends AppCompatActivity {
             getSupportActionBar().hide();
         }
 
-        int SPLASH_TIME_OUT = 2000;
+        int SPLASH_TIME_OUT = 500;
         new Timer().schedule(new TimerTask() {
             @Override
             public void run() {
