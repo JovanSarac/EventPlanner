@@ -1,6 +1,9 @@
 package com.example.eventplanner.activities;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
+import android.widget.Button;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
@@ -12,6 +15,9 @@ import com.example.eventplanner.R;
 
 public class HomeActivity extends AppCompatActivity {
 
+    private Button buttonProductsManagementPUPZ;
+    private Button buttonProductsManagementPUPV;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -21,6 +27,27 @@ public class HomeActivity extends AppCompatActivity {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
+        });
+
+        buttonProductsManagementPUPZ = findViewById(R.id.productsManagmentPUPZ);
+        buttonProductsManagementPUPV = findViewById(R.id.productsManagmentPUPV);
+
+        buttonProductsManagementPUPV.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(HomeActivity.this, ProductsManegementActivity.class);
+                startActivity(intent);
+                finish();
+            }
+        });
+
+        buttonProductsManagementPUPZ.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(HomeActivity.this, ProductsManegementActivity.class);
+                startActivity(intent);
+                finish();
+            }
         });
     }
 }
