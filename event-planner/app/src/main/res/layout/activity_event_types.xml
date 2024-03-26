@@ -19,10 +19,9 @@
             android:textColor="?attr/colorPrimary"
             android:fontFamily="sans-serif-black"/>
         <ListView
-            android:id="@+id/eventTypesView"
+            android:id="@+id/list_view"
             android:layout_width="match_parent"
-            android:layout_height="300dp"
-            android:choiceMode="multipleChoice"/>
+            android:layout_height="400dp"/>
         <Button
             android:id="@+id/addType"
             android:layout_width="match_parent"

@@ -1,5 +1,6 @@
 package com.example.eventplanner.activities;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
@@ -11,6 +12,8 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
 import com.example.eventplanner.R;
+import com.example.eventplanner.models.Subcategory;
+import com.google.android.material.textfield.TextInputEditText;
 
 import java.util.Arrays;
 import java.util.List;
@@ -50,6 +53,29 @@ public class AddEventTypesActivity extends AppCompatActivity {
             return insets;
         });
         setupListViewForCategories();
+
+        Intent intent = getIntent();
+        boolean editFlag=intent.getBooleanExtra("editButtonFlag",false);
+        String typeName = intent.getStringExtra("typeName");
+        String typeDecription = intent.getStringExtra("typeDecription");
+        TextInputEditText typeNameTextField= findViewById(R.id.typeName);
+        typeNameTextField.setText(typeName);
+        TextInputEditText typeDescriptionTextField= findViewById(R.id.typeDescription);
+        typeDescriptionTextField.setText(typeDecription);
+        if(editFlag){
+            typeNameTextField.setClickable(false);
+            typeNameTextField.setFocusable(false);
+        }
+        List<String> itemList =  getIntent().getStringArrayListExtra("recomendedSubcategories");
+        if(itemList!=null){
+            for (String item:itemList) {
+                int position=subcategoriesList.indexOf(item);
+                if (position != -1) {
+                    subcategoriesView.setItemChecked(position, true);
+                }
+            }
+        }
+
     }
     private void setupListViewForCategories() {
         subcategoriesView = findViewById(R.id.subcategoriesView);
