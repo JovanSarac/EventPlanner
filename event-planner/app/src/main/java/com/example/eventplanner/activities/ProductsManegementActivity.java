@@ -1,17 +1,26 @@
 package com.example.eventplanner.activities;
 
 import android.os.Bundle;
+import android.util.DisplayMetrics;
+import android.view.KeyEvent;
 import android.view.View;
+import android.view.inputmethod.EditorInfo;
 import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.Spinner;
+import android.widget.TextView;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.eventplanner.R;
 import com.example.eventplanner.databinding.ActivityProductsManegementBinding;
+import com.google.android.material.textfield.TextInputEditText;
 
 import java.util.ArrayList;
 
@@ -50,13 +59,26 @@ public class ProductsManegementActivity extends AppCompatActivity {
 
         ProductListAdapter productListAdapter = new ProductListAdapter(ProductsManegementActivity.this, products);
 
+        TextView textView = new TextView(this);
+        textView.setText("Products");
+        textView.setTextSize(20);
+
+        binding.productsList.addHeaderView(textView);
+
         binding.productsList.setAdapter(productListAdapter);
         binding.productsList.setClickable(true);
-        binding.productsList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 
-            }
-        });
+        Spinner categorySpinner = findViewById(R.id.product_category_filter);
+        ArrayAdapter<String> categoryAdapter = new ArrayAdapter<>(ProductsManegementActivity.this, android.R.layout.simple_spinner_dropdown_item, categories);
+        categorySpinner.setAdapter(categoryAdapter);
+
+        Spinner subcategorySpinner = findViewById(R.id.product_subcategory_filter);
+        ArrayAdapter<String> subcategoryAdapter = new ArrayAdapter<>(ProductsManegementActivity.this, android.R.layout.simple_spinner_dropdown_item, subcategories);
+        subcategorySpinner.setAdapter(subcategoryAdapter);
+
+        Spinner eventTypeSpinner = findViewById(R.id.event_type_filter);
+        String[] events = {"Event 1", "Event 2", "Event 3", "Event 4", "Event 5"};
+        ArrayAdapter<String> eventTypeAdapter = new ArrayAdapter<>(ProductsManegementActivity.this, android.R.layout.simple_spinner_dropdown_item, events);
+        eventTypeSpinner.setAdapter(eventTypeAdapter);
     }
 }

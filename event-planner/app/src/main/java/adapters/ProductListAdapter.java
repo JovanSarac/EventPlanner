@@ -61,7 +61,7 @@ public class ProductListAdapter extends ArrayAdapter<Product> {
             productImage.setImageResource(product.getImageId());
             productName.setText(product.getName());
             productDescription.setText(product.getDescription());
-            productPrice.setText(product.getPrice().toString());
+            productPrice.setText(product.getPrice().toString() + "$");
         }
 
 

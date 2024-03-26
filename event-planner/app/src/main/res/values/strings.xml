@@ -1,4 +1,7 @@
 <resources>
     <string name="app_name">Event Planner</string>
     <string name="home_page">Home Page</string>
+    <string name="search_hint">Search</string>
+    <string name="min_price">min</string>
+    <string name="max_price">max</string>
 </resources>
