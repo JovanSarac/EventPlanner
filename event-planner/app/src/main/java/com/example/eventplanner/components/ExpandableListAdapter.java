@@ -38,7 +38,9 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
 
     @Override
     public int getChildrenCount(int groupPosition) {
-        return listHashMap.get(listDataHeader.get(groupPosition)).size();
+        List<Subcategory> list=listHashMap.get(listDataHeader.get(groupPosition));
+        if(list==null)return 0;
+        return list.size();
     }
 
     @Override
@@ -48,6 +50,7 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
 
     @Override
     public Object getChild(int groupPosition, int childPosition) {
+        //if(listHashMap.isEmpty())return null;
         return listHashMap.get(listDataHeader.get(groupPosition)).get(childPosition);
     }
 

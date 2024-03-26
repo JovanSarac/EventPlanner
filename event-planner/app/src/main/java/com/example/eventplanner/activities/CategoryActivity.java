@@ -67,7 +67,15 @@ public class CategoryActivity extends AppCompatActivity {
         listDataHeader.add(new Category("Group 1","Opis 1"));
         listDataHeader.add(new Category("Group 2","Opis 2"));
         listDataHeader.add(new Category("Group 3","Opis 3"));
-
+        listDataHeader.add(new Category("Group 11","Opis 1"));
+        listDataHeader.add(new Category("Group 21","Opis 2"));
+        listDataHeader.add(new Category("Group 31","Opis 3"));
+        listDataHeader.add(new Category("Group 12","Opis 1"));
+        listDataHeader.add(new Category("Group 22","Opis 2"));
+        listDataHeader.add(new Category("Group 32","Opis 3"));
+        listDataHeader.add(new Category("Group 13","Opis 1"));
+        listDataHeader.add(new Category("Group 23","Opis 2"));
+        listDataHeader.add(new Category("Group 33","Opis 3"));
         // Adding child data
         List<Subcategory> group1 = new ArrayList<>();
         group1.add(new Subcategory("Group 1","Item 1","opis1",0));

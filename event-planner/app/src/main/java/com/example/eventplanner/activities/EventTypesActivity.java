@@ -56,7 +56,15 @@ public class EventTypesActivity extends AppCompatActivity {
         itemList.add(new EventType("Ime1","Opis1",new ArrayList<>()));
         itemList.add(new EventType("Ime2","Opis2",new ArrayList<>()));
         itemList.add(new EventType("Ime3","Opis3",new ArrayList<>()));
-        itemList.add(new EventType("Ime4","Opis4",Arrays.asList(new Subcategory("neest","Home Cleaning","des",0),
+        itemList.add(new EventType("Ime11","Opis11",new ArrayList<>()));
+        itemList.add(new EventType("Ime12","Opis12",new ArrayList<>()));
+        itemList.add(new EventType("Ime22","Opis22",new ArrayList<>()));
+        itemList.add(new EventType("Ime32","Opis32",new ArrayList<>()));
+        itemList.add(new EventType("Ime112","Opis11",new ArrayList<>()));
+        itemList.add(new EventType("Ime122","Opis12",new ArrayList<>()));
+        itemList.add(new EventType("Ime222","Opis22",new ArrayList<>()));
+        itemList.add(new EventType("Ime322","Opis32",new ArrayList<>()));
+        itemList.add(new EventType("Ime422","Opis42",Arrays.asList(new Subcategory("neest","Home Cleaning","des",0),
                 new Subcategory("neest","Pest Control Services","des",0))));
 
         adapter = new EventTypesListAdapter(this, itemList);
