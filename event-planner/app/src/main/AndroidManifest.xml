@@ -14,7 +14,12 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.EventPlanner"
         tools:targetApi="31">
-
+        <activity
+            android:name=".activities.AddEventTypesActivity"
+            android:exported="false" />
+        <activity
+            android:name=".activities.EventTypesActivity"
+            android:exported="false" />
         <activity
             android:name=".activities.AddSubcategoryActivity"
             android:exported="false" />

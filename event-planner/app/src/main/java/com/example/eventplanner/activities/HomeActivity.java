@@ -59,13 +59,13 @@ public class HomeActivity extends AppCompatActivity {
             }
         });
 
-        Button subcategoriesRequestButton = (Button) findViewById(R.id.subcategoriesRequestButton);
-        subcategoriesRequestButton.setOnClickListener(new View.OnClickListener() {
+        Button typesOfEventsButton = (Button) findViewById(R.id.typesOfEventsButton);
+        typesOfEventsButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 // Create Intent to navigate to the second activity
-                //Intent intent = new Intent(HomeActivity.this, SubcategoryRequestsActivity.class);
-                //startActivity(intent);
+                Intent intent = new Intent(HomeActivity.this, EventTypesActivity.class);
+                startActivity(intent);
             }
         });
     }

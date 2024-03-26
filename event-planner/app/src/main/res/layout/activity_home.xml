@@ -44,10 +44,10 @@
         android:layout_gravity="center"
         />
     <Button
-        android:id="@+id/subcategoriesRequestButton"
+        android:id="@+id/typesOfEventsButton"
         android:layout_width="300dp"
         android:layout_height="50dp"
-        android:text="Subcategories Requests"
+        android:text="Event Types"
         android:layout_gravity="center"
         />
 
