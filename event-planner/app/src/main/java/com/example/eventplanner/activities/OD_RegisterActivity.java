@@ -79,6 +79,14 @@ public class OD_RegisterActivity extends AppCompatActivity {
     ListView selectedEvents;
     Button buttonSelectImage;
     ImageView imageViewProfile;
+
+    TimeInputComponent mondayComponent;
+    TimeInputComponent tuesdayComponent;
+    TimeInputComponent wednesdayComponent;
+    TimeInputComponent thursdayComponent;
+    TimeInputComponent fridayComponent;
+    TimeInputComponent saturdayComponent;
+    TimeInputComponent sundayComponent;
     static final int REQUEST_IMAGE_PICK = 1;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -165,20 +173,21 @@ public class OD_RegisterActivity extends AppCompatActivity {
         Toast.makeText(v.getContext(), str, Toast.LENGTH_SHORT).show();
     }
 
+
     private void setupTimePickComponents(){
-        TimeInputComponent mondayComponent = findViewById(R.id.monInputView);
+        mondayComponent = findViewById(R.id.monInputView);
         mondayComponent.setDayText("Monday:");
-        TimeInputComponent tuesdayComponent = findViewById(R.id.tueInputView);
+        tuesdayComponent = findViewById(R.id.tueInputView);
         tuesdayComponent.setDayText("Tuesday:");
-        TimeInputComponent wednesdayComponent = findViewById(R.id.wedInputView);
+        wednesdayComponent = findViewById(R.id.wedInputView);
         wednesdayComponent.setDayText("Wednesday:");
-        TimeInputComponent thursdayComponent = findViewById(R.id.thuInputView);
+        thursdayComponent = findViewById(R.id.thuInputView);
         thursdayComponent.setDayText("Thursday");
-        TimeInputComponent fridayComponent = findViewById(R.id.friInputView);
+        fridayComponent = findViewById(R.id.friInputView);
         fridayComponent.setDayText("Friday");
-        TimeInputComponent saturdayComponent = findViewById(R.id.satInputView);
+        saturdayComponent = findViewById(R.id.satInputView);
         saturdayComponent.setDayText("Saturday");
-        TimeInputComponent sundayComponent = findViewById(R.id.sunInputView);
+        sundayComponent = findViewById(R.id.sunInputView);
         sundayComponent.setDayText("Sunday");
     }
 

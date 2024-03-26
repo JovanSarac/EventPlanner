@@ -29,6 +29,27 @@
         android:text="@string/register"
         android:layout_gravity="center"
         />
+    <Button
+        android:id="@+id/loginButton"
+        android:layout_width="300dp"
+        android:layout_height="50dp"
+        android:text="LogIn"
+        android:layout_gravity="center"
+        />
+    <Button
+        android:id="@+id/categoriesButton"
+        android:layout_width="300dp"
+        android:layout_height="50dp"
+        android:text="Categories"
+        android:layout_gravity="center"
+        />
+    <Button
+        android:id="@+id/subcategoriesRequestButton"
+        android:layout_width="300dp"
+        android:layout_height="50dp"
+        android:text="Subcategories Requests"
+        android:layout_gravity="center"
+        />
 
 
 

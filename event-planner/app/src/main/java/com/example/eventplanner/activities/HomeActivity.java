@@ -38,5 +38,35 @@ public class HomeActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
+
+        Button loginButton = (Button) findViewById(R.id.loginButton);
+        loginButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // Create Intent to navigate to the second activity
+                Intent intent = new Intent(HomeActivity.this, LoginActivity.class);
+                startActivity(intent);
+            }
+        });
+
+        Button categoriesButton = (Button) findViewById(R.id.categoriesButton);
+        categoriesButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // Create Intent to navigate to the second activity
+                Intent intent = new Intent(HomeActivity.this, CategoryActivity.class);
+                startActivity(intent);
+            }
+        });
+
+        Button subcategoriesRequestButton = (Button) findViewById(R.id.subcategoriesRequestButton);
+        subcategoriesRequestButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // Create Intent to navigate to the second activity
+                //Intent intent = new Intent(HomeActivity.this, SubcategoryRequestsActivity.class);
+                //startActivity(intent);
+            }
+        });
     }
 }
