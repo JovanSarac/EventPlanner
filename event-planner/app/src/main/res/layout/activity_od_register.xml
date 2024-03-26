@@ -231,6 +231,42 @@
                 android:layout_height="300dp"
                 android:choiceMode="multipleChoice"/>
 
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Input work time"
+                android:textSize="25sp"
+                android:textColor="?attr/colorPrimary"
+                android:fontFamily="sans-serif-black"/>
+            <com.example.eventplanner.components.TimeInputComponent
+                android:id="@+id/monInputView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"/>
+            <com.example.eventplanner.components.TimeInputComponent
+                android:id="@+id/tueInputView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"/>
+            <com.example.eventplanner.components.TimeInputComponent
+                android:id="@+id/wedInputView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"/>
+            <com.example.eventplanner.components.TimeInputComponent
+                android:id="@+id/thuInputView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"/>
+            <com.example.eventplanner.components.TimeInputComponent
+                android:id="@+id/friInputView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"/>
+            <com.example.eventplanner.components.TimeInputComponent
+                android:id="@+id/satInputView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"/>
+            <com.example.eventplanner.components.TimeInputComponent
+                android:id="@+id/sunInputView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"/>
+
 
         </LinearLayout>
 

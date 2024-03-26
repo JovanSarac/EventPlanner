@@ -23,6 +23,7 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
 import com.example.eventplanner.R;
+import com.example.eventplanner.components.TimeInputComponent;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 
 import java.util.Arrays;
@@ -89,8 +90,11 @@ public class OD_RegisterActivity extends AppCompatActivity {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
+
+        setupTimePickComponents();
         setupListViewForCategories();
         setupListViewForEvents();
+
         selectedCategories = findViewById(R.id.categoryView);
         Button registerButton = (Button) findViewById(R.id.registerUser);
         registerButton.setOnClickListener(new View.OnClickListener() {
@@ -161,6 +165,22 @@ public class OD_RegisterActivity extends AppCompatActivity {
         Toast.makeText(v.getContext(), str, Toast.LENGTH_SHORT).show();
     }
 
+    private void setupTimePickComponents(){
+        TimeInputComponent mondayComponent = findViewById(R.id.monInputView);
+        mondayComponent.setDayText("Monday:");
+        TimeInputComponent tuesdayComponent = findViewById(R.id.tueInputView);
+        tuesdayComponent.setDayText("Tuesday:");
+        TimeInputComponent wednesdayComponent = findViewById(R.id.wedInputView);
+        wednesdayComponent.setDayText("Wednesday:");
+        TimeInputComponent thursdayComponent = findViewById(R.id.thuInputView);
+        thursdayComponent.setDayText("Thursday");
+        TimeInputComponent fridayComponent = findViewById(R.id.friInputView);
+        fridayComponent.setDayText("Friday");
+        TimeInputComponent saturdayComponent = findViewById(R.id.satInputView);
+        saturdayComponent.setDayText("Saturday");
+        TimeInputComponent sundayComponent = findViewById(R.id.sunInputView);
+        sundayComponent.setDayText("Sunday");
+    }
 
 
 }

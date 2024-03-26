@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="horizontal"
+    android:padding="10dp">
+
+    <TextView
+        android:id="@+id/dayTextView"
+        android:layout_width="0dp"
+        android:layout_weight="1"
+        android:layout_height="wrap_content"
+        android:textSize="15sp"
+        android:textColor="?attr/colorAccent"
+        android:fontFamily="sans-serif-black"
+        android:layout_marginRight="10dp"/>
+
+    <com.google.android.material.textfield.TextInputLayout
+
+        android:layout_width="0dp"
+        android:layout_weight="1"
+        android:layout_height="wrap_content"
+        android:hint="start"
+        android:layout_marginRight="10dp">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/startTimeEditText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="time"/>
+
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <com.google.android.material.textfield.TextInputLayout
+
+        android:layout_width="0dp"
+        android:layout_weight="1"
+        android:layout_height="wrap_content"
+        android:hint="end">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/endTimeEditText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="time"/>
+
+    </com.google.android.material.textfield.TextInputLayout>
+</LinearLayout>
