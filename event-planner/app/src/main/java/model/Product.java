@@ -6,12 +6,12 @@ import java.util.UUID;
 public class Product {
     private Long id;
     private String category;
-    private String subCategory;
+    private String subcategory;
     private String name;
     private String description;
     private Double price;
     private Double discount;
-    //private ?? pictures;
+    private Integer imageId;
     private ArrayList<String> events;
     private Boolean available;
     private Boolean visible;
@@ -19,26 +19,28 @@ public class Product {
     public Product() {
     }
 
-    public Product(Long id, String category, String subCategory, String name, String description, Double price, Double discount, ArrayList<String> events, Boolean available, Boolean visible) {
+    public Product(Long id, String category, String subcategory, String name, String description, Double price, Double discount, Integer imageId,ArrayList<String> events, Boolean available, Boolean visible) {
         this.id = id;
         this.category = category;
-        this.subCategory = subCategory;
+        this.subcategory = subcategory;
         this.name = name;
         this.description = description;
         this.price = price;
         this.discount = discount;
+        this.imageId = imageId;
         this.events = events;
         this.available = available;
         this.visible = visible;
     }
 
-    public Product(String category, String subCategory, String name, String description, Double price, Double discount, ArrayList<String> events, Boolean available, Boolean visible) {
+    public Product(String category, String subcategory, String name, String description, Double price, Double discount, Integer imageId, ArrayList<String> events, Boolean available, Boolean visible) {
         this.category = category;
-        this.subCategory = subCategory;
+        this.subcategory = subcategory;
         this.name = name;
         this.description = description;
         this.price = price;
         this.discount = discount;
+        this.imageId = imageId;
         this.events = events;
         this.available = available;
         this.visible = visible;
@@ -60,12 +62,12 @@ public class Product {
         this.category = category;
     }
 
-    public String getSubCategory() {
-        return subCategory;
+    public String getSubcategory() {
+        return subcategory;
     }
 
-    public void setSubCategory(String subCategory) {
-        this.subCategory = subCategory;
+    public void setSubcategory(String subcategory) {
+        this.subcategory = subcategory;
     }
 
     public String getName() {
@@ -98,6 +100,14 @@ public class Product {
 
     public void setDiscount(Double discount) {
         this.discount = discount;
+    }
+
+    public Integer getImageId() {
+        return imageId;
+    }
+
+    public void setImageId(Integer imageId) {
+        this.imageId = imageId;
     }
 
     public ArrayList<String> getEvents() {

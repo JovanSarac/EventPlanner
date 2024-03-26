@@ -5,6 +5,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -23,9 +24,7 @@ public class ProductListAdapter extends ArrayAdapter<Product> {
 
     public ProductListAdapter(Context context, ArrayList<Product> products){
         super(context, R.layout.product_card, products);
-        this.products = new ArrayList<Product>();
-
-        this.products.add(new Product(1l, "some category", "some subcategory", "name", "description", 100.0, 10.0, null, true, false));
+        this.products = products;
     }
 
     @Override
@@ -53,11 +52,16 @@ public class ProductListAdapter extends ArrayAdapter<Product> {
             convertView = LayoutInflater.from(getContext()).inflate(R.layout.product_card, parent, false);
         }
 
-        LinearLayout productCard = convertView.findViewById(R.id.product_card_item);
-        TextView productName = convertView.findViewById(R.id.product_id);
+        ImageView productImage = convertView.findViewById(R.id.product_image);
+        TextView productName = convertView.findViewById(R.id.product_name);
+        TextView productDescription = convertView.findViewById(R.id.product_description);
+        TextView productPrice = convertView.findViewById(R.id.product_price);
 
         if(product != null){
+            productImage.setImageResource(product.getImageId());
             productName.setText(product.getName());
+            productDescription.setText(product.getDescription());
+            productPrice.setText(product.getPrice().toString());
         }
 
 
