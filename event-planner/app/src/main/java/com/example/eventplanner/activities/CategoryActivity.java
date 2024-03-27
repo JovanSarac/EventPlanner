@@ -4,6 +4,9 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.Transformation;
 import android.widget.Button;
 import android.widget.ExpandableListView;
 import android.widget.ImageView;
@@ -45,6 +48,17 @@ public class CategoryActivity extends AppCompatActivity {
 
         expandableListAdapter = new ExpandableListAdapter(this, listDataHeader, listDataChild);
         expandableListView.setAdapter(expandableListAdapter);
+        expandableListView.setOnGroupExpandListener(new ExpandableListView.OnGroupExpandListener() {
+            int previousGroup = -1;
+
+            @Override
+            public void onGroupExpand(int groupPosition) {
+                if (groupPosition != previousGroup)
+                    expandableListView.collapseGroup(previousGroup);
+                previousGroup = groupPosition;
+
+            }
+        });
 
         Button addCategory = findViewById(R.id.addCategoryButton);
         addCategory.setOnClickListener(new View.OnClickListener() {
@@ -96,8 +110,7 @@ public class CategoryActivity extends AppCompatActivity {
         listDataChild.put(listDataHeader.get(1), group2);
         listDataChild.put(listDataHeader.get(2), group3);
     }
-//    public void onIconDeleteClick(View view) {
-//        Toast.makeText(this, "Icon delete clicked", Toast.LENGTH_SHORT).show();
-//    }
+
+
 
 }

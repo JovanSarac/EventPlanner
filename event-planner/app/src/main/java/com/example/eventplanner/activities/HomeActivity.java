@@ -13,6 +13,7 @@ import androidx.core.view.WindowInsetsCompat;
 
 import com.example.eventplanner.R;
 import com.example.eventplanner.components.TimeInputComponent;
+import com.example.eventplanner.databinding.ActivityHomeBinding;
 
 public class HomeActivity extends AppCompatActivity {
 
@@ -27,46 +28,27 @@ public class HomeActivity extends AppCompatActivity {
             return insets;
         });
 
+        ActivityHomeBinding binding= ActivityHomeBinding.inflate(getLayoutInflater());
+        setContentView(binding.getRoot());
 
-
-        Button registerButton = (Button) findViewById(R.id.registerButton);
-        registerButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                // Create Intent to navigate to the second activity
-                Intent intent = new Intent(HomeActivity.this, OD_RegisterActivity.class);
-                startActivity(intent);
-            }
+        binding.registerButton.setOnClickListener(v->{
+            Intent intent = new Intent(HomeActivity.this, OD_RegisterActivity.class);
+            startActivity(intent);
         });
 
-        Button loginButton = (Button) findViewById(R.id.loginButton);
-        loginButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                // Create Intent to navigate to the second activity
-                Intent intent = new Intent(HomeActivity.this, LoginActivity.class);
-                startActivity(intent);
-            }
+        binding.loginButton.setOnClickListener(v->{
+            Intent intent = new Intent(HomeActivity.this, LoginActivity.class);
+            startActivity(intent);
         });
 
-        Button categoriesButton = (Button) findViewById(R.id.categoriesButton);
-        categoriesButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                // Create Intent to navigate to the second activity
-                Intent intent = new Intent(HomeActivity.this, CategoryActivity.class);
-                startActivity(intent);
-            }
+        binding.categoriesButton.setOnClickListener(v->{
+            Intent intent = new Intent(HomeActivity.this, CategoryActivity.class);
+            startActivity(intent);
         });
 
-        Button typesOfEventsButton = (Button) findViewById(R.id.typesOfEventsButton);
-        typesOfEventsButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                // Create Intent to navigate to the second activity
-                Intent intent = new Intent(HomeActivity.this, EventTypesActivity.class);
-                startActivity(intent);
-            }
+        binding.typesOfEventsButton.setOnClickListener(v->{
+            Intent intent = new Intent(HomeActivity.this, EventTypesActivity.class);
+            startActivity(intent);
         });
     }
 }
