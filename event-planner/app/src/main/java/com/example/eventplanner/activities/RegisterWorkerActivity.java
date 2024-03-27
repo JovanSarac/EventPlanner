@@ -10,6 +10,8 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
 import com.example.eventplanner.R;
+import com.example.eventplanner.databinding.ActivityOwnerDashboardBinding;
+import com.example.eventplanner.databinding.ActivityRegisterWorkerBinding;
 
 public class RegisterWorkerActivity extends AppCompatActivity {
 
@@ -24,9 +26,11 @@ public class RegisterWorkerActivity extends AppCompatActivity {
             return insets;
         });
 
+        ActivityRegisterWorkerBinding binding= ActivityRegisterWorkerBinding.inflate(getLayoutInflater());
+        setContentView(binding.getRoot());
 
-        binding.addWorkerBtn.setOnClickListener(v->{
-            Intent intent = new Intent(OwnerDashboard.this, RegisterWorkerActivity.class);
+        binding.continueBtn.setOnClickListener(v->{
+            Intent intent = new Intent(this, AddWorkerScheduleActivity.class);
             startActivity(intent);
         });
     }

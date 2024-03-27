@@ -1,5 +1,6 @@
 package com.example.eventplanner.activities;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.widget.ArrayAdapter;
 import android.widget.Spinner;
@@ -39,6 +40,16 @@ public class AddWorkerScheduleActivity extends AppCompatActivity {
         arrayAdapter.setDropDownViewResource(androidx.appcompat.R.layout.support_simple_spinner_dropdown_item);
 
         spinner.setAdapter(arrayAdapter);
+
+        binding.finishBtn.setOnClickListener(v->{
+            Intent intent = new Intent(this, OwnerDashboard.class);
+            startActivity(intent);
+        });
+
+        binding.skipBtn.setOnClickListener(v->{
+            Intent intent = new Intent(this, OwnerDashboard.class);
+            startActivity(intent);
+        });
     }
 
 }
