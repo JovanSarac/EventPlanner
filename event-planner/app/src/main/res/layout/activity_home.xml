@@ -20,4 +20,14 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/owner_dashboard_btn"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Owner Dashboard"
+        android:textSize="16dp"
+        android:paddingVertical="12dp"
+        app:cornerRadius="10dp"
+        android:layout_marginHorizontal="24dp"/>
+
 </androidx.constraintlayout.widget.ConstraintLayout>
