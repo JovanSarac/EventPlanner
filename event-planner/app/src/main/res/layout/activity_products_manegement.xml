@@ -5,7 +5,9 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".activities.ProductsManegementActivity">
+    tools:context=".activities.ProductsManegementActivity"
+    android:scrollbarStyle="outsideOverlay">
+
 
     <LinearLayout
         android:layout_width="wrap_content"
@@ -120,17 +122,18 @@
                 android:layout_marginTop="8dp"
                 android:text="Available"/>
         </LinearLayout>
+
         <View
             android:layout_width="match_parent"
             android:layout_height="2dp"
             android:background="@android:color/white" />
-        <ListView
-            android:id="@+id/productsList"
+
+        <FrameLayout
+            android:id="@+id/product_list_framelayout"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_margin="10dp"
-            tools:listitem="@layout/product_card"
-            />
+            android:layout_height="500dp"
+            android:layout_margin="5dp"/>
+
         <View
             android:layout_width="match_parent"
             android:layout_height="2dp"
