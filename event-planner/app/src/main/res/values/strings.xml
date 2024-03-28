@@ -6,4 +6,13 @@
     <string name="max_price">max</string>
     <string name="products">Products</string>
     <string name="create_product">Create product</string>
+    <string name="categories">Categories</string>
+    <string name="subcategories">Subcategories</string>
+    <string name="name">Name</string>
+    <string name="description">Description</string>
+    <string name="price">Price</string>
+    <string name="discount">Discount</string>
+    <string name="dollar">$</string>
+    <string name="percent">%</string>
+    <string name="create">Create</string>
 </resources>
