@@ -34,5 +34,10 @@ public class OwnerDashboard extends AppCompatActivity {
             startActivity(intent);
         });
 
+        binding.tableRow.setOnClickListener(v->{
+            Intent intent = new Intent(OwnerDashboard.this, WorkerScheduleActivity.class);
+            startActivity(intent);
+        });
+
     }
 }

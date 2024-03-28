@@ -527,7 +527,8 @@
                 <TableLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:background="@android:color/white">
+                    android:background="@android:color/white"
+                    android:layout_marginBottom="24dp">
 
                     <TableRow
                         android:background="@color/purple_light">
@@ -570,7 +571,8 @@
                     </TableRow>
 
                     <TableRow
-                        android:background="@color/white">
+                        android:background="@color/white"
+                        android:id="@+id/table_row">
 
                         <TextView
                             android:background="@drawable/table_cell"

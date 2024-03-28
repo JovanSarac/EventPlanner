@@ -6,4 +6,8 @@
     </style>
 
     <style name="Theme.EventPlanner" parent="Base.Theme.EventPlanner" />
+    
+    <style name="ThemeMaterialCalendar" parent="ThemeOverlay.MaterialComponents.MaterialCalendar">
+        <item name="android:windowFullscreen">false</item>
+    </style>
 </resources>
