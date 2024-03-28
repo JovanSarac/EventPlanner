@@ -4,4 +4,21 @@
     <string name="search_hint">Search</string>
     <string name="min_price">min</string>
     <string name="max_price">max</string>
+    <string name="select_event_type">Select an event type:</string>
+    <string name="create_event">Create event:</string>
+    <string name="name_event">Name event:</string>
+    <string name="description_event">Description event:</string>
+    <string name="maxpeople_event">Maximum number of people:</string>
+    <string name="privacy_event">Privacy rules of the event:</string>
+    <string name="opentype_event">Open type</string>
+    <string name="closedtype_event">Closed type</string>
+    <string name="place_event">Place event:</string>
+    <string name="distance_event">Maximal distance in km:</string>
+    <string name="datepicker_event">Pick a date:</string>
+    <string name="create">Create</string>
+    <string name="proposal_typeevent">Suggestions for product and service subcategories:</string>
+    <string name="category">Category:</string>
+    <string name="name">Name:</string>
+    <string name="description">Description:</string>
+    <string name="type">Type:</string>
 </resources>

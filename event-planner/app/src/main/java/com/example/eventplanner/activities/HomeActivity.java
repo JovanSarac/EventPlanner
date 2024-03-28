@@ -17,6 +17,7 @@ public class HomeActivity extends AppCompatActivity {
 
     private Button buttonProductsManagementPUPZ;
     private Button buttonProductsManagementPUPV;
+    private Button buttonCreateEventOD;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,6 +32,7 @@ public class HomeActivity extends AppCompatActivity {
 
         buttonProductsManagementPUPZ = findViewById(R.id.productsManagmentPUPZ);
         buttonProductsManagementPUPV = findViewById(R.id.productsManagmentPUPV);
+        buttonCreateEventOD = findViewById(R.id.createEventOD);
 
         buttonProductsManagementPUPV.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -45,6 +47,15 @@ public class HomeActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(HomeActivity.this, ProductsManegementActivity.class);
+                startActivity(intent);
+                finish();
+            }
+        });
+
+        buttonCreateEventOD.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(HomeActivity.this, CreateEventODActivity.class);
                 startActivity(intent);
                 finish();
             }
