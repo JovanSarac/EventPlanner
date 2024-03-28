@@ -1,6 +1,7 @@
 package com.example.eventplanner.activities;
 
 import android.app.AlertDialog;
+import android.app.TimePickerDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -16,6 +17,7 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
+import android.widget.TimePicker;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
@@ -31,56 +33,11 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.List;
 
 public class OD_RegisterActivity extends AppCompatActivity {
-    List<String> categoriesList = Arrays.asList(
-            "Plumbing Services",
-            "Electrical Services",
-            "Home Cleaning",
-            "Gardening Services",
-            "Painting Services",
-            "Appliance Repair",
-            "Computer Repair",
-            "Mobile Phone Repair",
-            "Car Mechanics",
-            "Locksmith Services",
-            "Carpentry Services",
-            "Roofing Services",
-            "Pest Control Services",
-            "Moving Services",
-            "Event Planning",
-            "Photography Services",
-            "Tutoring Services",
-            "Fitness Training",
-            "Legal Services",
-            "Financial Consultancy"
-    );
-    List<String> eventNames = Arrays.asList(
-            "Birthday Party",
-            "Wedding Ceremony",
-            "Graduation Celebration",
-            "Baby Shower",
-            "Housewarming Party",
-            "Anniversary Dinner",
-            "Retirement Party",
-            "Engagement Party",
-            "Prom Night",
-            "Holiday Gathering",
-            "Farewell Party",
-            "Reunion",
-            "Barbecue Cookout",
-            "Fundraising Gala",
-            "Business Conference",
-            "Product Launch",
-            "Music Concert",
-            "Art Exhibition",
-            "Film Screening",
-            "Fashion Show"
-    );
 
-    ListView selectedCategories;
-    ListView selectedEvents;
     Button buttonSelectImage;
     ImageView imageViewProfile;
 
@@ -104,22 +61,9 @@ public class OD_RegisterActivity extends AppCompatActivity {
         });
 
         setupTimePickComponents();
-        setupListViewForCategories();
-        setupListViewForEvents();
 
-        selectedCategories = findViewById(R.id.categoryView);
-        Button registerButton = (Button) findViewById(R.id.registerUser);
-        registerButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                showSelectedItems(v);
-
-            }
-        });
 
         RadioGroup radioGroup = findViewById(R.id.radioGroup);
-        RadioButton radioButtonOD = findViewById(R.id.ODRadio);
-        RadioButton radioButtonPUPV = findViewById(R.id.PUPVRadio);
         LinearLayout PUPVLayout=findViewById(R.id.PUPVLayout);
         radioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
@@ -141,7 +85,15 @@ public class OD_RegisterActivity extends AppCompatActivity {
                 startActivityForResult(intent, 3);
             }
         });
-
+        findViewById(R.id.registerUser).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(radioGroup.getCheckedRadioButtonId()==R.id.PUPVRadio) {
+                    Intent intent = new Intent(OD_RegisterActivity.this, PUPV_RegisterCategoryActivity.class);
+                    startActivity(intent);
+                }
+            }
+        });
 
 
     }
@@ -155,28 +107,6 @@ public class OD_RegisterActivity extends AppCompatActivity {
 
         }
     }
-
-    private void setupListViewForCategories() {
-        selectedCategories = findViewById(R.id.categoryView);
-        ArrayAdapter<String> adapterCategories = new ArrayAdapter<>(this, android.R.layout.simple_list_item_multiple_choice, categoriesList);
-        selectedCategories.setAdapter(adapterCategories);
-    }
-    private void setupListViewForEvents() {
-        selectedEvents = findViewById(R.id.eventView);
-        ArrayAdapter<String> adapterEvents = new ArrayAdapter<>(this, android.R.layout.simple_list_item_multiple_choice, eventNames);
-        selectedEvents.setAdapter(adapterEvents);
-    }
-
-    private void showSelectedItems(View v) {
-        String str = "";
-        for (int i = 0; i < selectedCategories.getCount(); i++) {
-            if (selectedCategories.isItemChecked(i)) {
-                str += selectedCategories.getItemAtPosition(i) + "\n";
-            }
-        }
-        Toast.makeText(v.getContext(), str, Toast.LENGTH_SHORT).show();
-    }
-
 
     private void setupTimePickComponents(){
         mondayComponent = findViewById(R.id.monInputView);
@@ -194,6 +124,23 @@ public class OD_RegisterActivity extends AppCompatActivity {
         sundayComponent = findViewById(R.id.sunInputView);
         sundayComponent.setDayText("Sunday");
     }
+    public void showHourPicker() {
+        final Calendar myCalender = Calendar.getInstance();
+        int hour = myCalender.get(Calendar.HOUR_OF_DAY);
+        int minute = myCalender.get(Calendar.MINUTE);
+        TimePickerDialog.OnTimeSetListener myTimeListener = new TimePickerDialog.OnTimeSetListener() {
+            @Override
+            public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
+                if (view.isShown()) {
+                    myCalender.set(Calendar.HOUR_OF_DAY, hourOfDay);
+                    myCalender.set(Calendar.MINUTE, minute);
 
-
+                }
+            }
+        };
+        TimePickerDialog timePickerDialog = new TimePickerDialog(OD_RegisterActivity.this, android.R.style.Theme_Holo_Light_Dialog_NoActionBar, myTimeListener, hour, minute, true);
+        timePickerDialog.setTitle("Choose hour:");
+        timePickerDialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
+        timePickerDialog.show();
+    }
 }
