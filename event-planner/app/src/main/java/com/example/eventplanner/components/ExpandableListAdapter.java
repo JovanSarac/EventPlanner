@@ -78,6 +78,8 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
         }
         TextView lblListHeader = convertView.findViewById(R.id.lblListHeader);
         lblListHeader.setText(headerTitle.getName());
+        TextView lblListDescription = convertView.findViewById(R.id.lblListDescription);
+        lblListDescription.setText(headerTitle.getDescription());
 
         ImageView iconEdit = convertView.findViewById(R.id.iconEdit);
         iconEdit.setOnClickListener(new View.OnClickListener() {

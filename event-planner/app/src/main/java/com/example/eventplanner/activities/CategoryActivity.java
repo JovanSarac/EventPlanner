@@ -20,6 +20,8 @@ import androidx.core.view.WindowInsetsCompat;
 
 import com.example.eventplanner.R;
 import com.example.eventplanner.components.ExpandableListAdapter;
+import com.example.eventplanner.databinding.ActivityCategoryBinding;
+import com.example.eventplanner.databinding.ActivityHomeBinding;
 import com.example.eventplanner.models.Category;
 import com.example.eventplanner.models.Subcategory;
 
@@ -41,6 +43,13 @@ public class CategoryActivity extends AppCompatActivity {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
+        });
+        ActivityCategoryBinding binding= ActivityCategoryBinding.inflate(getLayoutInflater());
+        setContentView(binding.getRoot());
+
+        binding.addRecomendedCategoryButton.setOnClickListener(v->{
+            Intent intent = new Intent(CategoryActivity.this, SuggestedSubcategoriesActivity.class);
+            startActivity(intent);
         });
 
         expandableListView = findViewById(R.id.expandableListView);

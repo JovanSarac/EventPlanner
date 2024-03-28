@@ -11,6 +11,8 @@
         android:layout_height="match_parent"
         android:orientation="vertical"
         android:padding="15dp"
+        android:gravity="center"
+
         >
         <TextView
             android:layout_width="wrap_content"
@@ -18,11 +20,15 @@
             android:text="LogIn"
             android:textSize="30sp"
             android:textColor="?attr/colorPrimary"
-            android:fontFamily="sans-serif-black"/>
+            android:fontFamily="sans-serif-black"
+            android:layout_marginBottom="20dp"
+
+            />
 
         <com.google.android.material.textfield.TextInputLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginBottom="15dp"
             android:hint="Email">
 
             <com.google.android.material.textfield.TextInputEditText
@@ -36,7 +42,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="@string/password"
-            app:endIconMode="password_toggle">
+            app:endIconMode="password_toggle"
+>
 
             <com.google.android.material.textfield.TextInputEditText
                 android:layout_width="match_parent"
@@ -44,13 +51,34 @@
                 android:inputType="textPassword"/>
 
         </com.google.android.material.textfield.TextInputLayout>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="forgot your password?"
+            android:textSize="15sp"
+            android:textColor="?attr/colorAccent"
+            android:fontFamily="sans-serif-black"
+            android:layout_marginTop="10dp"
+            />
+        <Button
+            android:id="@+id/registerButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Dont have an accout? Sing up"
+            style="@style/Widget.MaterialComponents.Button"
+            android:backgroundTint="?attr/colorAccent"
+            android:layout_marginBottom="15dp"
+            android:layout_marginTop="5dp"
+/>
 
         <Button
             android:id="@+id/loginButton"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="LogIn"
-            style="@style/Widget.MaterialComponents.Button"/>
+            style="@style/Widget.MaterialComponents.Button"
+            android:layout_marginBottom="25dp"
+            />
 
     </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>
