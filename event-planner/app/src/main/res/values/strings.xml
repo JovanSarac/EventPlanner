@@ -15,4 +15,7 @@
     <string name="dollar">$</string>
     <string name="percent">%</string>
     <string name="create">Create</string>
+    <string name="events">Events</string>
+    <string name="available">Available</string>
+    <string name="visible">Visible</string>
 </resources>
