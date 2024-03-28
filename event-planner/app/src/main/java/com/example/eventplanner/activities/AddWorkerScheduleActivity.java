@@ -34,10 +34,10 @@ public class AddWorkerScheduleActivity extends AppCompatActivity {
         Spinner spinner  = binding.daysSpinner;
 
         ArrayAdapter<String> arrayAdapter = new ArrayAdapter<>(getApplication(),
-                androidx.appcompat.R.layout.support_simple_spinner_dropdown_item,
+                android.R.layout.simple_dropdown_item_1line,
                 getResources().getStringArray(R.array.days_array));
 
-        arrayAdapter.setDropDownViewResource(androidx.appcompat.R.layout.support_simple_spinner_dropdown_item);
+        arrayAdapter.setDropDownViewResource(android.R.layout.simple_dropdown_item_1line);
 
         spinner.setAdapter(arrayAdapter);
 
