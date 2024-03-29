@@ -14,8 +14,11 @@
     <string name="discount">Discount</string>
     <string name="dollar">$</string>
     <string name="percent">%</string>
+    <string name="cancel">Cancel</string>
     <string name="create">Create</string>
     <string name="events">Events</string>
     <string name="available">Available</string>
     <string name="visible">Visible</string>
+    <string name="edit_product">Edit product</string>
+    <string name="category">Category</string>
 </resources>

@@ -25,6 +25,14 @@
                 android:layout_marginStart="10dp"
                 android:layout_marginTop="5dp"/>
 
+            <Button
+                android:id="@+id/add_product"
+                android:layout_width="25dp"
+                android:layout_height="25dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginLeft="5dp"
+                android:background="@drawable/ic_add"/>
+
         </LinearLayout>
 
         <ListView
@@ -33,21 +41,13 @@
             android:layout_height="match_parent"
             tools:listitem="@layout/product_card_pupv"
             android:paddingRight="10dp"
+            android:scrollbars="none"
+            android:overScrollMode="never"
+            android:nestedScrollingEnabled="true"
             android:scrollbarStyle="outsideOverlay"
             android:layout_marginTop="10dp"
             />
 
     </LinearLayout>
-
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/add_product"
-        android:layout_width="50dp"
-        android:layout_height="50dp"
-        android:layout_marginRight="10dp"
-        android:layout_marginBottom="30dp"
-        android:layout_gravity="right|bottom"
-        style="?attr/floatingActionButtonStyle"
-        app:srcCompat="@drawable/ic_add"
-        />
 
 </FrameLayout>

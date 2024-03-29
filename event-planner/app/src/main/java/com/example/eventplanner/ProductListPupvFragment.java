@@ -18,6 +18,7 @@ import com.example.eventplanner.databinding.ActivityProductsManegementBinding;
 import com.example.eventplanner.databinding.FragmentProductListPupvBinding;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 
 import adapters.ProductListAdapter;
 import adapters.ProductListPupvAdapter;
@@ -68,14 +69,26 @@ public class ProductListPupvFragment extends Fragment{
         Double[] discounts = {1.0, 2.0, 3.0, 4.0, 5.0};
         Integer[] imageIds = {R.drawable.product_1, R.drawable.product_2, R.drawable.product_3,
                 R.drawable.product_4, R.drawable.product_5};
+        ArrayList<String> events = new ArrayList<>(Arrays.asList(
+                "Event 11", "Event 12", "Event 13", "Event 14", "Event 15",
+                "Event 21", "Event 22", "Event 23", "Event 24", "Event 25",
+                "Event 31", "Event 32", "Event 33", "Event 34", "Event 35",
+                "Event 41", "Event 42", "Event 43", "Event 44", "Event 45",
+                "Event 51", "Event 52", "Event 53", "Event 54", "Event 55"));
+
         Boolean[] available = {true, true, true, true, true};
         Boolean[] visible = {true, true, true, true, true};
 
         ArrayList<Product> products = new ArrayList<>();
 
         for(int i = 0; i < ids.length; i++){
+            ArrayList<String> productEvents = new ArrayList<>();
+            for(int j = 5 * i; j < 5 * i + 5; j++){
+                productEvents.add(events.get(j));
+            }
+
             products.add(new Product(ids[i], categories[i], subcategories[i],
-                    names[i], description[i], prices[i], discounts[i], imageIds[i], null, available[i], visible[i]));
+                    names[i], description[i], prices[i], discounts[i], imageIds[i], productEvents, available[i], visible[i]));
         }
         return products;
     }
