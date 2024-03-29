@@ -19,6 +19,8 @@ public class HomeActivity extends AppCompatActivity {
     private Button buttonProductsManagementPUPV;
     private Button buttonCreateEventOD;
 
+    private Button butonSearchAndFilter;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -33,6 +35,7 @@ public class HomeActivity extends AppCompatActivity {
         buttonProductsManagementPUPZ = findViewById(R.id.productsManagmentPUPZ);
         buttonProductsManagementPUPV = findViewById(R.id.productsManagmentPUPV);
         buttonCreateEventOD = findViewById(R.id.createEventOD);
+        butonSearchAndFilter = findViewById((R.id.filterAndSearchpsp));
 
         buttonProductsManagementPUPV.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -56,6 +59,15 @@ public class HomeActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(HomeActivity.this, CreateEventODActivity.class);
+                startActivity(intent);
+                finish();
+            }
+        });
+
+        butonSearchAndFilter.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(HomeActivity.this, SearchAndFilterActivity.class);
                 startActivity(intent);
                 finish();
             }

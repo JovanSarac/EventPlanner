@@ -21,4 +21,18 @@
     <string name="name">Name:</string>
     <string name="description">Description:</string>
     <string name="type">Type:</string>
+    <string name="products">Products</string>
+    <string name="services">Services</string>
+    <string name="packages">Package</string>
+    <string name="filters">Filters</string>
+    <string name="sort">Sort</string>
+    <string name="searchbyname_hint">Search by name</string>
+    <string name="searchbylocation_hint">Search by location</string>
+    <string name="available">Available:</string>
+    <string name="yes">Yes</string>
+    <string name="no">No</string>
+    <string name="searchbunamepup_hint">Search by name PUP</string>
+    <string name="datepickerrange">Date picker range</string>
+    <string name="subcategory">Subcategory</string>
+    <string name="rangeprice">Price range:</string>
 </resources>
