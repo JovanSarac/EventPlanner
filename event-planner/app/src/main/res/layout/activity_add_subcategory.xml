@@ -10,14 +10,16 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
-        android:padding="15dp">
+        android:padding="15dp"
+        android:gravity="center">
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Add Subcategory"
             android:textSize="25sp"
             android:textColor="?attr/colorPrimary"
-            android:fontFamily="sans-serif-black"/>
+            android:fontFamily="sans-serif-black"
+            android:layout_marginBottom="20dp"/>
 
         <com.google.android.material.textfield.TextInputLayout
             android:layout_width="match_parent"
@@ -25,7 +27,8 @@
             android:hint="Category Name"
             android:clickable="false"
             android:focusable="false"
-            android:focusableInTouchMode="false">
+            android:focusableInTouchMode="false"
+            android:layout_marginBottom="15dp">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/categoryName"
@@ -40,7 +43,8 @@
         <com.google.android.material.textfield.TextInputLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Subcategory Name">
+            android:hint="Subcategory Name"
+            android:layout_marginBottom="15dp">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/subcategoryName"
@@ -54,24 +58,30 @@
             android:checkedButton="@+id/serviceRadio"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal">
+            android:orientation="horizontal"
+            android:layout_marginBottom="5dp">
             <RadioButton
                 android:id="@+id/serviceRadio"
                 android:layout_width="0dp"
                 android:layout_weight="1"
                 android:layout_height="match_parent"
-                android:text="Service"/>
+                android:text="Service"
+                android:layout_marginLeft="32dp"
+                />
             <RadioButton
                 android:id="@+id/productRadio"
                 android:layout_width="0dp"
                 android:layout_weight="1"
                 android:layout_height="match_parent"
-                android:text="Product"/>
+                android:text="Product"
+                android:layout_marginRight="32dp"
+                />
         </RadioGroup>
         <com.google.android.material.textfield.TextInputLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="Description"
+            android:layout_marginBottom="15dp"
             >
 
             <com.google.android.material.textfield.TextInputEditText

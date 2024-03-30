@@ -13,12 +13,13 @@
         app:cardCornerRadius="12dp"
         android:padding="8dp"
         app:cardElevation="4dp"
-        app:cardBackgroundColor="?attr/colorTertiaryFixed"
+
         >
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:padding="8dp">
+        android:padding="8dp"
+        android:background="@drawable/gradient_background_2">
         <TextView
             android:id="@+id/lblListItem"
             android:layout_width="0dp"

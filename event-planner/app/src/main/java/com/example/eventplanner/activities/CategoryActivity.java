@@ -44,13 +44,14 @@ public class CategoryActivity extends AppCompatActivity {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
-        ActivityCategoryBinding binding= ActivityCategoryBinding.inflate(getLayoutInflater());
-        setContentView(binding.getRoot());
-
-        binding.addRecomendedCategoryButton.setOnClickListener(v->{
-            Intent intent = new Intent(CategoryActivity.this, SuggestedSubcategoriesActivity.class);
-            startActivity(intent);
+        findViewById(R.id.addRecomendedCategoryButton).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(CategoryActivity.this, SuggestedSubcategoriesActivity.class);
+                startActivity(intent);
+            }
         });
+
 
         expandableListView = findViewById(R.id.expandableListView);
         prepareListData();

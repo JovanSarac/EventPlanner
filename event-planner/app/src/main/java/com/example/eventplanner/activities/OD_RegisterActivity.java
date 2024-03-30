@@ -1,53 +1,33 @@
 package com.example.eventplanner.activities;
 
-import android.app.AlertDialog;
 import android.app.TimePickerDialog;
-import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
-import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.view.View;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.ListView;
-import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TimePicker;
-import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
 import com.example.eventplanner.R;
-import com.example.eventplanner.components.TimeInputComponent;
-import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Calendar;
-import java.util.List;
 
 public class OD_RegisterActivity extends AppCompatActivity {
 
     Button buttonSelectImage;
     ImageView imageViewProfile;
 
-    TimeInputComponent mondayComponent;
-    TimeInputComponent tuesdayComponent;
-    TimeInputComponent wednesdayComponent;
-    TimeInputComponent thursdayComponent;
-    TimeInputComponent fridayComponent;
-    TimeInputComponent saturdayComponent;
-    TimeInputComponent sundayComponent;
+
     static final int REQUEST_IMAGE_PICK = 1;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -109,20 +89,7 @@ public class OD_RegisterActivity extends AppCompatActivity {
     }
 
     private void setupTimePickComponents(){
-        mondayComponent = findViewById(R.id.monInputView);
-        mondayComponent.setDayText("Monday:");
-        tuesdayComponent = findViewById(R.id.tueInputView);
-        tuesdayComponent.setDayText("Tuesday:");
-        wednesdayComponent = findViewById(R.id.wedInputView);
-        wednesdayComponent.setDayText("Wednesday:");
-        thursdayComponent = findViewById(R.id.thuInputView);
-        thursdayComponent.setDayText("Thursday");
-        fridayComponent = findViewById(R.id.friInputView);
-        fridayComponent.setDayText("Friday");
-        saturdayComponent = findViewById(R.id.satInputView);
-        saturdayComponent.setDayText("Saturday");
-        sundayComponent = findViewById(R.id.sunInputView);
-        sundayComponent.setDayText("Sunday");
+
     }
     public void showHourPicker() {
         final Calendar myCalender = Calendar.getInstance();

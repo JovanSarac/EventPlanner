@@ -10,11 +10,12 @@
         android:layout_width="match_parent"
         app:cardCornerRadius="12dp"
         app:cardElevation="4dp"
-        app:cardBackgroundColor="?attr/colorPrimary"
+
         >
         <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent"
+            android:background="@drawable/gradient_background">
             <LinearLayout
                 android:id="@+id/topRow"
                 android:layout_width="match_parent"
