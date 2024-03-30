@@ -5,9 +5,8 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ProductsManegementActivity"
+    tools:context=".ServicesManagementActivity"
     android:scrollbarStyle="outsideOverlay">
-
 
     <LinearLayout
         android:layout_width="wrap_content"
@@ -43,7 +42,7 @@
             android:layout_marginEnd="10dp">
 
             <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/product_category_filter"
+                android:id="@+id/category_filter"
                 style="@style/Widget.Material3.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
@@ -59,7 +58,7 @@
             </com.google.android.material.textfield.TextInputLayout>
 
             <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/product_subcategory_filter"
+                android:id="@+id/subcategory_filter"
                 style="@style/Widget.Material3.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
@@ -102,7 +101,7 @@
             android:orientation="horizontal">
 
             <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/product_minPrice"
+                android:id="@+id/min_price"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_margin="10dp"
@@ -127,7 +126,7 @@
                 android:layout_marginTop="8dp"/>
 
             <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/product_maxPrice"
+                android:id="@+id/max_price"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_margin="10dp"
@@ -153,13 +152,31 @@
                 android:text="@string/available"/>
         </LinearLayout>
 
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/providers_filter"
+            style="@style/Widget.Material3.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            android:layout_marginEnd="10dp"
+            android:layout_marginTop="5dp"
+            android:hint="@string/providers">
+
+            <AutoCompleteTextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="none"
+                />
+
+        </com.google.android.material.textfield.TextInputLayout>
+
         <View
             android:layout_width="match_parent"
             android:layout_height="2dp"
             android:background="@android:color/white" />
 
         <FrameLayout
-            android:id="@+id/product_list_framelayout"
+            android:id="@+id/service_list_framelayout"
             android:layout_width="match_parent"
             android:layout_height="500dp"
             android:layout_margin="5dp"/>

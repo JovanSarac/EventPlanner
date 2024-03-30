@@ -1,13 +1,18 @@
 package adapters;
 
+import static android.content.Context.LAYOUT_INFLATER_SERVICE;
+import static androidx.core.content.ContextCompat.getSystemService;
+
 import android.content.Context;
 import android.content.Intent;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.PopupWindow;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -68,6 +73,7 @@ public class ProductListPupvAdapter extends ArrayAdapter<Product> {
         }
 
         Button editButton = convertView.findViewById(R.id.product_edit);
+        Button deleteButton = convertView.findViewById(R.id.product_delete);
 
         final View finalConvertView = convertView;
         editButton.setOnClickListener(new View.OnClickListener() {
@@ -90,6 +96,22 @@ public class ProductListPupvAdapter extends ArrayAdapter<Product> {
                 finalConvertView.getContext().startActivity(intent);
             }
         });
+
+        deleteButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                LayoutInflater inflater = (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+                View popUpView = inflater.inflate(R.layout.confirmation_popup, null);
+
+                int width = ViewGroup.LayoutParams.MATCH_PARENT;
+                int height = ViewGroup.LayoutParams.MATCH_PARENT;
+                boolean focusable = true;
+                PopupWindow popupWindow = new PopupWindow(popUpView, width, height, focusable);
+
+                popupWindow.showAtLocation(v, Gravity.CENTER, 0, 0);
+            }
+        });
+
 
         return convertView;
     }

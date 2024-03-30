@@ -21,4 +21,19 @@
     <string name="visible">Visible</string>
     <string name="edit_product">Edit product</string>
     <string name="category">Category</string>
+    <string name="delete">Delete</string>
+    <string name="providers">Providers</string>
+    <string name="services">Services</string>
+    <string name="create_service">Create service</string>
+    <string name="specific">Specific</string>
+    <string name="pricePerHour">Price per hour</string>
+    <string name="duration">Duration</string>
+    <string name="h">h</string>
+    <string name="location">Location</string>
+    <string name="reservation_due">Reservation due</string>
+    <string name="cancelation_due">Cancelation due</string>
+    <string name="automatic_affirmation">Automatic affirmation</string>
+    <string name="edit_service">Edit service</string>
+    <string name="duration_min">Duration min</string>
+    <string name="duration_max">Duration max</string>
 </resources>

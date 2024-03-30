@@ -1,6 +1,5 @@
 package com.example.eventplanner;
 
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 
@@ -10,17 +9,13 @@ import androidx.fragment.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.TextView;
 
-import com.example.eventplanner.activities.ProductsManegementActivity;
 import com.example.eventplanner.databinding.ActivityProductsManegementBinding;
 import com.example.eventplanner.databinding.FragmentProductListPupvBinding;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 
-import adapters.ProductListAdapter;
 import adapters.ProductListPupvAdapter;
 import model.Product;
 
@@ -56,6 +51,7 @@ public class ProductListPupvFragment extends Fragment{
                 startActivity(intent);
             }
         });
+
     }
 
     @NonNull

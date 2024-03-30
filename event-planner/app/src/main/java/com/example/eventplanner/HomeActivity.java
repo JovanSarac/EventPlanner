@@ -1,4 +1,4 @@
-package com.example.eventplanner.activities;
+package com.example.eventplanner;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -14,14 +14,13 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
-import com.example.eventplanner.ProductListPupvFragment;
-import com.example.eventplanner.ProductListPupzFragment;
-import com.example.eventplanner.R;
-
 public class HomeActivity extends AppCompatActivity {
 
     private Button buttonProductsManagementPUPZ;
     private Button buttonProductsManagementPUPV;
+    private Button buttonServicesManagementPUPZ;
+    private Button buttonServicesManagementPUPV;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,6 +35,8 @@ public class HomeActivity extends AppCompatActivity {
 
         buttonProductsManagementPUPZ = findViewById(R.id.productsManagmentPUPZ);
         buttonProductsManagementPUPV = findViewById(R.id.productsManagmentPUPV);
+        buttonServicesManagementPUPZ = findViewById(R.id.serviceManagmentPUPZ);
+        buttonServicesManagementPUPV = findViewById(R.id.serviceManagmentPUPV);
 
         buttonProductsManagementPUPV.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -52,6 +53,26 @@ public class HomeActivity extends AppCompatActivity {
             public void onClick(View v) {
                 Intent intent = new Intent(HomeActivity.this, ProductsManegementActivity.class);
                 intent.putExtra("used_fragment", "product_list_pupz");
+                startActivity(intent);
+                finish();
+            }
+        });
+
+        buttonServicesManagementPUPZ.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(HomeActivity.this, ServicesManagementActivity.class);
+                intent.putExtra("used_fragment", "service_list_pupz");
+                startActivity(intent);
+                finish();
+            }
+        });
+
+        buttonServicesManagementPUPV.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(HomeActivity.this, ServicesManagementActivity.class);
+                intent.putExtra("used_fragment", "service_list_pupv");
                 startActivity(intent);
                 finish();
             }

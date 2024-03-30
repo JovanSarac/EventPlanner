@@ -1,36 +1,13 @@
-package com.example.eventplanner.activities;
+package com.example.eventplanner;
 
 import android.os.Bundle;
-import android.util.DisplayMetrics;
-import android.view.KeyEvent;
-import android.view.View;
-import android.view.inputmethod.EditorInfo;
-import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
-import android.widget.FrameLayout;
-import android.widget.Spinner;
-import android.widget.TextView;
 
-import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
-import androidx.recyclerview.widget.GridLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.eventplanner.ProductListPupvFragment;
-import com.example.eventplanner.ProductListPupzFragment;
-import com.example.eventplanner.R;
 import com.example.eventplanner.databinding.ActivityProductsManegementBinding;
-import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
-
-import java.util.ArrayList;
-
-import adapters.ProductListAdapter;
-import model.Product;
 
 public class ProductsManegementActivity extends AppCompatActivity {
 
