@@ -5,7 +5,7 @@
     <string name="min_price">min</string>
     <string name="max_price">max</string>
     <string name="select_event_type">Select an event type:</string>
-    <string name="create_event">Create event:</string>
+    <string name="create_event">Create event</string>
     <string name="name_event">Name event:</string>
     <string name="description_event">Description event:</string>
     <string name="maxpeople_event">Maximum number of people:</string>
@@ -35,4 +35,10 @@
     <string name="datepickerrange">Date picker range</string>
     <string name="subcategory">Subcategory</string>
     <string name="rangeprice">Price range:</string>
+    <string name="menuitem1">Products, services and packages</string>
+    <string name="navigation_drawer_open" translatable="false">Navigation Drawer Open</string>
+    <string name="navigation_drawer_close" translatable="false">Navigation Drawer Close</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="doo">do</string>
+    <string name="events">Events</string>
 </resources>
