@@ -48,7 +48,6 @@ public class HomeActivity extends AppCompatActivity {
                 Intent intent = new Intent(HomeActivity.this, ProductsManegementActivity.class);
                 intent.putExtra("used_fragment", "product_list_pupv");
                 startActivity(intent);
-                finish();
             }
         });
 
@@ -58,7 +57,6 @@ public class HomeActivity extends AppCompatActivity {
                 Intent intent = new Intent(HomeActivity.this, ProductsManegementActivity.class);
                 intent.putExtra("used_fragment", "product_list_pupz");
                 startActivity(intent);
-                finish();
             }
         });
 
@@ -68,7 +66,6 @@ public class HomeActivity extends AppCompatActivity {
                 Intent intent = new Intent(HomeActivity.this, ServicesManagementActivity.class);
                 intent.putExtra("used_fragment", "service_list_pupz");
                 startActivity(intent);
-                finish();
             }
         });
 
@@ -78,7 +75,6 @@ public class HomeActivity extends AppCompatActivity {
                 Intent intent = new Intent(HomeActivity.this, ServicesManagementActivity.class);
                 intent.putExtra("used_fragment", "service_list_pupv");
                 startActivity(intent);
-                finish();
             }
         });
 
@@ -88,7 +84,6 @@ public class HomeActivity extends AppCompatActivity {
                 Intent intent = new Intent(HomeActivity.this, PackagesManagementActivity.class);
                 intent.putExtra("used_fragment", "package_list_pupz");
                 startActivity(intent);
-                finish();
             }
         });
 
@@ -98,7 +93,6 @@ public class HomeActivity extends AppCompatActivity {
                 Intent intent = new Intent(HomeActivity.this, PackagesManagementActivity.class);
                 intent.putExtra("used_fragment", "package_list_pupv");
                 startActivity(intent);
-                finish();
             }
         });
     }

@@ -27,7 +27,7 @@
         </LinearLayout>
 
         <ListView
-            android:id="@+id/package_list_pupv"
+            android:id="@+id/package_list_pupz"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             tools:listitem="@layout/package_card_pupv"
