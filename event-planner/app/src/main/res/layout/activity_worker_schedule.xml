@@ -110,6 +110,7 @@
                         android:background="@color/white">
 
                         <TextView
+                            android:textStyle="bold"
                             android:background="@drawable/table_cell"
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
@@ -150,6 +151,7 @@
                         android:background="@color/white">
 
                         <TextView
+                            android:textStyle="bold"
                             android:background="@drawable/table_cell"
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
@@ -190,6 +192,7 @@
                         android:background="@color/white">
 
                         <TextView
+                            android:textStyle="bold"
                             android:background="@drawable/table_cell"
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
@@ -230,6 +233,7 @@
                         android:background="@color/white">
 
                         <TextView
+                            android:textStyle="bold"
                             android:background="@drawable/table_cell"
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
@@ -270,6 +274,7 @@
                         android:background="@color/white">
 
                         <TextView
+                            android:textStyle="bold"
                             android:background="@drawable/table_cell"
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
@@ -310,6 +315,7 @@
                         android:background="@color/white">
 
                         <TextView
+                            android:textStyle="bold"
                             android:background="@drawable/table_cell"
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
@@ -350,6 +356,7 @@
                         android:background="@color/white">
 
                         <TextView
+                            android:textStyle="bold"
                             android:background="@drawable/table_cell"
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
@@ -365,7 +372,7 @@
                             android:background="@drawable/table_cell"
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
-                            android:text="7:00"
+                            android:text="Day off"
                             android:textColor="@android:color/black"
                             android:padding="12sp"
                             android:textSize="12sp"
@@ -376,7 +383,7 @@
                             android:background="@drawable/table_cell"
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
-                            android:text="20:00"
+                            android:text="Day off"
                             android:textColor="@android:color/black"
                             android:padding="12sp"
                             android:textSize="12sp"

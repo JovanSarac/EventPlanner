@@ -536,6 +536,18 @@
                         <TextView
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
+                            android:text="Worker"
+                            android:textStyle="bold"
+                            android:textColor="@android:color/white"
+                            android:padding="12sp"
+                            android:textSize="16sp"
+                            android:layout_weight="4"
+                            android:gravity="center_horizontal"
+                            />
+
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
                             android:text="From"
                             android:textStyle="bold"
                             android:textColor="@android:color/white"
@@ -556,23 +568,25 @@
                             android:layout_weight="4"
                             android:gravity="center_horizontal"
                             />
-                        <TextView
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:text="Worker"
-                            android:textStyle="bold"
-                            android:textColor="@android:color/white"
-                            android:padding="12sp"
-                            android:textSize="16sp"
-                            android:layout_weight="4"
-                            android:gravity="center_horizontal"
-                            />
 
                     </TableRow>
 
                     <TableRow
                         android:background="@color/white"
                         android:id="@+id/table_row">
+
+                        <TextView
+                            android:background="@drawable/table_cell"
+                            android:textStyle="bold"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:text="Marko"
+                            android:textColor="@android:color/black"
+                            android:padding="12sp"
+                            android:textSize="12sp"
+                            android:layout_weight="4"
+                            android:gravity="center_horizontal"
+                            />
 
                         <TextView
                             android:background="@drawable/table_cell"
@@ -591,17 +605,6 @@
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:text="20.01.2024"
-                            android:textColor="@android:color/black"
-                            android:padding="12sp"
-                            android:textSize="12sp"
-                            android:layout_weight="4"
-                            android:gravity="center_horizontal"
-                            />
-                        <TextView
-                            android:background="@drawable/table_cell"
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:text="Marko"
                             android:textColor="@android:color/black"
                             android:padding="12sp"
                             android:textSize="12sp"
@@ -618,6 +621,19 @@
                             android:background="@drawable/table_cell"
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
+                            android:text="Marko"
+                            android:textStyle="bold"
+                            android:textColor="@android:color/black"
+                            android:padding="12sp"
+                            android:textSize="12sp"
+                            android:layout_weight="4"
+                            android:gravity="center_horizontal"
+                            />
+
+                        <TextView
+                            android:background="@drawable/table_cell"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
                             android:text="01.01.2024"
                             android:textColor="@android:color/black"
                             android:padding="12sp"
@@ -631,17 +647,6 @@
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:text="20.01.2024"
-                            android:textColor="@android:color/black"
-                            android:padding="12sp"
-                            android:textSize="12sp"
-                            android:layout_weight="4"
-                            android:gravity="center_horizontal"
-                            />
-                        <TextView
-                            android:background="@drawable/table_cell"
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:text="Marko"
                             android:textColor="@android:color/black"
                             android:padding="12sp"
                             android:textSize="12sp"
