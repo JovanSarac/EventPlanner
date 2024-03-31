@@ -39,5 +39,10 @@ public class OwnerDashboard extends AppCompatActivity {
             startActivity(intent);
         });
 
+        binding.card.setOnClickListener(v->{
+            Intent intent = new Intent(OwnerDashboard.this, WorkerDashboardActivity.class);
+            startActivity(intent);
+        });
+
     }
 }

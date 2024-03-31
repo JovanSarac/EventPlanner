@@ -12,4 +12,6 @@
     <color name="light_success">#DCFFEE</color>
     <color name="success">#00B45D</color>
     <color name="purple_lighter">#E4D5FF</color>
+
+    <color name="transparent">#00000000</color>
 </resources>

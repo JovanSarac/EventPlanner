@@ -119,21 +119,52 @@
                 android:textSize="22sp"
                 android:textStyle="normal"
                 android:textColor="@color/black"
-                android:layout_weight="1">
+                android:layout_weight="1"
+                android:layout_marginBottom="8dp">
             </TextView>
 
 
             <HorizontalScrollView
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:paddingTop="4dp"
+                android:scrollbarAlwaysDrawHorizontalTrack="false"
+                android:fadeScrollbars="false">
 
-                <LinearLayout
+                <RadioGroup
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:paddingBottom="12dp">
 
-                    
+                    <RadioButton
+                        android:background="@drawable/custom_radio_btn_selector"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:button="@color/transparent"
+                        android:textAlignment="center"
+                        android:text="01.01.2024 - 20.01.2024."
+                        android:layout_marginRight="18sp"/>
 
-                </LinearLayout>
+                    <RadioButton
+                        android:background="@drawable/custom_radio_btn_selector"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:button="@color/transparent"
+                        android:textAlignment="center"
+                        android:text="01.01.2024 - 20.01.2024."
+                        android:layout_marginRight="18sp"/>
+
+                    <RadioButton
+                        android:background="@drawable/custom_radio_btn_selector"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:button="@color/transparent"
+                        android:textAlignment="center"
+                        android:text="01.01.2024 - 20.01.2024."
+                        android:layout_marginRight="18sp"/>
+
+                </RadioGroup>
 
             </HorizontalScrollView>
 
