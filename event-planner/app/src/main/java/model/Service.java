@@ -1,8 +1,11 @@
 package model;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import java.util.ArrayList;
 
-public class Service {
+public class Service implements Parcelable {
 
     private Long id;
     private String category;
@@ -117,6 +120,147 @@ public class Service {
         this.automaticAffirmation = automaticAffirmation;
         this.available = available;
         this.visible = visible;
+    }
+
+    protected Service(Parcel in) {
+        if (in.readByte() == 0) {
+            id = null;
+        } else {
+            id = in.readLong();
+        }
+        category = in.readString();
+        subcategory = in.readString();
+        name = in.readString();
+        description = in.readString();
+        if (in.readByte() == 0) {
+            imageId = null;
+        } else {
+            imageId = in.readInt();
+        }
+        specific = in.readString();
+        if (in.readByte() == 0) {
+            pricePerHour = null;
+        } else {
+            pricePerHour = in.readDouble();
+        }
+        if (in.readByte() == 0) {
+            fullPrice = null;
+        } else {
+            fullPrice = in.readDouble();
+        }
+        if (in.readByte() == 0) {
+            duration = null;
+        } else {
+            duration = in.readDouble();
+        }
+        if (in.readByte() == 0) {
+            durationMin = null;
+        } else {
+            durationMin = in.readDouble();
+        }
+        if (in.readByte() == 0) {
+            durationMax = null;
+        } else {
+            durationMax = in.readDouble();
+        }
+        location = in.readString();
+        if (in.readByte() == 0) {
+            discount = null;
+        } else {
+            discount = in.readDouble();
+        }
+        providers = in.createStringArrayList();
+        events = in.createStringArrayList();
+        reservationDue = in.readString();
+        cancelationDue = in.readString();
+        byte tmpAutomaticAffirmation = in.readByte();
+        automaticAffirmation = tmpAutomaticAffirmation == 0 ? null : tmpAutomaticAffirmation == 1;
+        byte tmpAvailable = in.readByte();
+        available = tmpAvailable == 0 ? null : tmpAvailable == 1;
+        byte tmpVisible = in.readByte();
+        visible = tmpVisible == 0 ? null : tmpVisible == 1;
+    }
+
+    public static final Creator<Service> CREATOR = new Creator<Service>() {
+        @Override
+        public Service createFromParcel(Parcel in) {
+            return new Service(in);
+        }
+
+        @Override
+        public Service[] newArray(int size) {
+            return new Service[size];
+        }
+    };
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        if (id == null) {
+            dest.writeByte((byte) 0);
+        } else {
+            dest.writeByte((byte) 1);
+            dest.writeLong(id);
+        }
+        dest.writeString(category);
+        dest.writeString(subcategory);
+        dest.writeString(name);
+        dest.writeString(description);
+        if (imageId == null) {
+            dest.writeByte((byte) 0);
+        } else {
+            dest.writeByte((byte) 1);
+            dest.writeInt(imageId);
+        }
+        dest.writeString(specific);
+        if (pricePerHour == null) {
+            dest.writeByte((byte) 0);
+        } else {
+            dest.writeByte((byte) 1);
+            dest.writeDouble(pricePerHour);
+        }
+        if (fullPrice == null) {
+            dest.writeByte((byte) 0);
+        } else {
+            dest.writeByte((byte) 1);
+            dest.writeDouble(fullPrice);
+        }
+        if (duration == null) {
+            dest.writeByte((byte) 0);
+        } else {
+            dest.writeByte((byte) 1);
+            dest.writeDouble(duration);
+        }
+        if (durationMin == null) {
+            dest.writeByte((byte) 0);
+        } else {
+            dest.writeByte((byte) 1);
+            dest.writeDouble(durationMin);
+        }
+        if (durationMax == null) {
+            dest.writeByte((byte) 0);
+        } else {
+            dest.writeByte((byte) 1);
+            dest.writeDouble(durationMax);
+        }
+        dest.writeString(location);
+        if (discount == null) {
+            dest.writeByte((byte) 0);
+        } else {
+            dest.writeByte((byte) 1);
+            dest.writeDouble(discount);
+        }
+        dest.writeStringList(providers);
+        dest.writeStringList(events);
+        dest.writeString(reservationDue);
+        dest.writeString(cancelationDue);
+        dest.writeByte((byte) (automaticAffirmation == null ? 0 : automaticAffirmation ? 1 : 2));
+        dest.writeByte((byte) (available == null ? 0 : available ? 1 : 2));
+        dest.writeByte((byte) (visible == null ? 0 : visible ? 1 : 2));
     }
 
     public Long getId() {

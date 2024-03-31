@@ -48,7 +48,7 @@ public class PackageProductListAdapter extends ArrayAdapter<Product> {
         Product product = getItem(position);
 
         if(convertView == null){
-            convertView = LayoutInflater.from(getContext()).inflate(R.layout.product_card, parent, false);
+            convertView = LayoutInflater.from(getContext()).inflate(R.layout.product_card_package, parent, false);
         }
 
         ImageView productImage = convertView.findViewById(R.id.product_image);

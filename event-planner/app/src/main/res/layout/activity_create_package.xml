@@ -226,6 +226,10 @@
             android:id="@+id/product_list"
             android:layout_width="match_parent"
             android:layout_height="150dp"
+            android:scrollbars="none"
+            android:overScrollMode="never"
+            android:nestedScrollingEnabled="true"
+            android:scrollbarStyle="insideOverlay"
             tools:listitem="@layout/product_card"/>
 
 
@@ -262,6 +266,10 @@
             android:id="@+id/service_list"
             android:layout_width="match_parent"
             android:layout_height="150dp"
+            android:scrollbars="none"
+            android:overScrollMode="never"
+            android:nestedScrollingEnabled="true"
+            android:scrollbarStyle="insideOverlay"
             tools:listitem="@layout/service_card"/>
 
 

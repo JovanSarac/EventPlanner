@@ -22,7 +22,7 @@ public class PackageServiceListAdapter extends ArrayAdapter<Service> {
     private ArrayList<Service> services;
 
     public PackageServiceListAdapter(Context context, ArrayList<Service> services){
-        super(context, R.layout.service_card, services);
+        super(context, R.layout.service_card_package, services);
         this.services = services;
     }
 
@@ -48,7 +48,7 @@ public class PackageServiceListAdapter extends ArrayAdapter<Service> {
         Service service = getItem(position);
 
         if(convertView == null){
-            convertView = LayoutInflater.from(getContext()).inflate(R.layout.service_card, parent, false);
+            convertView = LayoutInflater.from(getContext()).inflate(R.layout.service_card_package, parent, false);
         }
 
         ImageView productImage = convertView.findViewById(R.id.image);

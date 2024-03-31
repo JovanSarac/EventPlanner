@@ -43,7 +43,7 @@ public class EditPackageActivity extends AppCompatActivity {
         String packageDescription = getIntent().getStringExtra("Description");
         Double packagePrice = getIntent().getDoubleExtra("Price", 0);
         Double packageDiscount = getIntent().getDoubleExtra("Discount", 0);
-        Integer packageImageId = getIntent().getIntExtra("ImageTypes", -1);
+        ArrayList<Integer> packageImages = getIntent().getIntegerArrayListExtra("ImageTypes");
         ArrayList<Product> packageProducts = (ArrayList<Product>) getIntent().getSerializableExtra("Products");
         ArrayList<Service> packageServices = (ArrayList<Service>) getIntent().getSerializableExtra("Services");
         ArrayList<String> packageEvents = getIntent().getStringArrayListExtra("Events");
@@ -82,7 +82,7 @@ public class EditPackageActivity extends AppCompatActivity {
         discountAutoComplete.setText(packageDiscount.toString());
 
         ImageView imageView = findViewById(R.id.carousel_image_view);
-        imageView.setImageResource(packageImageId);
+        imageView.setImageResource(packageImages.get(0));
 
         EventListAdapter eventListAdapter = new EventListAdapter(this, packageEvents);
         binding.events.setAdapter(eventListAdapter);
