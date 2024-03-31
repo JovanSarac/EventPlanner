@@ -2,6 +2,7 @@ package com.example.eventplanner.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
@@ -14,6 +15,8 @@ import com.example.eventplanner.databinding.ActivityHomeBinding;
 import com.example.eventplanner.databinding.ActivityOwnerDashboardBinding;
 
 public class OwnerDashboard extends AppCompatActivity {
+
+    private boolean showSearchInput = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,6 +45,11 @@ public class OwnerDashboard extends AppCompatActivity {
         binding.card.setOnClickListener(v->{
             Intent intent = new Intent(OwnerDashboard.this, WorkerDashboardActivity.class);
             startActivity(intent);
+        });
+
+        binding.searchBtn.setOnClickListener(v->{
+            showSearchInput = !showSearchInput;
+            binding.searchInput.setVisibility(showSearchInput ? View.VISIBLE : View.GONE);
         });
 
     }

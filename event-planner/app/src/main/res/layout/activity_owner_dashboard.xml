@@ -47,6 +47,7 @@
                 </TextView>
 
                 <ImageButton
+                    android:id="@+id/search_btn"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:padding="12dp"
@@ -55,6 +56,21 @@
                     android:background="@drawable/search_button"/>
 
             </LinearLayout>
+
+            <EditText
+                android:visibility="gone"
+                android:id="@+id/search_input"
+                android:inputType="text"
+                android:lines="1"
+                android:drawablePadding="8dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/custom_input"
+                android:hint="Search by full name or address"
+                android:paddingHorizontal="12dp"
+                android:paddingVertical="12dp"
+                android:layout_marginHorizontal="12dp"
+                android:layout_marginTop="16dp"/>
 
             <LinearLayout
                 android:layout_width="match_parent"
