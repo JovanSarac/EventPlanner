@@ -7,8 +7,11 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 
 import com.example.eventplanner.R;
+import com.example.eventplanner.activities.fragments.WorkerWeeklyScheduleFragment;
 
 public class WorkerDashboardActivity extends AppCompatActivity {
 
@@ -22,5 +25,13 @@ public class WorkerDashboardActivity extends AppCompatActivity {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
+
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+
+        WorkerWeeklyScheduleFragment fragment = new WorkerWeeklyScheduleFragment();
+        fragmentTransaction.add(R.id.weekly_schedule_fragment, fragment);
+        fragmentTransaction.commit();
+
     }
 }
