@@ -2,6 +2,9 @@
     <string name="app_name">Event Planner</string>
     <string name="home_page">Home Page</string>
     <string name="search_hint">Search</string>
+    <string name="search_products">Search products</string>
+    <string name="search_services">Search services</string>
+    <string name="description_filtration">Filtrate description</string>
     <string name="min_price">min</string>
     <string name="max_price">max</string>
     <string name="products">Products</string>
@@ -36,4 +39,7 @@
     <string name="edit_service">Edit service</string>
     <string name="duration_min">Duration min</string>
     <string name="duration_max">Duration max</string>
+    <string name="packages">Packages</string>
+    <string name="create_package">Create package</string>
+    <string name="edit_package">Edit package</string>
 </resources>

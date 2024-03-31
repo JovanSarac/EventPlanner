@@ -3,7 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ServiceListPupzFragment">
+    tools:context=".ServiceListPupvFragment">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -18,19 +18,27 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/services"
+                android:text="@string/packages"
                 android:textStyle="bold"
                 android:textSize="20sp"
                 android:layout_marginStart="10dp"
                 android:layout_marginTop="5dp"/>
 
+            <Button
+                android:id="@+id/add_package"
+                android:layout_width="25dp"
+                android:layout_height="25dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginLeft="5dp"
+                android:background="@drawable/ic_add"/>
+
         </LinearLayout>
 
         <ListView
-            android:id="@+id/service_list_pupz"
+            android:id="@+id/package_list_pupv"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            tools:listitem="@layout/service_card"
+            tools:listitem="@layout/package_card_pupv"
             android:paddingRight="10dp"
             android:scrollbars="none"
             android:overScrollMode="never"

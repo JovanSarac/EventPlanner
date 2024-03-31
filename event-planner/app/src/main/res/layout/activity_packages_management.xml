@@ -5,22 +5,19 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ProductsManegementActivity"
+    tools:context=".PackagesManagementActivity"
     android:scrollbarStyle="outsideOverlay">
-
 
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_margin="10dp"
         android:orientation="vertical">
 
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/textField"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="5dp"
-            android:layout_marginLeft="10dp"
-            android:layout_marginRight="10dp"
             android:hint="@string/search_hint"
             app:startIconDrawable="@drawable/ic_search"
             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
@@ -36,38 +33,64 @@
 
         </com.google.android.material.textfield.TextInputLayout>
 
-        <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/description_filtration"
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="5dp"
-            android:layout_marginLeft="10dp"
-            android:layout_marginRight="10dp"
-            android:hint="@string/description_filtration"
-            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+            android:weightSum="2"
+            android:orientation="horizontal">
 
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/descriptionFiltrationEditText"
-                android:layout_width="match_parent"
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/products_search"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:lines="1"
-                android:imeOptions="actionSearch"
-                android:singleLine="true"
-                />
+                android:layout_weight="1"
+                android:hint="@string/search_products"
+                android:layout_marginRight="5dp"
+                app:startIconDrawable="@drawable/ic_search"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
 
-        </com.google.android.material.textfield.TextInputLayout>
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/productsSearchEditText"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:lines="1"
+                    android:imeOptions="actionSearch"
+                    android:singleLine="true"
+                    />
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/services_search"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:hint="@string/search_services"
+                android:layout_marginLeft="5dp"
+                app:startIconDrawable="@drawable/ic_search"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/servicesSearchEditText"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:lines="1"
+                    android:imeOptions="actionSearch"
+                    android:singleLine="true"
+                    />
+
+            </com.google.android.material.textfield.TextInputLayout>
+        </LinearLayout>
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:weightSum="2"
             android:orientation="horizontal"
-            android:layout_marginTop="5dp"
-            android:layout_marginStart="10dp"
-            android:layout_marginEnd="10dp">
+            android:layout_marginTop="5dp">
 
             <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/product_category_filter"
+                android:id="@+id/category_filter"
                 style="@style/Widget.Material3.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
@@ -83,7 +106,7 @@
             </com.google.android.material.textfield.TextInputLayout>
 
             <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/product_subcategory_filter"
+                android:id="@+id/subcategory_filter"
                 style="@style/Widget.Material3.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
@@ -106,8 +129,6 @@
             style="@style/Widget.Material3.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="10dp"
-            android:layout_marginEnd="10dp"
             android:layout_marginTop="5dp"
             android:hint="@string/events">
 
@@ -122,16 +143,15 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:weightSum="6"
+            android:weightSum="4"
+            android:layout_marginTop="5dp"
             android:orientation="horizontal">
 
             <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/product_minPrice"
+                android:id="@+id/min_price"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="5dp"
-                android:layout_marginLeft="10dp"
-                android:layout_marginRight="10dp"
+                android:layout_marginRight="5dp"
                 android:layout_weight="2"
                 android:hint="@string/min_price"
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
@@ -153,12 +173,10 @@
                 android:layout_marginTop="8dp"/>
 
             <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/product_maxPrice"
+                android:id="@+id/max_price"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="5dp"
-                android:layout_marginLeft="10dp"
-                android:layout_marginRight="10dp"
+                android:layout_marginLeft="5dp"
                 android:layout_weight="2"
                 android:hint="@string/max_price"
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
@@ -172,13 +190,6 @@
                     />
 
             </com.google.android.material.textfield.TextInputLayout>
-
-            <CheckBox
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="2"
-                android:layout_marginTop="2dp"
-                android:text="@string/available"/>
         </LinearLayout>
 
         <View
@@ -187,7 +198,7 @@
             android:background="@android:color/white" />
 
         <FrameLayout
-            android:id="@+id/product_list_framelayout"
+            android:id="@+id/package_list_framelayout"
             android:layout_width="match_parent"
             android:layout_height="500dp"
             android:layout_margin="5dp"/>

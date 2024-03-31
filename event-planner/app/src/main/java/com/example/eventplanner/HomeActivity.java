@@ -20,6 +20,8 @@ public class HomeActivity extends AppCompatActivity {
     private Button buttonProductsManagementPUPV;
     private Button buttonServicesManagementPUPZ;
     private Button buttonServicesManagementPUPV;
+    private Button buttonPackgesManagementPUPZ;
+    private Button buttonPackgesManagementPUPV;
 
 
     @Override
@@ -37,6 +39,8 @@ public class HomeActivity extends AppCompatActivity {
         buttonProductsManagementPUPV = findViewById(R.id.productsManagmentPUPV);
         buttonServicesManagementPUPZ = findViewById(R.id.serviceManagmentPUPZ);
         buttonServicesManagementPUPV = findViewById(R.id.serviceManagmentPUPV);
+        buttonPackgesManagementPUPZ = findViewById(R.id.packageManagmentPUPZ);
+        buttonPackgesManagementPUPV = findViewById(R.id.packageManagmentPUPV);
 
         buttonProductsManagementPUPV.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -73,6 +77,26 @@ public class HomeActivity extends AppCompatActivity {
             public void onClick(View v) {
                 Intent intent = new Intent(HomeActivity.this, ServicesManagementActivity.class);
                 intent.putExtra("used_fragment", "service_list_pupv");
+                startActivity(intent);
+                finish();
+            }
+        });
+
+        buttonPackgesManagementPUPZ.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(HomeActivity.this, PackagesManagementActivity.class);
+                intent.putExtra("used_fragment", "package_list_pupz");
+                startActivity(intent);
+                finish();
+            }
+        });
+
+        buttonPackgesManagementPUPV.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(HomeActivity.this, PackagesManagementActivity.class);
+                intent.putExtra("used_fragment", "package_list_pupv");
                 startActivity(intent);
                 finish();
             }

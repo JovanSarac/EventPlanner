@@ -18,7 +18,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/services"
+                android:text="@string/packages"
                 android:textStyle="bold"
                 android:textSize="20sp"
                 android:layout_marginStart="10dp"
@@ -27,10 +27,10 @@
         </LinearLayout>
 
         <ListView
-            android:id="@+id/service_list_pupz"
+            android:id="@+id/package_list_pupv"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            tools:listitem="@layout/service_card"
+            tools:listitem="@layout/package_card_pupv"
             android:paddingRight="10dp"
             android:scrollbars="none"
             android:overScrollMode="never"

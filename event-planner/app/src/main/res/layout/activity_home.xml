@@ -50,6 +50,20 @@
         android:layout_height="wrap_content"
         android:text="serviceManagmentPUPV"
         android:textSize="20sp"/>
+
+    <Button
+        android:id="@+id/packageManagmentPUPZ"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="packageManagmentPUPZ"
+        android:textSize="20sp"/>
+
+    <Button
+        android:id="@+id/packageManagmentPUPV"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="packageManagmentPUPV"
+        android:textSize="20sp"/>
     </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
