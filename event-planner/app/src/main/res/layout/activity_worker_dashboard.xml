@@ -114,7 +114,7 @@
                 android:layout_marginTop="16sp"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Your schedules"
+                android:text="Schedule date span"
                 android:fontFamily="sans-serif"
                 android:textSize="22sp"
                 android:textStyle="normal"
@@ -167,7 +167,6 @@
                 </RadioGroup>
 
             </HorizontalScrollView>
-
 
         </LinearLayout>
     </ScrollView>
