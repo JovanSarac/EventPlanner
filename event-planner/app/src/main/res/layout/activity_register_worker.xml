@@ -49,6 +49,8 @@
                         android:paddingBottom="4dp"/>
 
                     <EditText
+                        android:inputType="text"
+                        android:lines="1"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:background="@drawable/custom_input"
@@ -74,6 +76,8 @@
                         android:paddingBottom="4dp"/>
 
                     <EditText
+                        android:inputType="text"
+                        android:lines="1"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:background="@drawable/custom_input"
@@ -101,6 +105,8 @@
                     android:paddingBottom="4dp"/>
 
                 <EditText
+                    android:inputType="text"
+                    android:lines="1"
                     android:drawableStart="@drawable/email"
                     android:drawablePadding="8dp"
                     android:layout_width="match_parent"
@@ -128,6 +134,8 @@
                     android:paddingBottom="4dp"/>
 
                 <EditText
+                    android:inputType="textPassword"
+                    android:lines="1"
                     android:drawableStart="@drawable/password"
                     android:drawablePadding="8dp"
                     android:layout_width="match_parent"
@@ -155,6 +163,8 @@
                     android:paddingBottom="4dp"/>
 
                 <EditText
+                    android:inputType="textPassword"
+                    android:lines="1"
                     android:drawableStart="@drawable/password"
                     android:drawablePadding="8dp"
                     android:layout_width="match_parent"
@@ -182,6 +192,8 @@
                     android:paddingBottom="4dp"/>
 
                 <EditText
+                    android:inputType="number"
+                    android:lines="1"
                     android:drawableStart="@drawable/phone"
                     android:drawablePadding="8dp"
                     android:layout_width="match_parent"
@@ -209,6 +221,7 @@
                     android:paddingBottom="4dp"/>
 
                 <EditText
+                    android:lines="1"
                     android:drawableStart="@drawable/location"
                     android:drawablePadding="8dp"
                     android:layout_width="match_parent"
