@@ -50,6 +50,11 @@ public class AddWorkerScheduleActivity extends AppCompatActivity {
             Intent intent = new Intent(this, OwnerDashboard.class);
             startActivity(intent);
         });
+
+        binding.backBtn.setOnClickListener(v->{
+            Intent intent = new Intent(this, RegisterWorkerActivity.class);
+            startActivity(intent);
+        });
     }
 
 }

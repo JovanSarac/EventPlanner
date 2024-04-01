@@ -18,13 +18,31 @@
             android:padding="24dp"
             android:layout_weight="1">
 
-            <TextView
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Make Schedule"
-                android:textSize="28sp"
-                android:textColor="@color/purple_dark"
-                android:textStyle="bold"/>
+                android:gravity="center"
+                android:layout_marginBottom="8dp">
+
+                <ImageButton
+                    android:id="@+id/back_btn"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:padding="10dp"
+                    android:layout_marginRight="12dp"
+                    android:src="@drawable/back_arrow_24"
+                    android:scaleType="centerInside"
+                    android:background="@drawable/back_btn"/>
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Make Schedule"
+                    android:textSize="28sp"
+                    android:textColor="@color/purple_dark"
+                    android:textStyle="bold"/>
+
+            </LinearLayout>
 
             <LinearLayout
                 android:layout_width="match_parent"
