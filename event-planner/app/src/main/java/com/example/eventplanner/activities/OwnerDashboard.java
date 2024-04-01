@@ -52,5 +52,10 @@ public class OwnerDashboard extends AppCompatActivity {
             binding.searchInput.setVisibility(showSearchInput ? View.VISIBLE : View.GONE);
         });
 
+        binding.backBtn.setOnClickListener(v->{
+            Intent intent = new Intent(OwnerDashboard.this, HomeActivity.class);
+            startActivity(intent);
+        });
+
     }
 }
