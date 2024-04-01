@@ -2,6 +2,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
 
+    <uses-permission android:name="android.permission.READ_MEDIA_IMAGES" />
+
     <application
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
@@ -22,13 +24,67 @@
             android:name=".activities.CreateEventODActivity"
             android:exported="false" />
         <activity
-            android:name=".activities.ProductsManegementActivity"
+            android:name=".activities.PUPV_RegisterCategoryActivity"
+            android:exported="false" />
+        <activity
+            android:name=".activities.SuggestedSubcategoriesActivity"
+            android:exported="false" />
+        <activity
+            android:name=".activities.AddEventTypesActivity"
+            android:exported="false" />
+        <activity
+            android:name=".activities.EventTypesActivity"
+            android:exported="false" />
+        <activity
+            android:name=".activities.AddSubcategoryActivity"
+            android:exported="false" />
+        <activity
+            android:name=".activities.EditCategoryActivity"
+            android:exported="false" />
+        <activity
+            android:name=".activities.CategoryActivity"
+            android:exported="false" />
+        <activity
+            android:name=".activities.LoginActivity"
+            android:exported="false" />
+        <activity
+            android:name=".activities.OD_RegisterActivity"
             android:exported="false" />
         <activity
             android:name=".activities.HomeActivity"
+            android:exported="false"/>
+        <activity
+            android:name=".activities.EditPackageActivity"
             android:exported="false" />
         <activity
-            android:name=".activities.SplashActivity"
+            android:name=".activities.CreatePackageActivity"
+            android:exported="false" />
+        <activity
+            android:name=".PackageListPupvFragment"
+            android:exported="false" />
+        <activity
+            android:name=".activities.PackagesManagementActivity"
+            android:exported="false" />
+        <activity
+            android:name=".activities.EditServiceActivity"
+            android:exported="false" />
+        <activity
+            android:name=".activities.CreateServiceActivity"
+            android:exported="false" />
+        <activity
+            android:name=".activities.ServicesManagementActivity"
+            android:exported="false" />
+        <activity
+            android:name=".activities.EditProductActivity"
+            android:exported="false" />
+        <activity
+            android:name=".activities.CreateProductActivity"
+            android:exported="false" />
+        <activity
+            android:name=".activities.ProductsManegementActivity"
+            android:exported="false" />
+        <activity
+            android:name=".SplashActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

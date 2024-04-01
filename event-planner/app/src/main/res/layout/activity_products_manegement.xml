@@ -1,11 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".activities.ProductsManegementActivity">
+    tools:context=".activities.ProductsManegementActivity"
+    android:scrollbarStyle="outsideOverlay">
+
 
     <LinearLayout
         android:layout_width="wrap_content"
@@ -16,7 +18,9 @@
             android:id="@+id/textField"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="10dp"
+            android:layout_marginTop="5dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
             android:hint="@string/search_hint"
             app:startIconDrawable="@drawable/ic_search"
             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
@@ -32,36 +36,88 @@
 
         </com.google.android.material.textfield.TextInputLayout>
 
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/description_filtration"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:hint="@string/description_filtration"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/descriptionFiltrationEditText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:lines="1"
+                android:imeOptions="actionSearch"
+                android:singleLine="true"
+                />
+
+        </com.google.android.material.textfield.TextInputLayout>
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:weightSum="2"
-            android:orientation="horizontal">
+            android:orientation="horizontal"
+            android:layout_marginTop="5dp"
+            android:layout_marginStart="10dp"
+            android:layout_marginEnd="10dp">
 
-            <Spinner
+            <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/product_category_filter"
+                style="@style/Widget.Material3.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="10dp"
                 android:layout_weight="1"
-                android:spinnerMode="dropdown"/>
+                android:hint="Categories">
 
-            <Spinner
+                <AutoCompleteTextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="none"
+                    />
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/product_subcategory_filter"
+                style="@style/Widget.Material3.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="10dp"
                 android:layout_weight="1"
-                android:spinnerMode="dropdown"/>
+                android:hint="Subategories">
+
+                <AutoCompleteTextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="none"
+                    />
+
+            </com.google.android.material.textfield.TextInputLayout>
 
         </LinearLayout>
 
-        <Spinner
+        <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/event_type_filter"
+            style="@style/Widget.Material3.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="10dp"
-            android:spinnerMode="dropdown"/>
+            android:layout_marginEnd="10dp"
+            android:layout_marginTop="5dp"
+            android:hint="@string/events">
+
+            <AutoCompleteTextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="none"
+                />
+
+        </com.google.android.material.textfield.TextInputLayout>
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -73,7 +129,9 @@
                 android:id="@+id/product_minPrice"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_margin="10dp"
+                android:layout_marginTop="5dp"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
                 android:layout_weight="2"
                 android:hint="@string/min_price"
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
@@ -98,7 +156,9 @@
                 android:id="@+id/product_maxPrice"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_margin="10dp"
+                android:layout_marginTop="5dp"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
                 android:layout_weight="2"
                 android:hint="@string/max_price"
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
@@ -117,24 +177,26 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="2"
-                android:layout_marginTop="8dp"
-                android:text="Available"/>
+                android:layout_marginTop="2dp"
+                android:text="@string/available"/>
         </LinearLayout>
+
         <View
             android:layout_width="match_parent"
             android:layout_height="2dp"
             android:background="@android:color/white" />
-        <ListView
-            android:id="@+id/productsList"
+
+        <FrameLayout
+            android:id="@+id/product_list_framelayout"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_margin="10dp"
-            tools:listitem="@layout/product_card"
-            />
+            android:layout_height="500dp"
+            android:layout_margin="5dp"/>
+
         <View
             android:layout_width="match_parent"
             android:layout_height="2dp"
-            android:background="@android:color/white" />
+            android:background="@android:color/white"
+            android:layout_marginBottom="20dp"/>
     </LinearLayout>
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+</androidx.core.widget.NestedScrollView>

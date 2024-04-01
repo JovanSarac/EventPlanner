@@ -1,37 +1,30 @@
 package model;
 
 public class Category {
-    public Long id;
-    public String Name;
-    public String Description;
+    private String name;
+    private String description;
 
-    public Category(Long id, String name, String description) {
-        this.id = id;
-        Name = name;
-        Description = description;
+    public Category() {
     }
 
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
+    public Category(String name, String description) {
+        this.name = name;
+        this.description = description;
     }
 
     public String getName() {
-        return Name;
+        return name;
     }
 
     public void setName(String name) {
-        Name = name;
+        this.name = name;
     }
 
     public String getDescription() {
-        return Description;
+        return description;
     }
 
     public void setDescription(String description) {
-        Description = description;
+        this.description = description;
     }
 }

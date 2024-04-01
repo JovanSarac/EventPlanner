@@ -1,75 +1,53 @@
 package adapters;
 
+
+import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
-import androidx.recyclerview.widget.RecyclerView;
-
+import androidx.annotation.Nullable;
 import com.example.eventplanner.R;
 
 import java.util.ArrayList;
 
-import model.Event;
+public class EventListAdapter  extends ArrayAdapter<String> {
+    private ArrayList<String> events;
 
-public class EventListAdapter  extends RecyclerView.Adapter<EventListAdapter.EventsViewHolder>{
-
-    private ArrayList<Event> events;
-
-    public EventListAdapter(ArrayList<Event> events){
+    public EventListAdapter(Context context, ArrayList<String> events){
+        super(context, R.layout.event_card, events);
         this.events = events;
+    }
+
+    @Override
+    public int getCount() {
+        return this.events.size();
+    }
+
+    @Nullable
+    @Override
+    public String getItem(int position) {
+        return this.events.get(position);
     }
 
     @NonNull
     @Override
-    public EventsViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.event_card, parent, false);
-        return new EventsViewHolder(view);
-    }
+    public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
+        String event = getItem(position);
 
-    @Override
-    public void onBindViewHolder(@NonNull EventsViewHolder holder, int position) {
-        Event event = events.get(position);
-        holder.bind(event);
-    }
-
-    @Override
-    public int getItemCount() {
-        return events.size();
-    }
-
-    public static class EventsViewHolder extends RecyclerView.ViewHolder {
-        TextView eventName;
-
-        TextView eventType;
-        TextView eventDescription;
-        TextView eventLocation;
-        TextView eventDistanceLocation;
-        TextView eventAvailable;
-        TextView eventDate;
-
-        public EventsViewHolder(@NonNull View itemView) {
-            super(itemView);
-            eventName = itemView.findViewById(R.id.nameEvent);
-            eventType = itemView.findViewById(R.id.typeEvent);
-            eventDescription = itemView.findViewById(R.id.descriptionEvent);
-            eventLocation = itemView.findViewById(R.id.locationEventShow);
-            eventDistanceLocation = itemView.findViewById(R.id.doo);
-            eventAvailable = itemView.findViewById(R.id.availableEvent);
-            eventDate = itemView.findViewById(R.id.dateEvent);
+        if(convertView == null){
+            convertView = LayoutInflater.from(getContext()).inflate(R.layout.event_card, parent, false);
         }
 
-        public void bind(Event event) {
-            eventName.setText(event.getName());
-            eventType.setText("(" + event.getTypeEvent() + ")");
-            eventDescription.setText(event.getDescription());
-            eventLocation.setText(event.getLocationPlace());
+        TextView eventName = convertView.findViewById(R.id.event_name);
 
-            eventDistanceLocation.setText(Integer.toString(event.getMaxDistance()));
-            eventAvailable.setText(event.isAvailble() ? "Da" : "Ne");
-            eventDate.setText(event.getDateEvent().toString());
+        if(event != null){
+            eventName.setText(event);
         }
+
+        return convertView;
     }
 }

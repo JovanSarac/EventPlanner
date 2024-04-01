@@ -28,7 +28,7 @@
                     android:layout_height="wrap_content"
                     android:textSize="15sp"
                     android:textStyle="bold"
-                    android:text="@string/category"
+                    android:text="@string/categoryy"
                     android:textColor="@color/white"/>
                 <TextView
                     android:id="@+id/nameCategory"
@@ -53,7 +53,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:textSize="12sp"
-                    android:text="@string/name"
+                    android:text="@string/namee"
                     android:textColor="@color/white"
                     android:layout_marginStart="28dp"/>
                 <TextView
@@ -78,7 +78,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:textSize="12sp"
-                    android:text="@string/description"
+                    android:text="@string/descriptionn"
                     android:textColor="@color/white"/>
                 <TextView
                     android:id="@+id/descriptionSubcategory"

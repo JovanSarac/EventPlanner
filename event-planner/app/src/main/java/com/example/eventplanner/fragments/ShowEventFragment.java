@@ -32,6 +32,7 @@ import java.util.Date;
 import java.util.Locale;
 
 import adapters.EventListAdapter;
+import adapters.EventRecyclerViewAdapter;
 import adapters.SubcategoryListAdapter;
 import model.Event;
 import model.Subcategory;
@@ -49,12 +50,12 @@ public class ShowEventFragment extends Fragment {
         binding = FragmentShowEventBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
 
-        RecyclerView recyclerView = binding.eventsList;
+        RecyclerView recyclerView = binding.eventsRecyclerView;
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getActivity());
         recyclerView.setLayoutManager(layoutManager);
 
         ArrayList<Event> events = createEvents();
-        EventListAdapter adapterEvents = new EventListAdapter(events);
+        EventRecyclerViewAdapter adapterEvents = new EventRecyclerViewAdapter(events);
         recyclerView.setAdapter(adapterEvents);
 
 

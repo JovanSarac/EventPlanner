@@ -2,6 +2,9 @@
     <string name="app_name">Event Planner</string>
     <string name="home_page">Home Page</string>
     <string name="search_hint">Search</string>
+    <string name="search_products">Search products</string>
+    <string name="search_services">Search services</string>
+    <string name="description_filtration">Filtrate description</string>
     <string name="min_price">min</string>
     <string name="max_price">max</string>
     <string name="select_event_type">Select an event type:</string>
@@ -15,11 +18,10 @@
     <string name="place_event">Place event:</string>
     <string name="distance_event">Maximal distance in km:</string>
     <string name="datepicker_event">Pick a date:</string>
-    <string name="create">Create</string>
     <string name="proposal_typeevent">Suggestions for product and service subcategories:</string>
-    <string name="category">Category:</string>
-    <string name="name">Name:</string>
-    <string name="description">Description:</string>
+    <string name="categoryy">Category:</string>
+    <string name="namee">Name:</string>
+    <string name="descriptionn">Description:</string>
     <string name="type">Type:</string>
     <string name="products">Products</string>
     <string name="services">Services</string>
@@ -28,7 +30,6 @@
     <string name="sort">Sort</string>
     <string name="searchbyname_hint">Search by name</string>
     <string name="searchbylocation_hint">Search by location</string>
-    <string name="available">Available:</string>
     <string name="yes">Yes</string>
     <string name="no">No</string>
     <string name="searchbunamepup_hint">Search by name PUP</string>
@@ -38,7 +39,47 @@
     <string name="menuitem1">Products, services and packages</string>
     <string name="navigation_drawer_open" translatable="false">Navigation Drawer Open</string>
     <string name="navigation_drawer_close" translatable="false">Navigation Drawer Close</string>
-    <!-- TODO: Remove or change this placeholder text -->
     <string name="doo">do</string>
     <string name="events">Events</string>
+    <string name="create_product">Create product</string>
+    <string name="categories">Categories</string>
+    <string name="subcategories">Subcategories</string>
+    <string name="name">Name</string>
+    <string name="description">Description</string>
+    <string name="price">Price</string>
+    <string name="discount">Discount</string>
+    <string name="dollar">$</string>
+    <string name="percent">%</string>
+    <string name="cancel">Cancel</string>
+    <string name="create">Create</string>
+    <string name="available">Available</string>
+    <string name="visible">Visible</string>
+    <string name="edit_product">Edit product</string>
+    <string name="category">Category</string>
+    <string name="delete">Delete</string>
+    <string name="providers">Providers</string>
+    <string name="create_service">Create service</string>
+    <string name="specific">Specific</string>
+    <string name="pricePerHour">Price per hour</string>
+    <string name="duration">Duration</string>
+    <string name="h">h</string>
+    <string name="location">Location</string>
+    <string name="reservation_due">Reservation due</string>
+    <string name="cancelation_due">Cancelation due</string>
+    <string name="automatic_affirmation">Automatic affirmation</string>
+    <string name="edit_service">Edit service</string>
+    <string name="duration_min">Duration min</string>
+    <string name="duration_max">Duration max</string>
+    <string name="create_package">Create package</string>
+    <string name="edit_package">Edit package</string>
+    <string name="register">Register</string>
+    <string name="add_image_optional">Add Image (optional)</string>
+    <string name="first_name">First Name</string>
+    <string name="last_name">Last Name</string>
+    <string name="e_mail">E-mail</string>
+    <string name="password">Password</string>
+    <string name="confirm_password">Confirm Password</string>
+    <string name="phone_number">Phone Number</string>
+    <string name="address">Address</string>
+    <string name="event_organizer_registration">Event organizer registration</string>
 </resources>

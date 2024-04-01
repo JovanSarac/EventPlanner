@@ -1,9 +1,12 @@
 package model;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import java.util.ArrayList;
 import java.util.UUID;
 
-public class Product {
+public class Product implements Parcelable {
     private Long id;
     private String category;
     private String subcategory;
@@ -44,6 +47,90 @@ public class Product {
         this.events = events;
         this.available = available;
         this.visible = visible;
+    }
+
+    protected Product(Parcel in) {
+        if (in.readByte() == 0) {
+            id = null;
+        } else {
+            id = in.readLong();
+        }
+        category = in.readString();
+        subcategory = in.readString();
+        name = in.readString();
+        description = in.readString();
+        if (in.readByte() == 0) {
+            price = null;
+        } else {
+            price = in.readDouble();
+        }
+        if (in.readByte() == 0) {
+            discount = null;
+        } else {
+            discount = in.readDouble();
+        }
+        if (in.readByte() == 0) {
+            imageId = null;
+        } else {
+            imageId = in.readInt();
+        }
+        events = in.createStringArrayList();
+        byte tmpAvailable = in.readByte();
+        available = tmpAvailable == 0 ? null : tmpAvailable == 1;
+        byte tmpVisible = in.readByte();
+        visible = tmpVisible == 0 ? null : tmpVisible == 1;
+    }
+
+    public static final Creator<Product> CREATOR = new Creator<Product>() {
+        @Override
+        public Product createFromParcel(Parcel in) {
+            return new Product(in);
+        }
+
+        @Override
+        public Product[] newArray(int size) {
+            return new Product[size];
+        }
+    };
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        if (id == null) {
+            dest.writeByte((byte) 0);
+        } else {
+            dest.writeByte((byte) 1);
+            dest.writeLong(id);
+        }
+        dest.writeString(category);
+        dest.writeString(subcategory);
+        dest.writeString(name);
+        dest.writeString(description);
+        if (price == null) {
+            dest.writeByte((byte) 0);
+        } else {
+            dest.writeByte((byte) 1);
+            dest.writeDouble(price);
+        }
+        if (discount == null) {
+            dest.writeByte((byte) 0);
+        } else {
+            dest.writeByte((byte) 1);
+            dest.writeDouble(discount);
+        }
+        if (imageId == null) {
+            dest.writeByte((byte) 0);
+        } else {
+            dest.writeByte((byte) 1);
+            dest.writeInt(imageId);
+        }
+        dest.writeStringList(events);
+        dest.writeByte((byte) (available == null ? 0 : available ? 1 : 2));
+        dest.writeByte((byte) (visible == null ? 0 : visible ? 1 : 2));
     }
 
     public Long getId() {

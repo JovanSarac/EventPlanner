@@ -56,10 +56,11 @@ public class SubcategoryListAdapter extends RecyclerView.Adapter<SubcategoryList
         }
 
         public void bind(Subcategory subcategory) {
-            categoryName.setText(subcategory.getNameCategory());
+            categoryName.setText(subcategory.getCategoryName());
             nameSubcategory.setText(subcategory.getName());
             descriptionSubcategory.setText(subcategory.getDescription());
-            typeSubcategory.setText(subcategory.getTypeSubcategory());
+            typeSubcategory.setText(subcategory.getType() == 1 ? "Product" : "Service");
+
         }
     }
 }

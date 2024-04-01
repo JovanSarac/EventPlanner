@@ -12,6 +12,7 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
 import com.example.eventplanner.R;
+import com.example.eventplanner.databinding.ActivityHomeBinding;
 
 public class HomeActivity extends AppCompatActivity {
 
@@ -22,6 +23,11 @@ public class HomeActivity extends AppCompatActivity {
     private Button butonSearchAndFilter;
 
     private Button buttonHome;
+    private Button buttonServicesManagementPUPZ;
+    private Button buttonServicesManagementPUPV;
+    private Button buttonPackgesManagementPUPZ;
+    private Button buttonPackgesManagementPUPV;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,55 +40,75 @@ public class HomeActivity extends AppCompatActivity {
             return insets;
         });
 
+        ActivityHomeBinding binding= ActivityHomeBinding.inflate(getLayoutInflater());
+        setContentView(binding.getRoot());
+
         buttonProductsManagementPUPZ = findViewById(R.id.productsManagmentPUPZ);
         buttonProductsManagementPUPV = findViewById(R.id.productsManagmentPUPV);
-        buttonCreateEventOD = findViewById(R.id.createEventOD);
-        butonSearchAndFilter = findViewById((R.id.filterAndSearchpsp));
-        buttonHome = findViewById(R.id.homeact);
+        buttonServicesManagementPUPZ = findViewById(R.id.serviceManagmentPUPZ);
+        buttonServicesManagementPUPV = findViewById(R.id.serviceManagmentPUPV);
+        buttonPackgesManagementPUPZ = findViewById(R.id.packageManagmentPUPZ);
+        buttonPackgesManagementPUPV = findViewById(R.id.packageManagmentPUPV);
 
-        buttonProductsManagementPUPV.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(HomeActivity.this, ProductsManegementActivity.class);
-                startActivity(intent);
-                finish();
-            }
+        binding.productsManagmentPUPV.setOnClickListener(v ->{
+            Intent intent = new Intent(HomeActivity.this, ProductsManegementActivity.class);
+            intent.putExtra("used_fragment", "product_list_pupv");
+            startActivity(intent);
         });
 
-        buttonProductsManagementPUPZ.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(HomeActivity.this, ProductsManegementActivity.class);
-                startActivity(intent);
-                finish();
-            }
+        binding.productsManagmentPUPZ.setOnClickListener(v -> {
+            Intent intent = new Intent(HomeActivity.this, ProductsManegementActivity.class);
+            intent.putExtra("used_fragment", "product_list_pupz");
+            startActivity(intent);
         });
 
-        buttonCreateEventOD.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(HomeActivity.this, CreateEventODActivity.class);
-                startActivity(intent);
-                finish();
-            }
+        binding.serviceManagmentPUPZ.setOnClickListener(v -> {
+            Intent intent = new Intent(HomeActivity.this, ServicesManagementActivity.class);
+            intent.putExtra("used_fragment", "service_list_pupz");
+            startActivity(intent);
         });
 
-        butonSearchAndFilter.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(HomeActivity.this, SearchAndFilterActivity.class);
-                startActivity(intent);
-                finish();
-            }
+        binding.serviceManagmentPUPV.setOnClickListener(v -> {
+            Intent intent = new Intent(HomeActivity.this, ServicesManagementActivity.class);
+            intent.putExtra("used_fragment", "service_list_pupv");
+            startActivity(intent);
         });
 
-        buttonHome.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(HomeActivity.this, HomeTwoActivity.class);
-                startActivity(intent);
-                finish();
-            }
+        binding.packageManagmentPUPZ.setOnClickListener(v -> {
+            Intent intent = new Intent(HomeActivity.this, PackagesManagementActivity.class);
+            intent.putExtra("used_fragment", "package_list_pupz");
+            startActivity(intent);
+        });
+
+        binding.packageManagmentPUPV.setOnClickListener(v -> {
+            Intent intent = new Intent(HomeActivity.this, PackagesManagementActivity.class);
+            intent.putExtra("used_fragment", "package_list_pupv");
+            startActivity(intent);
+        });
+
+        binding.registerButton.setOnClickListener(v->{
+            Intent intent = new Intent(HomeActivity.this, OD_RegisterActivity.class);
+            startActivity(intent);
+        });
+
+        binding.loginButton.setOnClickListener(v->{
+            Intent intent = new Intent(HomeActivity.this, LoginActivity.class);
+            startActivity(intent);
+        });
+
+        binding.categoriesButton.setOnClickListener(v->{
+            Intent intent = new Intent(HomeActivity.this, CategoryActivity.class);
+            startActivity(intent);
+        });
+
+        binding.typesOfEventsButton.setOnClickListener(v->{
+            Intent intent = new Intent(HomeActivity.this, EventTypesActivity.class);
+            startActivity(intent);
+        });
+
+        binding.homeact.setOnClickListener(v->{
+            Intent intent = new Intent(HomeActivity.this,HomeTwoActivity.class);
+            startActivity(intent);
         });
     }
 }
