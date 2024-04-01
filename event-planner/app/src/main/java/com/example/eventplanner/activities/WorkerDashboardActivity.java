@@ -1,5 +1,6 @@
 package com.example.eventplanner.activities;
 
+import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.activity.EdgeToEdge;
@@ -12,6 +13,7 @@ import androidx.fragment.app.FragmentTransaction;
 
 import com.example.eventplanner.R;
 import com.example.eventplanner.activities.fragments.WorkerWeeklyScheduleFragment;
+import com.example.eventplanner.databinding.ActivityWorkerDashboardBinding;
 
 public class WorkerDashboardActivity extends AppCompatActivity {
 
@@ -26,12 +28,20 @@ public class WorkerDashboardActivity extends AppCompatActivity {
             return insets;
         });
 
+        ActivityWorkerDashboardBinding binding= ActivityWorkerDashboardBinding.inflate(getLayoutInflater());
+        setContentView(binding.getRoot());
+
         FragmentManager fragmentManager = getSupportFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
 
         WorkerWeeklyScheduleFragment fragment = new WorkerWeeklyScheduleFragment();
         fragmentTransaction.add(R.id.weekly_schedule_fragment, fragment);
         fragmentTransaction.commit();
+
+        binding.backBtn.setOnClickListener((v)->{
+            Intent intent = new Intent(this, OwnerDashboard.class);
+            startActivity(intent);
+        });
 
     }
 }
