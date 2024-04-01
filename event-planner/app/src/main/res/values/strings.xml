@@ -42,4 +42,14 @@
     <string name="packages">Packages</string>
     <string name="create_package">Create package</string>
     <string name="edit_package">Edit package</string>
+    <string name="register">Register</string>
+    <string name="add_image_optional">Add Image (optional)</string>
+    <string name="first_name">First Name</string>
+    <string name="last_name">Last Name</string>
+    <string name="e_mail">E-mail</string>
+    <string name="password">Password</string>
+    <string name="confirm_password">Confirm Password</string>
+    <string name="phone_number">Phone Number</string>
+    <string name="address">Address</string>
+    <string name="event_organizer_registration">Event organizer registration</string>
 </resources>

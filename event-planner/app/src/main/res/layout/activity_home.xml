@@ -6,19 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".HomeActivity">
-
-    <TextView
-        android:id="@+id/textView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/home_page"
-        android:textSize="30sp"
-        android:textColor="@color/purple_dark"
-        android:fontFamily="sans-serif-black"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+    tools:context=".activities.HomeActivity">
 <LinearLayout
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
@@ -64,6 +52,34 @@
         android:layout_height="wrap_content"
         android:text="packageManagmentPUPV"
         android:textSize="20sp"/>
-    </LinearLayout>
-
+ 
+    <Button
+        android:id="@+id/registerButton"
+        android:layout_width="300dp"
+        android:layout_height="50dp"
+        android:text="@string/register"
+        android:layout_gravity="center"
+        />
+    <Button
+        android:id="@+id/loginButton"
+        android:layout_width="300dp"
+        android:layout_height="50dp"
+        android:text="LogIn"
+        android:layout_gravity="center"
+        />
+    <Button
+        android:id="@+id/categoriesButton"
+        android:layout_width="300dp"
+        android:layout_height="50dp"
+        android:text="Categories"
+        android:layout_gravity="center"
+        />
+    <Button
+        android:id="@+id/typesOfEventsButton"
+        android:layout_width="300dp"
+        android:layout_height="50dp"
+        android:text="Event Types"
+        android:layout_gravity="center"
+        />
+</LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

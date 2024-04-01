@@ -2,6 +2,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
 
+    <uses-permission android:name="android.permission.READ_MEDIA_IMAGES" />
+
     <application
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
@@ -13,43 +15,64 @@
         android:theme="@style/Theme.EventPlanner"
         tools:targetApi="31">
         <activity
-            android:name=".EditPackageActivity"
+            android:name=".activities.PUPV_RegisterCategoryActivity"
             android:exported="false" />
         <activity
-            android:name=".CreatePackageActivity"
+            android:name=".activities.SuggestedSubcategoriesActivity"
+            android:exported="false" />
+        <activity
+            android:name=".activities.AddEventTypesActivity"
+            android:exported="false" />
+        <activity
+            android:name=".activities.EventTypesActivity"
+            android:exported="false" />
+        <activity
+            android:name=".activities.AddSubcategoryActivity"
+            android:exported="false" />
+        <activity
+            android:name=".activities.EditCategoryActivity"
+            android:exported="false" />
+        <activity
+            android:name=".activities.CategoryActivity"
+            android:exported="false" />
+        <activity
+            android:name=".activities.LoginActivity"
+            android:exported="false" />
+        <activity
+            android:name=".activities.OD_RegisterActivity"
+            android:exported="false" />
+        <activity
+            android:name=".activities.HomeActivity"
+            android:exported="false"/>
+        <activity
+            android:name=".activities.EditPackageActivity"
+            android:exported="false" />
+        <activity
+            android:name=".activities.CreatePackageActivity"
             android:exported="false" />
         <activity
             android:name=".PackageListPupvFragment"
             android:exported="false" />
         <activity
-            android:name=".PackagesManagementActivity"
+            android:name=".activities.PackagesManagementActivity"
             android:exported="false" />
         <activity
-            android:name=".EditServiceActivity"
+            android:name=".activities.EditServiceActivity"
             android:exported="false" />
         <activity
-            android:name=".CreateServiceActivity"
+            android:name=".activities.CreateServiceActivity"
             android:exported="false" />
         <activity
-            android:name=".ServicesManagementActivity"
+            android:name=".activities.ServicesManagementActivity"
             android:exported="false" />
         <activity
-            android:name=".ServicesManagmentActivity"
+            android:name=".activities.EditProductActivity"
             android:exported="false" />
         <activity
-            android:name=".EditProductActivity"
+            android:name=".activities.CreateProductActivity"
             android:exported="false" />
         <activity
-            android:name=".CreateProductActivity"
-            android:exported="false" />
-        <activity
-            android:name=".ProductsManegementActivity"
-            android:exported="false" />
-        <activity
-            android:name=".activities.ProductsManagmentActivity"
-            android:exported="false" />
-        <activity
-            android:name=".HomeActivity"
+            android:name=".activities.ProductsManegementActivity"
             android:exported="false" />
         <activity
             android:name=".SplashActivity"
