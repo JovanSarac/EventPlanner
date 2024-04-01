@@ -7,7 +7,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:layout_margin="10dp"
-    tools:context=".CreatePackageActivity"
+    tools:context=".activities.CreatePackageActivity"
     android:scrollbarStyle="outsideOverlay">
 
     <LinearLayout

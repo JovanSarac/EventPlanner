@@ -10,13 +10,12 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.example.eventplanner.databinding.FragmentPackageListPupvBinding;
+import com.example.eventplanner.activities.CreatePackageActivity;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 
 import adapters.PackageListPupvAdapter;
-import adapters.ServiceListPupvAdapter;
 import model.Package;
 import model.Product;
 import model.Service;

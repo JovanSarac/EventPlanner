@@ -1,15 +1,12 @@
-package com.example.eventplanner;
+package com.example.eventplanner.activities;
 
 import android.os.Bundle;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 
-import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
 
+import com.example.eventplanner.R;
 import com.google.android.material.textfield.TextInputLayout;
 
 import java.util.ArrayList;

@@ -1,8 +1,5 @@
 package adapters;
 
-import static android.content.Context.LAYOUT_INFLATER_SERVICE;
-import static androidx.core.content.ContextCompat.getSystemService;
-
 import android.content.Context;
 import android.content.Intent;
 import android.view.Gravity;
@@ -14,13 +11,11 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.PopupWindow;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import com.example.eventplanner.CreateProductActivity;
-import com.example.eventplanner.EditProductActivity;
+import com.example.eventplanner.activities.EditProductActivity;
 import com.example.eventplanner.R;
 
 import java.util.ArrayList;

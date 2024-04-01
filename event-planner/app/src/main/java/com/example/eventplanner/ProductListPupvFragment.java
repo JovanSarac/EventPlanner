@@ -10,8 +10,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.example.eventplanner.databinding.ActivityProductsManegementBinding;
-import com.example.eventplanner.databinding.FragmentProductListPupvBinding;
+import com.example.eventplanner.activities.CreateProductActivity;
 
 import java.util.ArrayList;
 import java.util.Arrays;

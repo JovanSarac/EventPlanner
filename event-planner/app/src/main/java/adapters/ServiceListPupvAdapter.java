@@ -15,15 +15,11 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import com.example.eventplanner.EditProductActivity;
-import com.example.eventplanner.EditServiceActivity;
+import com.example.eventplanner.activities.EditServiceActivity;
 import com.example.eventplanner.R;
-
-import org.w3c.dom.Text;
 
 import java.util.ArrayList;
 
-import model.Product;
 import model.Service;
 
 public class ServiceListPupvAdapter extends ArrayAdapter<Service> {

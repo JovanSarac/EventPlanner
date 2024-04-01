@@ -1,4 +1,4 @@
-package com.example.eventplanner;
+package com.example.eventplanner.activities;
 
 import android.os.Bundle;
 import android.widget.ArrayAdapter;
@@ -6,19 +6,13 @@ import android.widget.AutoCompleteTextView;
 import android.widget.CheckBox;
 import android.widget.ImageView;
 
-import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
 
-import com.example.eventplanner.databinding.ActivityCreatePackageBinding;
-import com.example.eventplanner.databinding.ActivityEditPackageBinding;
+import com.example.eventplanner.R;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 
 import adapters.EventListAdapter;
 import adapters.PackageProductListAdapter;

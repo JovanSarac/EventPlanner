@@ -10,15 +10,12 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.example.eventplanner.databinding.FragmentProductListPupzBinding;
-import com.example.eventplanner.databinding.FragmentServiceListPupvBinding;
+import com.example.eventplanner.activities.CreateServiceActivity;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 
-import adapters.ServiceListAdapter;
 import adapters.ServiceListPupvAdapter;
-import model.Product;
 import model.Service;
 
 public class ServiceListPupvFragment extends Fragment {
