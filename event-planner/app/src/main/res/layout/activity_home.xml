@@ -87,5 +87,17 @@
         android:text="Event Types"
         android:layout_gravity="center"
         />
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/owner_dashboard_btn"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Owner Dashboard"
+        android:textSize="16dp"
+        android:paddingVertical="12dp"
+        app:cornerRadius="10dp"
+        android:layout_marginHorizontal="24dp"
+        />
 </LinearLayout>
+
 </androidx.constraintlayout.widget.ConstraintLayout>

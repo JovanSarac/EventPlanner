@@ -110,5 +110,11 @@ public class HomeActivity extends AppCompatActivity {
             Intent intent = new Intent(HomeActivity.this,HomeTwoActivity.class);
             startActivity(intent);
         });
+        binding.ownerDashboardBtn.setOnClickListener(v->{
+            Intent intent = new Intent(HomeActivity.this, OwnerDashboard.class);
+            startActivity(intent);
+        });
+
+
     }
 }
