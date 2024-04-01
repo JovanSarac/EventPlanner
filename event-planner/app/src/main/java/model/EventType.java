@@ -1,4 +1,4 @@
-package com.example.eventplanner.models;
+package model;
 
 import java.util.List;
 

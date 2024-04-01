@@ -5,6 +5,8 @@ import android.os.Bundle;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.eventplanner.activities.HomeActivity;
+
 import java.util.Timer;
 import java.util.TimerTask;
 

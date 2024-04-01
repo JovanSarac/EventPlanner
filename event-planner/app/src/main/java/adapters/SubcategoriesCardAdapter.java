@@ -1,4 +1,4 @@
-package com.example.eventplanner.components;
+package adapters;
 
 import android.content.Context;
 import android.content.Intent;
@@ -7,15 +7,13 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.eventplanner.R;
 import com.example.eventplanner.activities.AddSubcategoryActivity;
-import com.example.eventplanner.activities.EditCategoryActivity;
-import com.example.eventplanner.models.Category;
-import com.example.eventplanner.models.Subcategory;
+
+import model.Subcategory;
 
 import java.util.List;
 

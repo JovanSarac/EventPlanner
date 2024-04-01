@@ -1,4 +1,4 @@
-package com.example.eventplanner.models;
+package model;
 
 public class Subcategory {
     private String categoryName;

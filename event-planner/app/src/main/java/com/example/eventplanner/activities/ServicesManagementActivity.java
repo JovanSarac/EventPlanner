@@ -9,6 +9,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.example.eventplanner.R;
 import com.example.eventplanner.ServiceListPupvFragment;
 import com.example.eventplanner.ServiceListPupzFragment;
+import com.example.eventplanner.databinding.ActivityServicesManagementBinding;
 import com.google.android.material.textfield.TextInputLayout;
 
 public class ServicesManagementActivity extends AppCompatActivity {

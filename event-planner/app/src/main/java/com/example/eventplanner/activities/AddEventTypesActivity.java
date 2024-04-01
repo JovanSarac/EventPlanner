@@ -12,7 +12,6 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
 import com.example.eventplanner.R;
-import com.example.eventplanner.models.Subcategory;
 import com.google.android.material.textfield.TextInputEditText;
 
 import java.util.Arrays;

@@ -11,6 +11,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.example.eventplanner.activities.CreateServiceActivity;
+import com.example.eventplanner.databinding.FragmentServiceListPupvBinding;
 
 import java.util.ArrayList;
 import java.util.Arrays;

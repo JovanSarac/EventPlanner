@@ -3,7 +3,6 @@ package com.example.eventplanner.activities;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.Toast;
@@ -15,15 +14,13 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
 import com.example.eventplanner.R;
-import com.example.eventplanner.components.EventTypesListAdapter;
-import com.example.eventplanner.models.EventType;
-import com.example.eventplanner.models.Subcategory;
+import adapters.EventTypesListAdapter;
+import model.EventType;
+import model.Subcategory;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class EventTypesActivity extends AppCompatActivity {
     private ListView listView;

@@ -2,15 +2,9 @@ package com.example.eventplanner.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
-import android.view.ViewGroup;
-import android.view.animation.Animation;
-import android.view.animation.Transformation;
 import android.widget.Button;
 import android.widget.ExpandableListView;
-import android.widget.ImageView;
-import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
@@ -19,11 +13,10 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
 import com.example.eventplanner.R;
-import com.example.eventplanner.components.ExpandableListAdapter;
-import com.example.eventplanner.databinding.ActivityCategoryBinding;
-import com.example.eventplanner.databinding.ActivityHomeBinding;
-import com.example.eventplanner.models.Category;
-import com.example.eventplanner.models.Subcategory;
+import adapters.ExpandableListAdapter;
+
+import model.Category;
+import model.Subcategory;
 
 import java.util.ArrayList;
 import java.util.HashMap;
