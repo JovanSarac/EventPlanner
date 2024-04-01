@@ -16,17 +16,11 @@ import com.example.eventplanner.databinding.ActivityHomeBinding;
 
 public class HomeActivity extends AppCompatActivity {
 
-    private Button buttonProductsManagementPUPZ;
-    private Button buttonProductsManagementPUPV;
     private Button buttonCreateEventOD;
 
     private Button butonSearchAndFilter;
 
     private Button buttonHome;
-    private Button buttonServicesManagementPUPZ;
-    private Button buttonServicesManagementPUPV;
-    private Button buttonPackgesManagementPUPZ;
-    private Button buttonPackgesManagementPUPV;
 
 
     @Override
@@ -42,13 +36,6 @@ public class HomeActivity extends AppCompatActivity {
 
         ActivityHomeBinding binding= ActivityHomeBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
-
-        buttonProductsManagementPUPZ = findViewById(R.id.productsManagmentPUPZ);
-        buttonProductsManagementPUPV = findViewById(R.id.productsManagmentPUPV);
-        buttonServicesManagementPUPZ = findViewById(R.id.serviceManagmentPUPZ);
-        buttonServicesManagementPUPV = findViewById(R.id.serviceManagmentPUPV);
-        buttonPackgesManagementPUPZ = findViewById(R.id.packageManagmentPUPZ);
-        buttonPackgesManagementPUPV = findViewById(R.id.packageManagmentPUPV);
 
         binding.productsManagmentPUPV.setOnClickListener(v ->{
             Intent intent = new Intent(HomeActivity.this, ProductsManegementActivity.class);

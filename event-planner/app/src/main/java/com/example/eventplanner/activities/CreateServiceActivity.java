@@ -1,12 +1,20 @@
 package com.example.eventplanner.activities;
 
+import android.content.Context;
 import android.os.Bundle;
+import android.view.Gravity;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
+import android.widget.Button;
+import android.widget.PopupWindow;
 
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.eventplanner.R;
+import com.example.eventplanner.databinding.ActivityCreateServiceBinding;
 import com.google.android.material.textfield.TextInputLayout;
 
 import java.util.ArrayList;
@@ -14,6 +22,7 @@ import java.util.Arrays;
 
 public class CreateServiceActivity extends AppCompatActivity {
 
+    Button addCategory;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -48,5 +57,22 @@ public class CreateServiceActivity extends AppCompatActivity {
         AutoCompleteTextView providerAutoCompleteTextView = (AutoCompleteTextView) providerTextInputLayout.getEditText();
         ArrayAdapter<String> providerAdapter = new ArrayAdapter<>(CreateServiceActivity.this, android.R.layout.simple_dropdown_item_1line, providers);
         providerAutoCompleteTextView.setAdapter(providerAdapter);
+
+        addCategory = findViewById(R.id.add_subcategory);
+
+        addCategory.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                LayoutInflater inflater = (LayoutInflater) CreateServiceActivity.this.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+                View popUpView = inflater.inflate(R.layout.request_new_subcategory, null);
+
+                int width = ViewGroup.LayoutParams.MATCH_PARENT;
+                int height = ViewGroup.LayoutParams.MATCH_PARENT;
+                boolean focusable = true;
+                PopupWindow popupWindow = new PopupWindow(popUpView, width, height, focusable);
+
+                popupWindow.showAtLocation(v, Gravity.CENTER, 0, 0);
+            }
+        });
     }
 }

@@ -213,7 +213,7 @@
             android:textSize="20sp"
             android:layout_marginTop="5dp"/>
             <Button
-                android:id="@+id/add_package"
+                android:id="@+id/add_product"
                 android:layout_width="25dp"
                 android:layout_height="25dp"
                 android:layout_marginTop="10dp"
