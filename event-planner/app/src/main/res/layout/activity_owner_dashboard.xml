@@ -99,7 +99,7 @@
                             android:layout_width="64dp"
                             android:layout_height="64dp"
                             android:layout_margin="8dp"
-                            android:src="@mipmap/worker_example_round"
+                            android:src="@mipmap/worker_example1_round"
                             android:layout_gravity="center"/>
 
                     </androidx.cardview.widget.CardView>
@@ -243,7 +243,7 @@
                             android:layout_width="64dp"
                             android:layout_height="64dp"
                             android:layout_margin="8dp"
-                            android:src="@mipmap/worker_example_round"
+                            android:src="@mipmap/worker_example2_round"
                             android:layout_gravity="center"/>
 
                     </androidx.cardview.widget.CardView>
@@ -266,7 +266,7 @@
                             <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="Marko Radetic"
+                                android:text="Petar Petrovic"
                                 android:textStyle="normal"
                                 android:textSize="16sp"
                                 android:textColor="@color/black"
@@ -275,7 +275,7 @@
                             <LinearLayout
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:background="@drawable/worker_status_pill"
+                                android:background="@drawable/worker_status_pill_inactive"
                                 android:orientation="horizontal"
                                 android:layout_gravity="center_vertical"
                                 android:paddingHorizontal="12dp"
@@ -284,16 +284,16 @@
                                 <ImageView
                                     android:layout_width="16dp"
                                     android:layout_height="16dp"
-                                    android:src="@drawable/verified"
+                                    android:src="@drawable/inactive"
                                     android:paddingTop="3dp"
                                     />
                                 <TextView
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
-                                    android:text="Verified"
+                                    android:text="Inactive"
                                     android:textStyle="normal"
                                     android:textSize="12sp"
-                                    android:textColor="@color/success"
+                                    android:textColor="@color/danger"
                                     />
                             </LinearLayout>
                         </LinearLayout>
@@ -316,7 +316,7 @@
                             <TextView
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
-                                android:text="0628562016"
+                                android:text="0628342331"
                                 android:textSize="12dp"
                                 android:layout_marginLeft="2dp"/>
                         </LinearLayout>
@@ -338,7 +338,7 @@
                             <TextView
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
-                                android:text="markoradetic67@gmail.com"
+                                android:text="petarpero11@gmail.com"
                                 android:textSize="12dp"
                                 android:layout_marginLeft="2dp"/>
                         </LinearLayout>
@@ -360,7 +360,7 @@
                             <TextView
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
-                                android:text="Podunavci, Serbia"
+                                android:text="Novi Sad, Serbia"
                                 android:textSize="12dp"
                                 android:layout_marginLeft="2dp"/>
                         </LinearLayout>
@@ -410,7 +410,7 @@
                             <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="Marko Radetic"
+                                android:text="Jovana Jelic"
                                 android:textStyle="normal"
                                 android:textSize="16sp"
                                 android:textColor="@color/black"
@@ -460,7 +460,7 @@
                             <TextView
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
-                                android:text="0628562016"
+                                android:text="0692020333"
                                 android:textSize="12dp"
                                 android:layout_marginLeft="2dp"/>
                         </LinearLayout>
@@ -482,7 +482,7 @@
                             <TextView
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
-                                android:text="markoradetic67@gmail.com"
+                                android:text="jovanaj@gmail.com"
                                 android:textSize="12dp"
                                 android:layout_marginLeft="2dp"/>
                         </LinearLayout>
@@ -504,7 +504,7 @@
                             <TextView
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
-                                android:text="Podunavci, Serbia"
+                                android:text="Belgrade, Serbia"
                                 android:textSize="12dp"
                                 android:layout_marginLeft="2dp"/>
                         </LinearLayout>
