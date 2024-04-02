@@ -16,6 +16,7 @@ import android.widget.PopupWindow;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.eventplanner.R;
 import com.example.eventplanner.databinding.ActivityEditPackageBinding;
@@ -27,6 +28,7 @@ import java.util.Arrays;
 
 import adapters.EventListAdapter;
 import adapters.EventListPackageAdapter;
+import adapters.ImageAdapter;
 import adapters.PackageProductListAdapter;
 import adapters.PackageServiceListAdapter;
 import adapters.ProductListAddAdapter;
@@ -63,6 +65,17 @@ public class EditPackageActivity extends AppCompatActivity {
         Boolean packageAvailability = getIntent().getBooleanExtra("Availability", false);
         Boolean packageVisibility = getIntent().getBooleanExtra("Visibility", false);
 
+        RecyclerView recyclerView = findViewById(R.id.recycler);
+        ArrayList<Integer> arrayList = new ArrayList<>();
+
+        for(int i = 0; i < packageImages.size(); i++){
+            arrayList.add(packageImages.get(i));
+        }
+
+        ImageAdapter adapter = new ImageAdapter(EditPackageActivity.this, arrayList);
+        recyclerView.setAdapter(adapter);
+
+
         TextInputLayout name = findViewById(R.id.name);
         TextInputEditText nameAutoComplete = (TextInputEditText) name.getEditText();
         nameAutoComplete.setText(packageName);
@@ -90,9 +103,6 @@ public class EditPackageActivity extends AppCompatActivity {
         TextInputLayout discount = findViewById(R.id.discount);
         TextInputEditText discountAutoComplete = (TextInputEditText) discount.getEditText();
         discountAutoComplete.setText(packageDiscount.toString());
-
-        ImageView imageView = findViewById(R.id.carousel_image_view);
-        imageView.setImageResource(packageImages.get(0));
 
         EventListPackageAdapter eventListAdapter = new EventListPackageAdapter(this, packageEvents);
         binding.events.setAdapter(eventListAdapter);
@@ -208,7 +218,7 @@ public class EditPackageActivity extends AppCompatActivity {
             }
 
             products.add(new Product(ids[i], categories[i], subcategories[i],
-                    names[i], description[i], prices[i], discounts[i], imageIds[i], productEvents, available[i], visible[i]));
+                    names[i], description[i], prices[i], discounts[i], new ArrayList<>(Arrays.asList(imageIds)), productEvents, available[i], visible[i]));
         }
         return products;
     }
@@ -257,7 +267,7 @@ public class EditPackageActivity extends AppCompatActivity {
             }
 
             services.add(new Service(ids[i], categories[i], subcategories[i],
-                    names[i], description[i], imageIds[i], specifics[i], pricesPerHour[i], fullPrices[i],
+                    names[i], description[i], new ArrayList<>(Arrays.asList(imageIds)), specifics[i], pricesPerHour[i], fullPrices[i],
                     durations[i], locations[i], discounts[i], serviceProviders, serviceEvents, reservationDues[i],
                     cancelationDues[i], automaticAffirmations[i], available[i], visible[i]));
         }

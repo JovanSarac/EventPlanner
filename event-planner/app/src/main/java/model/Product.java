@@ -4,7 +4,6 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 import java.util.ArrayList;
-import java.util.UUID;
 
 public class Product implements Parcelable {
     private Long id;
@@ -14,7 +13,7 @@ public class Product implements Parcelable {
     private String description;
     private Double price;
     private Double discount;
-    private Integer imageId;
+    private ArrayList<Integer> imageId;
     private ArrayList<String> events;
     private Boolean available;
     private Boolean visible;
@@ -22,21 +21,8 @@ public class Product implements Parcelable {
     public Product() {
     }
 
-    public Product(Long id, String category, String subcategory, String name, String description, Double price, Double discount, Integer imageId,ArrayList<String> events, Boolean available, Boolean visible) {
+    public Product(Long id, String category, String subcategory, String name, String description, Double price, Double discount, ArrayList<Integer> imageId, ArrayList<String> events, Boolean available, Boolean visible) {
         this.id = id;
-        this.category = category;
-        this.subcategory = subcategory;
-        this.name = name;
-        this.description = description;
-        this.price = price;
-        this.discount = discount;
-        this.imageId = imageId;
-        this.events = events;
-        this.available = available;
-        this.visible = visible;
-    }
-
-    public Product(String category, String subcategory, String name, String description, Double price, Double discount, Integer imageId, ArrayList<String> events, Boolean available, Boolean visible) {
         this.category = category;
         this.subcategory = subcategory;
         this.name = name;
@@ -69,11 +55,8 @@ public class Product implements Parcelable {
         } else {
             discount = in.readDouble();
         }
-        if (in.readByte() == 0) {
-            imageId = null;
-        } else {
-            imageId = in.readInt();
-        }
+        imageId = new ArrayList<>();
+        in.readList(imageId, Integer.class.getClassLoader());
         events = in.createStringArrayList();
         byte tmpAvailable = in.readByte();
         available = tmpAvailable == 0 ? null : tmpAvailable == 1;
@@ -122,12 +105,7 @@ public class Product implements Parcelable {
             dest.writeByte((byte) 1);
             dest.writeDouble(discount);
         }
-        if (imageId == null) {
-            dest.writeByte((byte) 0);
-        } else {
-            dest.writeByte((byte) 1);
-            dest.writeInt(imageId);
-        }
+        dest.writeList(imageId);
         dest.writeStringList(events);
         dest.writeByte((byte) (available == null ? 0 : available ? 1 : 2));
         dest.writeByte((byte) (visible == null ? 0 : visible ? 1 : 2));
@@ -189,11 +167,11 @@ public class Product implements Parcelable {
         this.discount = discount;
     }
 
-    public Integer getImageId() {
+    public ArrayList<Integer> getImageId() {
         return imageId;
     }
 
-    public void setImageId(Integer imageId) {
+    public void setImageId(ArrayList<Integer> imageId) {
         this.imageId = imageId;
     }
 

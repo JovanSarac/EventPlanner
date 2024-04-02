@@ -46,7 +46,7 @@ public class PackageListPupzFragment extends Fragment {
         ArrayList<Package> packages = new ArrayList<>();
 
         Long[] ids = {1l, 2l, 3l, 4l, 5l};
-        String[] names = {"Service 1", "Service 2", "Service 3", "Service 4", "Service 5"};
+        String[] names = {"Package 1", "Package 2", "Package 3", "Package 4", "Package 5"};
         String[] description = {"Description 1", "Description 2", "Description 3", "Description 4", "Description 5"};
         Double[] discounts = {1.0, 2.0, 3.0, 4.0, 5.0};
         Boolean[] available = {true, true, true, true, true};
@@ -123,7 +123,7 @@ public class PackageListPupzFragment extends Fragment {
             }
 
             services.add(new Service(ids[i], categories[i], subcategories[i],
-                    names[i], description[i], imageIds[i], specifics[i], pricesPerHour[i], fullPrices[i],
+                    names[i], description[i], new ArrayList<>(Arrays.asList(imageIds)), specifics[i], pricesPerHour[i], fullPrices[i],
                     durations[i], locations[i], discounts[i], serviceProviders, serviceEvents, reservationDues[i],
                     cancelationDues[i], automaticAffirmations[i], available[i], visible[i]));
         }
@@ -161,7 +161,7 @@ public class PackageListPupzFragment extends Fragment {
             }
 
             products.add(new Product(ids[i], categories[i], subcategories[i],
-                    names[i], description[i], prices[i], discounts[i], imageIds[i], productEvents, available[i], visible[i]));
+                    names[i], description[i], prices[i], discounts[i], new ArrayList<>(Arrays.asList(imageIds)), productEvents, available[i], visible[i]));
         }
         return products;
     }

@@ -147,7 +147,7 @@ public class CreatePackageActivity extends AppCompatActivity {
             }
 
             products.add(new Product(ids[i], categories[i], subcategories[i],
-                    names[i], description[i], prices[i], discounts[i], imageIds[i], productEvents, available[i], visible[i]));
+                    names[i], description[i], prices[i], discounts[i], new ArrayList<>(Arrays.asList(imageIds)), productEvents, available[i], visible[i]));
         }
         return products;
     }
@@ -196,7 +196,7 @@ public class CreatePackageActivity extends AppCompatActivity {
             }
 
             services.add(new Service(ids[i], categories[i], subcategories[i],
-                    names[i], description[i], imageIds[i], specifics[i], pricesPerHour[i], fullPrices[i],
+                    names[i], description[i], new ArrayList<>(Arrays.asList(imageIds)), specifics[i], pricesPerHour[i], fullPrices[i],
                     durations[i], locations[i], discounts[i], serviceProviders, serviceEvents, reservationDues[i],
                     cancelationDues[i], automaticAffirmations[i], available[i], visible[i]));
         }

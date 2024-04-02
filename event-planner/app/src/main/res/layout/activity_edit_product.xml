@@ -26,12 +26,12 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="35dp">
 
-            <ImageView
-                android:id="@+id/carousel_image_view"
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/recycler"
                 android:layout_width="match_parent"
-                android:layout_height="150dp"
-                app:endIconMode="clear_text"
-                android:scaleType="centerCrop" />
+                android:layout_height="200sp"
+                android:layout_marginTop="15sp"
+                app:layoutManager="com.google.android.material.carousel.CarouselLayoutManager"/>
 
 
             <com.google.android.material.floatingactionbutton.FloatingActionButton
@@ -42,7 +42,7 @@
                 app:layout_constraintBottom_toBottomOf="parent"
                 android:layout_marginBottom="10dp"
                 android:layout_marginEnd="10dp"
-                app:layout_constraintEnd_toEndOf="@+id/carousel_image_view"
+                app:layout_constraintEnd_toEndOf="@+id/recycler"
                 app:srcCompat="@drawable/ic_add" />
         </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -270,7 +270,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:layout_marginLeft="5dp"
-                android:text="@string/create"
+                android:text="@string/edit"
                 />
         </LinearLayout>
     </LinearLayout>

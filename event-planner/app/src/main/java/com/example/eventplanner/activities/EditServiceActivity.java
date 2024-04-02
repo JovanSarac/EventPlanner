@@ -1,25 +1,33 @@
 package com.example.eventplanner.activities;
 
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
+import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.CheckBox;
 import android.widget.ImageView;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.eventplanner.R;
 import com.example.eventplanner.databinding.ActivityEditServiceBinding;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 
 import java.util.ArrayList;
 
 import adapters.EventListAdapter;
+import adapters.ImageAdapter;
 
 public class EditServiceActivity extends AppCompatActivity {
 
     ActivityEditServiceBinding binding;
+    FloatingActionButton addImage;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,7 +46,7 @@ public class EditServiceActivity extends AppCompatActivity {
         Double serviceDiscount = getIntent().getDoubleExtra("Discount", 0);
         Double serviceDuration = getIntent().getDoubleExtra("Duration", 0);
         String serviceLocation = getIntent().getStringExtra("Location");
-        Integer serviceImageId = getIntent().getIntExtra("Image", -1);
+        ArrayList<Integer> serviceImageId = getIntent().getIntegerArrayListExtra("Image");
         ArrayList<String> serviceEvents = getIntent().getStringArrayListExtra("Events");
         ArrayList<String> serviceProviders = getIntent().getStringArrayListExtra("Providers");
         String serviceReservationDue = getIntent().getStringExtra("ReservationDue");
@@ -46,6 +54,15 @@ public class EditServiceActivity extends AppCompatActivity {
         Boolean serviceAutomaticAffirmation = getIntent().getBooleanExtra("AutomaticAffirmation", false);
         Boolean serviceAvailability = getIntent().getBooleanExtra("Availability", false);
         Boolean serviceVisibility = getIntent().getBooleanExtra("Visibility", false);
+
+        addImage = findViewById(R.id.add_image);
+        addImage.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+                startActivityForResult(intent, 3);
+            }
+        });
 
         TextInputLayout name = findViewById(R.id.name);
         TextInputEditText nameAutoComplete = (TextInputEditText) name.getEditText();
@@ -91,8 +108,15 @@ public class EditServiceActivity extends AppCompatActivity {
         TextInputEditText locationAutoComplete = (TextInputEditText) location.getEditText();
         locationAutoComplete.setText(serviceLocation);
 
-        ImageView imageView = findViewById(R.id.carousel_image_view);
-        imageView.setImageResource(serviceImageId);
+        RecyclerView recyclerView = findViewById(R.id.recycler);
+        ArrayList<Integer> arrayList = new ArrayList<>();
+
+        for(int i = 0; i < serviceImageId.size(); i++){
+            arrayList.add(serviceImageId.get(i));
+        }
+
+        ImageAdapter adapter = new ImageAdapter(EditServiceActivity.this, arrayList);
+        recyclerView.setAdapter(adapter);
 
         EventListAdapter eventListAdapter = new EventListAdapter(this, serviceEvents);
         binding.events.setAdapter(eventListAdapter);
@@ -116,5 +140,15 @@ public class EditServiceActivity extends AppCompatActivity {
 
         CheckBox visibility = findViewById(R.id.visibility);
         visibility.setChecked(serviceVisibility);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(resultCode == RESULT_OK && data != null){
+            Uri selectedImage = data.getData();
+            /*ImageView imageView = findViewById(R.id.carousel_image_view);
+            imageView.setImageURI(selectedImage);*/
+        }
     }
 }

@@ -85,7 +85,7 @@ public class ServiceListPupzFragment extends Fragment {
             }
 
             services.add(new Service(ids[i], categories[i], subcategories[i],
-                    names[i], description[i], imageIds[i], specifics[i], pricesPerHour[i], fullPrices[i],
+                    names[i], description[i], new ArrayList<>(Arrays.asList(imageIds)), specifics[i], pricesPerHour[i], fullPrices[i],
                     durations[i], locations[i], discounts[i], serviceProviders, serviceEvents, reservationDues[i],
                     cancelationDues[i], automaticAffirmations[i], available[i], visible[i]));
         }

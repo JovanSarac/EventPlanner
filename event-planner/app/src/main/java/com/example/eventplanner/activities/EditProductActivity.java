@@ -1,25 +1,34 @@
 package com.example.eventplanner.activities;
 
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
+import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.CheckBox;
 import android.widget.ImageView;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.eventplanner.R;
 import com.example.eventplanner.databinding.ActivityEditProductBinding;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 
 import java.util.ArrayList;
 
 import adapters.EventListAdapter;
+import adapters.ImageAdapter;
 
 public class EditProductActivity extends AppCompatActivity {
 
     ActivityEditProductBinding binding;
+    FloatingActionButton addImage;
+    ArrayList<Integer> productImage;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,10 +44,19 @@ public class EditProductActivity extends AppCompatActivity {
         String productDescription = getIntent().getStringExtra("productDescription");
         Double productPrice = getIntent().getDoubleExtra("productPrice", 0);
         Double productDiscount = getIntent().getDoubleExtra("productDiscount", 0);
-        Integer productImage = getIntent().getIntExtra("productImage", -1);
+        productImage = getIntent().getIntegerArrayListExtra("productImage");
         ArrayList<String> productEvents = getIntent().getStringArrayListExtra("productEvents");
         Boolean productAvailability = getIntent().getBooleanExtra("productAvailability", true);
         Boolean productVisibility = getIntent().getBooleanExtra("productVisibility", true);
+
+        addImage = findViewById(R.id.add_image);
+        addImage.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+                startActivityForResult(intent, 3);
+            }
+        });
 
 
         TextInputLayout category = findViewById(R.id.category);
@@ -69,8 +87,15 @@ public class EditProductActivity extends AppCompatActivity {
         TextInputEditText discountAutoComplete = (TextInputEditText) discount.getEditText();
         discountAutoComplete.setText(productDiscount.toString());
 
-        ImageView imageView = findViewById(R.id.carousel_image_view);
-        imageView.setImageResource(productImage);
+        RecyclerView recyclerView = findViewById(R.id.recycler);
+        ArrayList<Integer> arrayList = new ArrayList<>();
+
+        for(int i = 0; i < productImage.size(); i++){
+            arrayList.add(productImage.get(i));
+        }
+
+        ImageAdapter adapter = new ImageAdapter(EditProductActivity.this, arrayList);
+        recyclerView.setAdapter(adapter);
 
         EventListAdapter eventListAdapter = new EventListAdapter(this, productEvents);
         binding.events.setAdapter(eventListAdapter);
@@ -80,5 +105,15 @@ public class EditProductActivity extends AppCompatActivity {
 
         CheckBox visibility = findViewById(R.id.visibility);
         visibility.setChecked(productVisibility);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(resultCode == RESULT_OK && data != null){
+            Uri selectedImage = data.getData();
+            /*ImageView imageView = findViewById(R.id.carousel_image_view);
+            imageView.setImageURI(selectedImage);*/
+        }
     }
 }

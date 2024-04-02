@@ -82,4 +82,5 @@
     <string name="phone_number">Phone Number</string>
     <string name="address">Address</string>
     <string name="event_organizer_registration">Event organizer registration</string>
+    <string name="edit">Edit</string>
 </resources>

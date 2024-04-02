@@ -21,28 +21,12 @@
             android:textStyle="bold"
             android:textSize="30sp"/>
 
-        <androidx.constraintlayout.widget.ConstraintLayout
+        <androidx.recyclerview.widget.RecyclerView
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="35dp">
-
-                <ImageView
-                    android:id="@+id/carousel_image_view"
-                    android:layout_width="match_parent"
-                    android:layout_height="150dp"
-                    android:scaleType="centerCrop" />
-
-            <com.google.android.material.floatingactionbutton.FloatingActionButton
-                android:id="@+id/add_image"
-                style="?attr/floatingActionButtonSmallStyle"
-                android:layout_width="35dp"
-                android:layout_height="35dp"
-                app:layout_constraintBottom_toBottomOf="parent"
-                android:layout_marginBottom="10dp"
-                android:layout_marginEnd="10dp"
-                app:layout_constraintEnd_toEndOf="@+id/carousel_image_view"
-                app:srcCompat="@drawable/ic_add" />
-        </androidx.constraintlayout.widget.ConstraintLayout>
+            android:layout_height="200sp"
+            android:layout_marginTop="15sp"
+            android:id="@+id/recycler"
+            app:layoutManager="com.google.android.material.carousel.CarouselLayoutManager"/>
 
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/name"
@@ -298,7 +282,6 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="5dp"
                 android:layout_marginRight="5dp"
-                app:suffixText="@string/dollar"
                 android:layout_weight="1"
                 android:hint="@string/reservation_due"
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
@@ -321,7 +304,6 @@
                 android:layout_marginTop="5dp"
                 android:layout_marginRight="5dp"
                 android:layout_marginLeft="5dp"
-                app:suffixText="@string/dollar"
                 android:layout_weight="1"
                 android:hint="@string/cancelation_due"
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
@@ -394,7 +376,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:layout_marginLeft="5dp"
-                android:text="@string/create"
+                android:text="@string/edit"
                 />
         </LinearLayout>
     </LinearLayout>

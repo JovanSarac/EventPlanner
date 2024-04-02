@@ -62,7 +62,7 @@ public class ServiceListPupvAdapter extends ArrayAdapter<Service> {
         TextView pricePerHour = convertView.findViewById(R.id.pricePerHour);
 
         if(service != null){
-            image.setImageResource(service.getImageId());
+            image.setImageResource(service.getImageId().get(0));
             name.setText(service.getName());
             description.setText(service.getDescription());
             fullPrice.setText(service.getFullPrice().toString() + "$");

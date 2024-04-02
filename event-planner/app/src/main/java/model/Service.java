@@ -12,7 +12,7 @@ public class Service implements Parcelable {
     private String subcategory;
     private String name;
     private String description;
-    private Integer imageId;
+    private ArrayList<Integer> imageId;
     private String specific;
     private Double pricePerHour;
     private Double fullPrice;
@@ -32,7 +32,7 @@ public class Service implements Parcelable {
     public Service() {
     }
 
-    public Service(Long id, String category, String subcategory, String name, String description, Integer imageId, String specific, Double pricePerHour, Double fullPrice, Double duration, String location, Double discount, ArrayList<String> providers, ArrayList<String> events, String reservationDue, String cancelationDue, Boolean automaticAffirmation, Boolean available, Boolean visible) {
+    public Service(Long id, String category, String subcategory, String name, String description, ArrayList<Integer> imageId, String specific, Double pricePerHour, Double fullPrice, Double duration, String location, Double discount, ArrayList<String> providers, ArrayList<String> events, String reservationDue, String cancelationDue, Boolean automaticAffirmation, Boolean available, Boolean visible) {
         this.id = id;
         this.category = category;
         this.subcategory = subcategory;
@@ -54,7 +54,7 @@ public class Service implements Parcelable {
         this.visible = visible;
     }
 
-    public Service(String category, String subcategory, String name, String description, Integer imageId, String specific, Double pricePerHour, Double fullPrice, Double duration, String location, Double discount, ArrayList<String> providers, ArrayList<String> events, String reservationDue, String cancelationDue, Boolean automaticAffirmation, Boolean available, Boolean visible) {
+    public Service(String category, String subcategory, String name, String description, ArrayList<Integer> imageId, String specific, Double pricePerHour, Double fullPrice, Double duration, String location, Double discount, ArrayList<String> providers, ArrayList<String> events, String reservationDue, String cancelationDue, Boolean automaticAffirmation, Boolean available, Boolean visible) {
         this.category = category;
         this.subcategory = subcategory;
         this.name = name;
@@ -75,7 +75,7 @@ public class Service implements Parcelable {
         this.visible = visible;
     }
 
-    public Service(Long id, String category, String subcategory, String name, String description, Integer imageId, String specific, Double pricePerHour, Double fullPrice, Double duration, Double durationMin, Double durationMax, String location, Double discount, ArrayList<String> providers, ArrayList<String> events, String reservationDue, String cancelationDue, Boolean automaticAffirmation, Boolean available, Boolean visible) {
+    public Service(Long id, String category, String subcategory, String name, String description, ArrayList<Integer> imageId, String specific, Double pricePerHour, Double fullPrice, Double duration, Double durationMin, Double durationMax, String location, Double discount, ArrayList<String> providers, ArrayList<String> events, String reservationDue, String cancelationDue, Boolean automaticAffirmation, Boolean available, Boolean visible) {
         this.id = id;
         this.category = category;
         this.subcategory = subcategory;
@@ -99,7 +99,7 @@ public class Service implements Parcelable {
         this.visible = visible;
     }
 
-    public Service(String category, String subcategory, String name, String description, Integer imageId, String specific, Double pricePerHour, Double fullPrice, Double duration, Double durationMin, Double durationMax, String location, Double discount, ArrayList<String> providers, ArrayList<String> events, String reservationDue, String cancelationDue, Boolean automaticAffirmation, Boolean available, Boolean visible) {
+    public Service(String category, String subcategory, String name, String description, ArrayList<Integer> imageId, String specific, Double pricePerHour, Double fullPrice, Double duration, Double durationMin, Double durationMax, String location, Double discount, ArrayList<String> providers, ArrayList<String> events, String reservationDue, String cancelationDue, Boolean automaticAffirmation, Boolean available, Boolean visible) {
         this.category = category;
         this.subcategory = subcategory;
         this.name = name;
@@ -132,11 +132,8 @@ public class Service implements Parcelable {
         subcategory = in.readString();
         name = in.readString();
         description = in.readString();
-        if (in.readByte() == 0) {
-            imageId = null;
-        } else {
-            imageId = in.readInt();
-        }
+        imageId = new ArrayList<>();
+        in.readList(imageId, Integer.class.getClassLoader());
         specific = in.readString();
         if (in.readByte() == 0) {
             pricePerHour = null;
@@ -210,12 +207,7 @@ public class Service implements Parcelable {
         dest.writeString(subcategory);
         dest.writeString(name);
         dest.writeString(description);
-        if (imageId == null) {
-            dest.writeByte((byte) 0);
-        } else {
-            dest.writeByte((byte) 1);
-            dest.writeInt(imageId);
-        }
+        dest.writeList(imageId);
         dest.writeString(specific);
         if (pricePerHour == null) {
             dest.writeByte((byte) 0);
@@ -303,11 +295,11 @@ public class Service implements Parcelable {
         this.description = description;
     }
 
-    public Integer getImageId() {
+    public ArrayList<Integer> getImageId() {
         return imageId;
     }
 
-    public void setImageId(Integer imageId) {
+    public void setImageId(ArrayList<Integer> imageId) {
         this.imageId = imageId;
     }
 
