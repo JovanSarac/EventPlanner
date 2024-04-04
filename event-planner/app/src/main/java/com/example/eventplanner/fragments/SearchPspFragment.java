@@ -50,7 +50,7 @@ public class SearchPspFragment extends Fragment {
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        Log.d("ShopApp", "FirstFragment onAttach()");
+        Log.d("EventPlanner", "SearchPspFragment onAttach()");
     }
     @Override
     public void onDestroyView() {

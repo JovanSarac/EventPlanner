@@ -84,4 +84,22 @@
     <string name="event_organizer_registration">Event organizer registration</string>
     <string name="edit">Edit</string>
     <string name="kmm">km</string>
+    <string name="yourevents">Your events:</string>
+    <string name="budgetplanner">Budget planner</string>
+    <string name="search_for_od">Search for OD</string>
+    <string name="search_by_your_event">Search by your event:</string>
+    <string name="rbb">RB</string>
+    <string name="subcategory_productservice">Subcategory product/service</string>
+    <string name="amount">Amount</string>
+    <string name="planned">Planned</string>
+    <string name="spent">Spent</string>
+    <string name="name_product_service">Name product/service</string>
+    <string name="link_to_details_product">Link to product/service</string>
+    <string name="add">Add</string>
+    <string name="total_planned">Total planned:</string>
+    <string name="total_spent">Total spent:</string>
+    <string name="select_category">Select category:</string>
+    <string name="select_subcategory">Select subcategory:</string>
+    <string name="enter_the_price">Enter the expected price for the selected category and subcategory:</string>
+    <string name="enter_price">Enter the price:</string>
 </resources>

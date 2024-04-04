@@ -67,13 +67,27 @@ public class ShowEventFragment extends Fragment {
     private ArrayList<Event> createEvents() {
         ArrayList<Event> events = new ArrayList<>();
 
-        events.add((new Event("Vencanje", "Venčanje T i M" , "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec viverra" +
-                " nulla eget ante malesuada gravida. Sed eget blandit sapien. Duis ultricies tellus sed sapien volutpat efficitur. Quisque " +
-                "metus lectus, iaculis.", 200, "Novi Sad", 40, new Date(), true)));
+        events.add((new Event("Vencanje", "Venčanje T i M" , " Ovo je dan kada se dvoje ljudi " +
+                "obećavaju jedno drugome vječnu ljubav i zajednički život. Pridružite nam se u ovom posebnom trenutku " +
+                "dok zajedno sa porodicom i prijateljima slavimo ljubav i stvaramo nezaboravne uspomene. " +
+                "Očekuje nas čarobno iskustvo, ispunjeno osmjesima, toplinom i veseljem, dok se započinje " +
+                "novo poglavlje u životima mladenaca.", 200, "Novi Sad", 40, new Date(), true)));
 
-        events.add((new Event("Veridba", "Venčanje T i M" , "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec viverra" +
-                " nulla eget ante malesuada gravida. Sed eget blandit sapien. Duis ultricies tellus sed sapien volutpat efficitur. Quisque " +
-                "metus lectus, iaculis.", 200, "Beograd", 50, new Date(), true)));
+        events.add((new Event("Koncerti i muzicki nastupi", "Koncert Aleksandre Prijovic" ,
+                "Dobrodošli na nezaboravan koncert Aleksandre Prijović, gdje će se spojiti njena strastvena" +
+                        " izvedba i nevjerojatan talent, pružajući vam veče puno uzbuđenja i muzičkih trenutaka za " +
+                        "pamćenje. Pripremite se za veče puno energije, emocija i nezaboravnih hitova dok zajedno sa " +
+                        "publikom stvaramo atmosferu punu ljubavi i zabave. Pridružite nam se na ovoj spektakularnoj" +
+                        " večeri uz Aleksandrinu prepoznatljivu interpretaciju i uživajte u nezaboravnom muzičkom" +
+                        " iskustvu koje će vas ostaviti bez daha.", 200, "Beograd",
+                50, new Date(), true)));
+
+        events.add((new Event("Turniri i prvenstva", "Turnir u malom fudbalu" , "Ovogodišnji " +
+                "turnir okuplja najbolje igrače iz naše zajednice kako bi se nadmetali u uzbudljivim utakmicama punim " +
+                "akcije i golova. Pridružite nam se na ovom nezaboravnom sportskom iskustvu uz sjajnu atmosferu i veliku" +
+                " podršku navijača. Uzbudljiv vikend malog fudbala je pred nama, obećavajući neizvjesnost, " +
+                "emocije i trenutke za pamćenje na terenu našeg turnira", 200,
+                "Beograd", 50, new Date(), true)));
 
         return events;
     }
