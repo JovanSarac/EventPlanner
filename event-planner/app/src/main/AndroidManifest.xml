@@ -14,8 +14,10 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.EventPlanner"
         tools:targetApi="31">
+        <activity android:name=".activities.HomeTwoActivity" />
         <activity
-            android:name=".activities.HomeTwoActivity"/>
+            android:name=".activities.ShowOneEventActivity"
+            android:exported="false" />
         <activity
             android:name=".activities.WorkerDashboardActivity"
             android:exported="false" />
@@ -67,9 +69,6 @@
         <activity
             android:name=".activities.OD_RegisterActivity"
             android:exported="false" />
-        <activity
-            android:name=".activities.HomeActivity"
-            android:exported="false"/>
         <activity
             android:name=".activities.EditPackageActivity"
             android:exported="false" />

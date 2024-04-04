@@ -1,14 +1,18 @@
 package adapters;
 
+import android.content.Intent;
+import android.os.Handler;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.eventplanner.R;
+import com.example.eventplanner.activities.ShowOneEventActivity;
 
 import java.util.ArrayList;
 
@@ -50,6 +54,8 @@ public class EventRecyclerViewAdapter  extends RecyclerView.Adapter<EventRecycle
         TextView eventAvailable;
         TextView eventDate;
 
+        LinearLayout openEvent;
+
         public EventsViewHolder(@NonNull View itemView) {
             super(itemView);
             eventName = itemView.findViewById(R.id.nameEvent);
@@ -59,6 +65,30 @@ public class EventRecyclerViewAdapter  extends RecyclerView.Adapter<EventRecycle
             eventDistanceLocation = itemView.findViewById(R.id.doo);
             eventAvailable = itemView.findViewById(R.id.availableEvent);
             eventDate = itemView.findViewById(R.id.dateEvent);
+
+            openEvent = itemView.findViewById(R.id.eventCard);
+            openEvent.setOnClickListener(new View.OnClickListener(){
+                @Override
+                public void onClick(View v) {
+                    openEvent.setAlpha(0.3f);
+                    new Handler().postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            openEvent.setAlpha(1.0f);
+                        }
+                    }, 100);
+
+                    Intent intent = new Intent(itemView.getContext(), ShowOneEventActivity.class);
+                    intent.putExtra("eventName", eventName.getText());
+                    intent.putExtra("eventDescription", eventDescription.getText());
+                    intent.putExtra("eventLocation", eventLocation.getText());
+                    intent.putExtra("eventDistanceLocation", eventDistanceLocation.getText());
+                    intent.putExtra("eventType", eventType.getText());
+                    intent.putExtra("eventDate", eventDate.getText());
+                    itemView.getContext().startActivity(intent);
+
+                }
+            });
         }
 
         public void bind(Event event) {

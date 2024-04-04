@@ -9,6 +9,7 @@
     tools:context="com.example.eventplanner.fragments.ProductsServicesPageFragment">
 
     <com.google.android.material.tabs.TabLayout
+        android:id="@+id/tabLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/purple_dark"
@@ -90,6 +91,48 @@
         android:layout_height="match_parent"
         android:layout_margin="10dp"
         android:id="@+id/scroll_products_list"
-        />
+
+        >
+        <ListView
+            android:id="@+id/productList"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            tools:listitem="@layout/product_card"
+            android:paddingRight="10dp"
+            android:scrollbars="none"
+            android:overScrollMode="never"
+            android:nestedScrollingEnabled="true"
+            android:scrollbarStyle="outsideOverlay"
+            android:layout_marginTop="10dp"
+            android:visibility="visible"
+            />
+        <ListView
+            android:id="@+id/serviceList"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            tools:listitem="@layout/service_card"
+            android:paddingRight="10dp"
+            android:scrollbars="none"
+            android:overScrollMode="never"
+            android:nestedScrollingEnabled="true"
+            android:scrollbarStyle="outsideOverlay"
+            android:layout_marginTop="10dp"
+            android:visibility="gone"
+            />
+        <ListView
+            android:id="@+id/packageList"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            tools:listitem="@layout/package_card_pupv"
+            android:paddingRight="10dp"
+            android:scrollbars="none"
+            android:overScrollMode="never"
+            android:nestedScrollingEnabled="true"
+            android:scrollbarStyle="outsideOverlay"
+            android:layout_marginTop="10dp"
+            android:visibility="gone"
+            />
+
+    </RelativeLayout>
 
 </LinearLayout>

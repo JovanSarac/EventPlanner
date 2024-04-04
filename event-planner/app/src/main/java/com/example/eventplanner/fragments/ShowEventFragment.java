@@ -1,5 +1,6 @@
 package com.example.eventplanner.fragments;
 
+import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -19,6 +20,7 @@ import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.example.eventplanner.R;
+import com.example.eventplanner.activities.CreateProductActivity;
 import com.example.eventplanner.databinding.FragmentProductsServicesPageBinding;
 import com.example.eventplanner.databinding.FragmentShowEventBinding;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
@@ -81,6 +83,7 @@ public class ShowEventFragment extends Fragment {
         super.onDestroyView();
         binding = null;
     }
+
 
 
 }
