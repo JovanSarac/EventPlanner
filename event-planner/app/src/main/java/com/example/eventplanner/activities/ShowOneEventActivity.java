@@ -3,25 +3,19 @@ package com.example.eventplanner.activities;
 import android.os.Bundle;
 import android.view.View;
 
-import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.eventplanner.R;
-import com.example.eventplanner.databinding.ActivityEditProductBinding;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.tabs.TabLayout;
 
 import java.util.ArrayList;
 
-import adapters.SubAndCategoryTableRowAdapter;
-import adapters.SubcategoryListAdapter;
-import model.Subcategory;
-import model.SubcategoryPlanner;
+import com.example.eventplanner.adapters.SubAndCategoryTableRowAdapter;
+
+import com.example.eventplanner.model.SubcategoryPlanner;
 
 public class ShowOneEventActivity extends AppCompatActivity {
 

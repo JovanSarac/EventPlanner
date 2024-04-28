@@ -6,8 +6,8 @@ import android.widget.AutoCompleteTextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.example.eventplanner.ProductListPupvFragment;
-import com.example.eventplanner.ProductListPupzFragment;
+import com.example.eventplanner.fragments.ProductListPupvFragment;
+import com.example.eventplanner.fragments.ProductListPupzFragment;
 import com.example.eventplanner.R;
 import com.example.eventplanner.databinding.ActivityProductsManegementBinding;
 import com.google.android.material.textfield.TextInputLayout;

@@ -40,9 +40,6 @@
             android:name=".activities.SearchAndFilterActivity"
             android:exported="false" />
         <activity
-            android:name=".activities.CreateEventODActivity"
-            android:exported="false" />
-        <activity
             android:name=".activities.PUPV_RegisterCategoryActivity"
             android:exported="false" />
         <activity
@@ -76,7 +73,7 @@
             android:name=".activities.CreatePackageActivity"
             android:exported="false" />
         <activity
-            android:name=".PackageListPupvFragment"
+            android:name=".fragments.PackageListPupvFragment"
             android:exported="false" />
         <activity
             android:name=".activities.PackagesManagementActivity"
@@ -100,7 +97,7 @@
             android:name=".activities.ProductsManegementActivity"
             android:exported="false" />
         <activity
-            android:name=".SplashActivity"
+            android:name=".activities.SplashActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

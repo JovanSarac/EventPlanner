@@ -14,9 +14,9 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
 import com.example.eventplanner.R;
-import adapters.EventTypesListAdapter;
-import model.EventType;
-import model.Subcategory;
+import com.example.eventplanner.adapters.EventTypesListAdapter;
+import com.example.eventplanner.model.EventType;
+import com.example.eventplanner.model.Subcategory;
 
 import java.util.ArrayList;
 import java.util.Arrays;

@@ -8,7 +8,6 @@ import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.CheckBox;
-import android.widget.ImageView;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.RecyclerView;
@@ -21,8 +20,8 @@ import com.google.android.material.textfield.TextInputLayout;
 
 import java.util.ArrayList;
 
-import adapters.EventListAdapter;
-import adapters.ImageAdapter;
+import com.example.eventplanner.adapters.EventListAdapter;
+import com.example.eventplanner.adapters.ImageAdapter;
 
 public class EditProductActivity extends AppCompatActivity {
 

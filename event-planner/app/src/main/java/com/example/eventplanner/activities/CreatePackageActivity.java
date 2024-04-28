@@ -22,10 +22,10 @@ import com.google.android.material.textfield.TextInputLayout;
 import java.util.ArrayList;
 import java.util.Arrays;
 
-import adapters.ProductListAddAdapter;
-import adapters.ServiceListAddAdapter;
-import model.Product;
-import model.Service;
+import com.example.eventplanner.adapters.ProductListAddAdapter;
+import com.example.eventplanner.adapters.ServiceListAddAdapter;
+import com.example.eventplanner.model.Product;
+import com.example.eventplanner.model.Service;
 
 public class CreatePackageActivity extends AppCompatActivity {
 

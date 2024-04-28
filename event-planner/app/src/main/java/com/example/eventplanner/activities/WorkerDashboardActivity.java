@@ -12,7 +12,7 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
 import com.example.eventplanner.R;
-import com.example.eventplanner.activities.fragments.WorkerWeeklyScheduleFragment;
+import com.example.eventplanner.fragments.WorkerWeeklyScheduleFragment;
 import com.example.eventplanner.databinding.ActivityWorkerDashboardBinding;
 
 public class WorkerDashboardActivity extends AppCompatActivity {

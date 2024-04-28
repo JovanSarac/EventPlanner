@@ -10,7 +10,6 @@ import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.CheckBox;
-import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.PopupWindow;
 
@@ -26,15 +25,14 @@ import com.google.android.material.textfield.TextInputLayout;
 import java.util.ArrayList;
 import java.util.Arrays;
 
-import adapters.EventListAdapter;
-import adapters.EventListPackageAdapter;
-import adapters.ImageAdapter;
-import adapters.PackageProductListAdapter;
-import adapters.PackageServiceListAdapter;
-import adapters.ProductListAddAdapter;
-import adapters.ServiceListAddAdapter;
-import model.Product;
-import model.Service;
+import com.example.eventplanner.adapters.EventListPackageAdapter;
+import com.example.eventplanner.adapters.ImageAdapter;
+import com.example.eventplanner.adapters.PackageProductListAdapter;
+import com.example.eventplanner.adapters.PackageServiceListAdapter;
+import com.example.eventplanner.adapters.ProductListAddAdapter;
+import com.example.eventplanner.adapters.ServiceListAddAdapter;
+import com.example.eventplanner.model.Product;
+import com.example.eventplanner.model.Service;
 
 public class EditPackageActivity extends AppCompatActivity {
 

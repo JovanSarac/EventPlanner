@@ -15,15 +15,13 @@ import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.DatePicker;
 
-import com.example.eventplanner.R;
 import com.example.eventplanner.databinding.FragmentCreateEventBinding;
-import com.example.eventplanner.databinding.FragmentProductsServicesPageBinding;
 import com.google.android.material.textfield.TextInputEditText;
 
 import java.util.ArrayList;
 
-import adapters.SubcategoryListAdapter;
-import model.Subcategory;
+import com.example.eventplanner.adapters.SubcategoryListAdapter;
+import com.example.eventplanner.model.Subcategory;
 
 public class CreateEventFragment extends Fragment {
 
