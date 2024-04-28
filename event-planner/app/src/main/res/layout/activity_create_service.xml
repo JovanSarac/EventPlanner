@@ -330,13 +330,15 @@
             android:hint="@string/events"
             android:layout_marginTop="5dp">
 
-            <AutoCompleteTextView
+            <MultiAutoCompleteTextView
+                android:id="@+id/multiAutoCompleteTextViewEvents"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:inputType="none"
                 />
 
         </com.google.android.material.textfield.TextInputLayout>
+
 
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/providers"
@@ -346,13 +348,15 @@
             android:hint="@string/providers"
             android:layout_marginTop="5dp">
 
-            <AutoCompleteTextView
+            <MultiAutoCompleteTextView
+                android:id="@+id/multiAutoCompleteTextViewProviders"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:inputType="none"
                 />
 
         </com.google.android.material.textfield.TextInputLayout>
+
 
         <LinearLayout
             android:layout_width="match_parent"

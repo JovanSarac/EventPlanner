@@ -13,10 +13,10 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
 import com.example.eventplanner.R;
-import adapters.ExpandableListAdapter;
+import com.example.eventplanner.adapters.ExpandableListAdapter;
 
-import model.Category;
-import model.Subcategory;
+import com.example.eventplanner.model.Category;
+import com.example.eventplanner.model.Subcategory;
 
 import java.util.ArrayList;
 import java.util.HashMap;

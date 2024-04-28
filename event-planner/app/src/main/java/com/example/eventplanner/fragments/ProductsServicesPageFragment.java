@@ -6,7 +6,6 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.util.Pair;
 import androidx.fragment.app.Fragment;
-import androidx.viewpager.widget.ViewPager;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -17,10 +16,7 @@ import android.widget.Button;
 import android.widget.Spinner;
 import android.widget.TextView;
 
-import com.example.eventplanner.ProductListPupvFragment;
-import com.example.eventplanner.ProductListPupzFragment;
 import com.example.eventplanner.R;
-import com.example.eventplanner.activities.SearchAndFilterActivity;
 import com.example.eventplanner.databinding.FragmentProductsServicesPageBinding;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.datepicker.MaterialDatePicker;
@@ -34,13 +30,12 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.Locale;
 
-import adapters.PackageListAdapter;
-import adapters.ProductListAdapter;
-import adapters.ProductListPupvAdapter;
-import adapters.ServiceListAdapter;
-import model.Package;
-import model.Product;
-import model.Service;
+import com.example.eventplanner.adapters.PackageListAdapter;
+import com.example.eventplanner.adapters.ProductListAdapter;
+import com.example.eventplanner.adapters.ServiceListAdapter;
+import com.example.eventplanner.model.Package;
+import com.example.eventplanner.model.Product;
+import com.example.eventplanner.model.Service;
 
 
 public class ProductsServicesPageFragment extends Fragment {

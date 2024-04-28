@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.text.InputType;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -14,6 +15,7 @@ import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.MultiAutoCompleteTextView;
 import android.widget.PopupWindow;
 
 import androidx.annotation.Nullable;
@@ -57,9 +59,12 @@ public class CreateProductActivity extends AppCompatActivity {
         subcategoryAutoCompleteTextView.setAdapter(subcategoryAdapter);
 
         TextInputLayout eventTextInputLayout = findViewById(R.id.events);
-        AutoCompleteTextView eventAutoCompleteTextView = (AutoCompleteTextView) eventTextInputLayout.getEditText();
+        MultiAutoCompleteTextView eventMultiAutoCompleteTextView = (MultiAutoCompleteTextView) eventTextInputLayout.getEditText();
         ArrayAdapter<String> eventAdapter = new ArrayAdapter<>(CreateProductActivity.this, android.R.layout.simple_dropdown_item_1line, events);
-        eventAutoCompleteTextView.setAdapter(eventAdapter);
+        eventMultiAutoCompleteTextView.setAdapter(eventAdapter);
+        eventMultiAutoCompleteTextView.setTokenizer(new MultiAutoCompleteTextView.CommaTokenizer());
+        eventMultiAutoCompleteTextView.setInputType(InputType.TYPE_NULL);
+
 
         addSubcategory = findViewById(R.id.add_subcategory);
 

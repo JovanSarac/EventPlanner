@@ -122,6 +122,7 @@
                     android:lines="1"
                     android:imeOptions="actionSearch"
                     android:singleLine="true"
+                    android:inputType="none"
                     />
 
             </com.google.android.material.textfield.TextInputLayout>

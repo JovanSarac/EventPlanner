@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.text.InputType;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,6 +14,7 @@ import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.MultiAutoCompleteTextView;
 import android.widget.PopupWindow;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -55,14 +57,18 @@ public class CreateServiceActivity extends AppCompatActivity {
         subcategoryAutoCompleteTextView.setAdapter(subcategoryAdapter);
 
         TextInputLayout eventTextInputLayout = findViewById(R.id.events);
-        AutoCompleteTextView eventAutoCompleteTextView = (AutoCompleteTextView) eventTextInputLayout.getEditText();
+        MultiAutoCompleteTextView multiAutoCompleteTextViewEvents = (MultiAutoCompleteTextView) eventTextInputLayout.getEditText();
         ArrayAdapter<String> eventAdapter = new ArrayAdapter<>(CreateServiceActivity.this, android.R.layout.simple_dropdown_item_1line, events);
-        eventAutoCompleteTextView.setAdapter(eventAdapter);
+        multiAutoCompleteTextViewEvents.setAdapter(eventAdapter);
+        multiAutoCompleteTextViewEvents.setTokenizer(new MultiAutoCompleteTextView.CommaTokenizer());
+        multiAutoCompleteTextViewEvents.setInputType(InputType.TYPE_NULL);
 
         TextInputLayout providerTextInputLayout = findViewById(R.id.providers);
-        AutoCompleteTextView providerAutoCompleteTextView = (AutoCompleteTextView) providerTextInputLayout.getEditText();
+        MultiAutoCompleteTextView multiAutoCompleteTextViewProviders = (MultiAutoCompleteTextView) providerTextInputLayout.getEditText();
         ArrayAdapter<String> providerAdapter = new ArrayAdapter<>(CreateServiceActivity.this, android.R.layout.simple_dropdown_item_1line, providers);
-        providerAutoCompleteTextView.setAdapter(providerAdapter);
+        multiAutoCompleteTextViewProviders.setAdapter(providerAdapter);
+        multiAutoCompleteTextViewProviders.setTokenizer(new MultiAutoCompleteTextView.CommaTokenizer());
+        multiAutoCompleteTextViewProviders.setInputType(InputType.TYPE_NULL);
 
         addCategory = findViewById(R.id.add_subcategory);
 

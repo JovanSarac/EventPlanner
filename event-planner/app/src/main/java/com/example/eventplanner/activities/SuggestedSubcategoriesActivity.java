@@ -11,8 +11,8 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.eventplanner.R;
-import adapters.SubcategoriesCardAdapter;
-import model.Subcategory;
+import com.example.eventplanner.adapters.SubcategoriesCardAdapter;
+import com.example.eventplanner.model.Subcategory;
 
 import java.util.ArrayList;
 import java.util.List;
