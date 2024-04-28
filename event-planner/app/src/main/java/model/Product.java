@@ -1,5 +1,6 @@
 package model;
 
+import android.net.Uri;
 import android.os.Parcel;
 import android.os.Parcelable;
 
@@ -7,30 +8,30 @@ import java.util.ArrayList;
 
 public class Product implements Parcelable {
     private Long id;
-    private String category;
-    private String subcategory;
+    private Long categoryId;
+    private Long subcategoryId;
     private String name;
     private String description;
     private Double price;
     private Double discount;
-    private ArrayList<Integer> imageId;
-    private ArrayList<String> events;
+    private ArrayList<Uri> images;
+    private ArrayList<Long> eventIds;
     private Boolean available;
     private Boolean visible;
 
     public Product() {
     }
 
-    public Product(Long id, String category, String subcategory, String name, String description, Double price, Double discount, ArrayList<Integer> imageId, ArrayList<String> events, Boolean available, Boolean visible) {
+    public Product(Long id, Long categoryId, Long subcategoryId, String name, String description, Double price, Double discount, ArrayList<Uri> images, ArrayList<Long> eventIds, Boolean available, Boolean visible) {
         this.id = id;
-        this.category = category;
-        this.subcategory = subcategory;
+        this.categoryId = categoryId;
+        this.subcategoryId = subcategoryId;
         this.name = name;
         this.description = description;
         this.price = price;
         this.discount = discount;
-        this.imageId = imageId;
-        this.events = events;
+        this.images = images;
+        this.eventIds = eventIds;
         this.available = available;
         this.visible = visible;
     }
@@ -41,8 +42,16 @@ public class Product implements Parcelable {
         } else {
             id = in.readLong();
         }
-        category = in.readString();
-        subcategory = in.readString();
+        if (in.readByte() == 0) {
+            categoryId = null;
+        } else {
+            categoryId = in.readLong();
+        }
+        if (in.readByte() == 0) {
+            subcategoryId = null;
+        } else {
+            subcategoryId = in.readLong();
+        }
         name = in.readString();
         description = in.readString();
         if (in.readByte() == 0) {
@@ -55,9 +64,10 @@ public class Product implements Parcelable {
         } else {
             discount = in.readDouble();
         }
-        imageId = new ArrayList<>();
-        in.readList(imageId, Integer.class.getClassLoader());
-        events = in.createStringArrayList();
+        images = new ArrayList<>();
+        in.readList(images, Uri.class.getClassLoader());
+        eventIds = new ArrayList<>();
+        in.readList(eventIds, Long.class.getClassLoader());
         byte tmpAvailable = in.readByte();
         available = tmpAvailable == 0 ? null : tmpAvailable == 1;
         byte tmpVisible = in.readByte();
@@ -89,8 +99,18 @@ public class Product implements Parcelable {
             dest.writeByte((byte) 1);
             dest.writeLong(id);
         }
-        dest.writeString(category);
-        dest.writeString(subcategory);
+        if (categoryId == null) {
+            dest.writeByte((byte) 0);
+        } else {
+            dest.writeByte((byte) 1);
+            dest.writeLong(categoryId);
+        }
+        if (subcategoryId == null) {
+            dest.writeByte((byte) 0);
+        } else {
+            dest.writeByte((byte) 1);
+            dest.writeLong(subcategoryId);
+        }
         dest.writeString(name);
         dest.writeString(description);
         if (price == null) {
@@ -105,8 +125,8 @@ public class Product implements Parcelable {
             dest.writeByte((byte) 1);
             dest.writeDouble(discount);
         }
-        dest.writeList(imageId);
-        dest.writeStringList(events);
+        dest.writeList(images);
+        dest.writeList(eventIds);
         dest.writeByte((byte) (available == null ? 0 : available ? 1 : 2));
         dest.writeByte((byte) (visible == null ? 0 : visible ? 1 : 2));
     }
@@ -119,20 +139,20 @@ public class Product implements Parcelable {
         this.id = id;
     }
 
-    public String getCategory() {
-        return category;
+    public Long getCategoryId() {
+        return categoryId;
     }
 
-    public void setCategory(String category) {
-        this.category = category;
+    public void setCategoryId(Long categoryId) {
+        this.categoryId = categoryId;
     }
 
-    public String getSubcategory() {
-        return subcategory;
+    public Long getSubcategoryId() {
+        return subcategoryId;
     }
 
-    public void setSubcategory(String subcategory) {
-        this.subcategory = subcategory;
+    public void setSubcategoryId(Long subcategoryId) {
+        this.subcategoryId = subcategoryId;
     }
 
     public String getName() {
@@ -167,20 +187,20 @@ public class Product implements Parcelable {
         this.discount = discount;
     }
 
-    public ArrayList<Integer> getImageId() {
-        return imageId;
+    public ArrayList<Uri> getImages() {
+        return images;
     }
 
-    public void setImageId(ArrayList<Integer> imageId) {
-        this.imageId = imageId;
+    public void setImages(ArrayList<Uri> images) {
+        this.images = images;
     }
 
-    public ArrayList<String> getEvents() {
-        return events;
+    public ArrayList<Long> getEventIds() {
+        return eventIds;
     }
 
-    public void setEvents(ArrayList<String> events) {
-        this.events = events;
+    public void setEventIds(ArrayList<Long> eventIds) {
+        this.eventIds = eventIds;
     }
 
     public Boolean getAvailable() {

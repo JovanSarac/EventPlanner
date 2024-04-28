@@ -1,5 +1,7 @@
 package model;
 
+import android.net.Uri;
+
 import java.util.ArrayList;
 
 public class Package {
@@ -9,13 +11,13 @@ public class Package {
     private Double discount;
     private Boolean available;
     private Boolean visible;
-    private String category;
-    private String subCategory;
-    private ArrayList<Product> products;
-    private ArrayList<Service> services;
-    private ArrayList<String> events;
+    private Long categoryId;
+    private ArrayList<Long> subCategoryId;
+    private ArrayList<Long> productIds;
+    private ArrayList<Long> serviceIds;
+    private ArrayList<Long> eventIds;
     private Double price;
-    private ArrayList<Integer> images;
+    private ArrayList<Uri> images;
     private String reservationDue;
     private String cancelationDue;
     private Boolean automaticAffirmation;
@@ -23,36 +25,18 @@ public class Package {
     public Package() {
     }
 
-    public Package(Long id, String name, String description, Double discount, Boolean available, Boolean visible, String category, String subCategory, ArrayList<Product> products, ArrayList<Service> services, ArrayList<String> events, Double price, ArrayList<Integer> images, String reservationDue, String cancelationDue, Boolean automaticAffirmation) {
+    public Package(Long id, String name, String description, Double discount, Boolean available, Boolean visible, Long categoryId, ArrayList<Long> subCategoryId, ArrayList<Long> productIds, ArrayList<Long> serviceIds, ArrayList<Long> eventIds, Double price, ArrayList<Uri> images, String reservationDue, String cancelationDue, Boolean automaticAffirmation) {
         this.id = id;
         this.name = name;
         this.description = description;
         this.discount = discount;
         this.available = available;
         this.visible = visible;
-        this.category = category;
-        this.subCategory = subCategory;
-        this.products = products;
-        this.services = services;
-        this.events = events;
-        this.price = price;
-        this.images = images;
-        this.reservationDue = reservationDue;
-        this.cancelationDue = cancelationDue;
-        this.automaticAffirmation = automaticAffirmation;
-    }
-
-    public Package(String name, String description, Double discount, Boolean available, Boolean visible, String category, String subCategory, ArrayList<Product> products, ArrayList<Service> services, ArrayList<String> events, Double price, ArrayList<Integer> images, String reservationDue, String cancelationDue, Boolean automaticAffirmation) {
-        this.name = name;
-        this.description = description;
-        this.discount = discount;
-        this.available = available;
-        this.visible = visible;
-        this.category = category;
-        this.subCategory = subCategory;
-        this.products = products;
-        this.services = services;
-        this.events = events;
+        this.categoryId = categoryId;
+        this.subCategoryId = subCategoryId;
+        this.productIds = productIds;
+        this.serviceIds = serviceIds;
+        this.eventIds = eventIds;
         this.price = price;
         this.images = images;
         this.reservationDue = reservationDue;
@@ -108,44 +92,44 @@ public class Package {
         this.visible = visible;
     }
 
-    public String getCategory() {
-        return category;
+    public Long getCategoryId() {
+        return categoryId;
     }
 
-    public void setCategory(String category) {
-        this.category = category;
+    public void setCategoryId(Long categoryId) {
+        this.categoryId = categoryId;
     }
 
-    public String getSubCategory() {
-        return subCategory;
+    public ArrayList<Long> getSubCategoryId() {
+        return subCategoryId;
     }
 
-    public void setSubCategory(String subCategory) {
-        this.subCategory = subCategory;
+    public void setSubCategoryId(ArrayList<Long> subCategoryId) {
+        this.subCategoryId = subCategoryId;
     }
 
-    public ArrayList<Product> getProducts() {
-        return products;
+    public ArrayList<Long> getProductIds() {
+        return productIds;
     }
 
-    public void setProducts(ArrayList<Product> products) {
-        this.products = products;
+    public void setProductIds(ArrayList<Long> productIds) {
+        this.productIds = productIds;
     }
 
-    public ArrayList<Service> getServices() {
-        return services;
+    public ArrayList<Long> getServiceIds() {
+        return serviceIds;
     }
 
-    public void setServices(ArrayList<Service> services) {
-        this.services = services;
+    public void setServiceIds(ArrayList<Long> serviceIds) {
+        this.serviceIds = serviceIds;
     }
 
-    public ArrayList<String> getEvents() {
-        return events;
+    public ArrayList<Long> getEventIds() {
+        return eventIds;
     }
 
-    public void setEvents(ArrayList<String> events) {
-        this.events = events;
+    public void setEventIds(ArrayList<Long> eventIds) {
+        this.eventIds = eventIds;
     }
 
     public Double getPrice() {
@@ -156,12 +140,12 @@ public class Package {
         this.price = price;
     }
 
-    public ArrayList<Integer> getImages() {
+    public ArrayList<Uri> getImages() {
         return images;
     }
 
-    public void setImages(ArrayList<Integer> imageTypes) {
-        this.images = imageTypes;
+    public void setImages(ArrayList<Uri> images) {
+        this.images = images;
     }
 
     public String getReservationDue() {
