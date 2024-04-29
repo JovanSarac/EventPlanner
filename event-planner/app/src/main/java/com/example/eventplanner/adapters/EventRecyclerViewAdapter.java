@@ -14,7 +14,9 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.eventplanner.R;
 import com.example.eventplanner.activities.ShowOneEventActivity;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Locale;
 
 import com.example.eventplanner.model.Event;
 
@@ -99,7 +101,9 @@ public class EventRecyclerViewAdapter  extends RecyclerView.Adapter<EventRecycle
 
             eventDistanceLocation.setText(Integer.toString(event.getMaxDistance()));
             eventAvailable.setText(event.isAvailble() ? "Da" : "Ne");
-            eventDate.setText(event.getDateEvent().toString());
+            SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy", Locale.getDefault());
+
+            eventDate.setText((sdf.format(event.getDateEvent()).toString()));
         }
     }
 }
