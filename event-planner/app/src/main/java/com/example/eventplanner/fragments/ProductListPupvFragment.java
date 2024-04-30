@@ -67,7 +67,7 @@ public class ProductListPupvFragment extends Fragment{
 
     }
     private void getProducts() {
-        db.collection("Products")
+        db.collection("Events")
                 .get()
                 .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                     @Override

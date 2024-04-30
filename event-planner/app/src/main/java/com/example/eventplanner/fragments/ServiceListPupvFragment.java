@@ -97,10 +97,10 @@ public class ServiceListPupvFragment extends Fragment {
                 serviceProviders.add(providers.get(j));
             }
 
-            services.add(new Service(ids[i], categories[i], subcategories[i],
+            /*services.add(new Service(ids[i], categories[i], subcategories[i],
                     names[i], description[i], new ArrayList<>(Arrays.asList(imageIds)), specifics[i], pricesPerHour[i], fullPrices[i],
                     durations[i], locations[i], discounts[i], serviceProviders, serviceEvents, reservationDues[i],
-                    cancelationDues[i], automaticAffirmations[i], available[i], visible[i]));
+                    cancelationDues[i], automaticAffirmations[i], available[i], visible[i]));*/
         }
 
         return services;

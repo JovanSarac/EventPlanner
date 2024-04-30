@@ -61,7 +61,7 @@ public class ProductListPupvAdapter extends ArrayAdapter<Product> {
         TextView productPrice = convertView.findViewById(R.id.product_price);
 
         if(product != null){
-            productImage.setImageResource(product.getImageId().get(0));
+            productImage.setImageURI(product.getImages().get(0));
             productName.setText(product.getName());
             productDescription.setText(product.getDescription());
             productPrice.setText(product.getPrice().toString() + "$");
@@ -77,14 +77,14 @@ public class ProductListPupvAdapter extends ArrayAdapter<Product> {
                 Intent intent = new Intent(finalConvertView.getContext(), EditProductActivity.class);
                 intent.putExtra("productId", product.getId());
                 intent.putExtra("productName", product.getName());
-                intent.putExtra("productCategory", product.getCategory());
-                intent.putExtra("productSubcategory", product.getSubcategory());
+                intent.putExtra("productCategory", product.getCategoryId());
+                intent.putExtra("productSubcategory", product.getSubcategoryId());
                 intent.putExtra("productName", product.getName());
                 intent.putExtra("productDescription", product.getDescription());
                 intent.putExtra("productPrice", product.getPrice());
                 intent.putExtra("productDiscount", product.getDiscount());
-                intent.putExtra("productImage", product.getImageId());
-                intent.putExtra("productEvents", product.getEvents());
+                intent.putExtra("productImage", product.getImages());
+                intent.putExtra("productEvents", product.getEventIds());
                 intent.putExtra("productAvailability", product.getAvailable());
                 intent.putExtra("productVisibility", product.getVisible());
 

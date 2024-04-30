@@ -56,7 +56,7 @@ public class ProductListAddAdapter extends ArrayAdapter<Product> {
         TextView productPrice = convertView.findViewById(R.id.product_price);
 
         if(product != null){
-            productImage.setImageResource(product.getImageId().get(0));
+            productImage.setImageURI(product.getImages().get(0));
             productName.setText(product.getName());
             productDescription.setText(product.getDescription());
             productPrice.setText(product.getPrice().toString() + "$");

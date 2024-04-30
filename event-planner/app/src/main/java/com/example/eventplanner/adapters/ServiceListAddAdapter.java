@@ -57,7 +57,7 @@ public class ServiceListAddAdapter extends ArrayAdapter<Service> {
         TextView productPricePerHour = convertView.findViewById(R.id.pricePerHour);
 
         if(service != null){
-            productImage.setImageResource(service.getImageId().get(0));
+            productImage.setImageURI(service.getImages().get(0));
             productName.setText(service.getName());
             productDescription.setText(service.getDescription());
             productFullPrice.setText(service.getFullPrice().toString() + "$");

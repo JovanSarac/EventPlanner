@@ -68,8 +68,8 @@ public class ProductListPupzFragment extends Fragment {
                 productEvents.add(events.get(j));
             }
 
-            products.add(new Product(ids[i], categories[i], subcategories[i],
-                    names[i], description[i], prices[i], discounts[i], new ArrayList<>(Arrays.asList(imageIds)), productEvents, available[i], visible[i]));
+            /*products.add(new Product(ids[i], categories[i], subcategories[i],
+                    names[i], description[i], prices[i], discounts[i], new ArrayList<>(Arrays.asList(imageIds)), productEvents, available[i], visible[i]));*/
         }
 
         return products;
