@@ -6,65 +6,125 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.text.InputType;
+import android.text.ParcelableSpan;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.MultiAutoCompleteTextView;
 import android.widget.PopupWindow;
+import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.eventplanner.R;
+import com.example.eventplanner.adapters.CategoryListAdapter;
+import com.example.eventplanner.adapters.EventListAdapter;
+import com.example.eventplanner.adapters.SubcategoryAdapter;
 import com.example.eventplanner.databinding.ActivityCreateProductBinding;
+import com.example.eventplanner.model.Category;
+import com.example.eventplanner.model.Event;
+import com.example.eventplanner.model.Subcategory;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.textfield.TextInputLayout;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QuerySnapshot;
+
+import org.checkerframework.checker.units.qual.A;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Random;
 
 public class CreateProductActivity extends AppCompatActivity {
 
-    Button addSubcategory;
+    Button addSubcategory, createBtn;
     FloatingActionButton addImage;
+    TextInputLayout name, description, price, discount, eventTextInputLayout;
+    CheckBox available, visible;
+    MultiAutoCompleteTextView eventMultiAutoCompleteTextView;
+
+    ArrayList<Event> eventsFromDb;
+    ArrayList<Category> categoriesFromDb;
+    ArrayList<Subcategory> subcategoriesFromDb;
+
+    ArrayList<Long> eventIds;
+    Long categoryId;
+    Long subcategoryId;
+
+    FirebaseFirestore db;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_product);
 
-        String[] categories = {"Category 1", "Category 2", "Category 3", "Category 4", "Category 5"};
-        String[] subcategories = {"Subcategory 1", "Subcategory 2", "Subcategory 3", "Subcategory 4", "Subcategory 5"};
-        ArrayList<String> events = new ArrayList<>(Arrays.asList(
-                "Event 11", "Event 12", "Event 13", "Event 14", "Event 15",
-                "Event 21", "Event 22", "Event 23", "Event 24", "Event 25",
-                "Event 31", "Event 32", "Event 33", "Event 34", "Event 35",
-                "Event 41", "Event 42", "Event 43", "Event 44", "Event 45",
-                "Event 51", "Event 52", "Event 53", "Event 54", "Event 55"));
+        db = FirebaseFirestore.getInstance();
+
+        getCategories();
+        getEvents();
+        getSubcategories();
 
         TextInputLayout textInputLayout = findViewById(R.id.categories);
         AutoCompleteTextView autoCompleteTextView = (AutoCompleteTextView) textInputLayout.getEditText();
-        ArrayAdapter<String> categoryAdapter = new ArrayAdapter<>(CreateProductActivity.this, android.R.layout.simple_dropdown_item_1line, categories);
+        CategoryListAdapter categoryAdapter = new CategoryListAdapter(CreateProductActivity.this, android.R.layout.simple_dropdown_item_1line, categoriesFromDb);
         autoCompleteTextView.setAdapter(categoryAdapter);
+
+        autoCompleteTextView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Category selectedCategory = (Category) parent.getItemAtPosition(position);
+                categoryId = selectedCategory.getId();
+            }
+        });
 
         TextInputLayout subcategoryTextInputLayout = findViewById(R.id.subcategories);
         AutoCompleteTextView subcategoryAutoCompleteTextView = (AutoCompleteTextView) subcategoryTextInputLayout.getEditText();
-        ArrayAdapter<String> subcategoryAdapter = new ArrayAdapter<>(CreateProductActivity.this, android.R.layout.simple_dropdown_item_1line, subcategories);
+        SubcategoryAdapter subcategoryAdapter = new SubcategoryAdapter(CreateProductActivity.this, android.R.layout.simple_dropdown_item_1line, subcategoriesFromDb);
         subcategoryAutoCompleteTextView.setAdapter(subcategoryAdapter);
 
-        TextInputLayout eventTextInputLayout = findViewById(R.id.events);
-        MultiAutoCompleteTextView eventMultiAutoCompleteTextView = (MultiAutoCompleteTextView) eventTextInputLayout.getEditText();
-        ArrayAdapter<String> eventAdapter = new ArrayAdapter<>(CreateProductActivity.this, android.R.layout.simple_dropdown_item_1line, events);
+        subcategoryAutoCompleteTextView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Subcategory selectedSubcategory = (Subcategory) parent.getItemAtPosition(position);
+                subcategoryId = selectedSubcategory.getId();
+            }
+        });
+
+        eventTextInputLayout = findViewById(R.id.events);
+        eventMultiAutoCompleteTextView = (MultiAutoCompleteTextView) eventTextInputLayout.getEditText();
+        EventListAdapter eventAdapter = new EventListAdapter(CreateProductActivity.this, android.R.layout.simple_dropdown_item_1line, eventsFromDb);
         eventMultiAutoCompleteTextView.setAdapter(eventAdapter);
         eventMultiAutoCompleteTextView.setTokenizer(new MultiAutoCompleteTextView.CommaTokenizer());
         eventMultiAutoCompleteTextView.setInputType(InputType.TYPE_NULL);
 
+        eventMultiAutoCompleteTextView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Event selectedItem = (Event) parent.getItemAtPosition(position);
+                if(!eventIds.contains(selectedItem.getId()))
+                    eventIds.add(selectedItem.getId());
+                else{
+                    eventIds.remove(selectedItem.getId());
+                }
+            }
+        });
 
         addSubcategory = findViewById(R.id.add_subcategory);
 
@@ -92,6 +152,49 @@ public class CreateProductActivity extends AppCompatActivity {
             }
         });
 
+        name = findViewById(R.id.name);
+        description = findViewById(R.id.description);
+        price = findViewById(R.id.price);
+        discount = findViewById(R.id.discount);
+        available = findViewById(R.id.availability);
+        visible = findViewById(R.id.visibility);
+        createBtn = findViewById(R.id.create_button);
+
+        createBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Long id = new Random().nextLong();
+
+                Map<String, Object> doc = new HashMap<>();
+                doc.put("categoryId", categoryId);
+                doc.put("subcategoryId", subcategoryId);
+                doc.put("name", name.getEditText().getText().toString());
+                doc.put("description", description.getEditText().getText().toString());
+                doc.put("price", Double.parseDouble(price.getEditText().getText().toString()));
+                doc.put("discount", Double.parseDouble(discount.getEditText().getText().toString()));
+                doc.put("eventIds", eventIds);
+                doc.put("available", available.isChecked());
+                doc.put("visible", visible.isChecked());
+
+                db.collection("Products")
+                        .document(id.toString())
+                        .set(doc)
+                        .addOnCompleteListener(new OnCompleteListener<Void>() {
+                            @Override
+                            public void onComplete(@NonNull Task<Void> task) {
+                                Toast.makeText(CreateProductActivity.this, "Product created", Toast.LENGTH_SHORT).show();
+                                finish();
+                            }
+                        })
+                        .addOnFailureListener(new OnFailureListener() {
+                            @Override
+                            public void onFailure(@NonNull Exception e) {
+                                Toast.makeText(CreateProductActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show();
+                            }
+                        });
+            }
+        });
+
     }
 
     @Override
@@ -102,5 +205,93 @@ public class CreateProductActivity extends AppCompatActivity {
             ImageView imageView = findViewById(R.id.carousel_image_view);
             imageView.setImageURI(selectedImage);
         }
+    }
+
+    private void getCategories(){
+        categoriesFromDb = new ArrayList<>();
+
+        db.collection("Categories")
+                .get()
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        for(DocumentSnapshot doc: task.getResult()){
+                            Category category = new Category(
+                                    Long.parseLong(doc.getId()),
+                                    doc.getString("Name"),
+                                    doc.getString("Description")
+                            );
+
+                            categoriesFromDb.add(category);
+                        }
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Toast.makeText(CreateProductActivity.this, e.getMessage(), Toast.LENGTH_SHORT);
+                    }
+                });
+    }
+
+    private void getSubcategories(){
+        subcategoriesFromDb = new ArrayList<>();
+
+        db.collection("Subcategories")
+                .get()
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        for(DocumentSnapshot doc: task.getResult()){
+                            Subcategory subcategory = new Subcategory(
+                                    Long.parseLong(doc.getId()),
+                                    doc.getString("CategoryName"),
+                                    doc.getString("Name"),
+                                    doc.getString("Description"),
+                                    (int) (long)doc.getLong("Type"));
+
+                            subcategoriesFromDb.add(subcategory);
+                        }
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Toast.makeText(CreateProductActivity.this, e.getMessage(), Toast.LENGTH_SHORT);
+                    }
+                });
+    }
+
+    private void getEvents(){
+        eventsFromDb = new ArrayList<>();
+        eventIds = new ArrayList<>();
+
+        db.collection("Events")
+                .get()
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        for (DocumentSnapshot doc : task.getResult()) {
+                            Event event = new Event(
+                                    Long.parseLong(doc.getId()),
+                                    doc.getString("typeEvent"),
+                                    doc.getString("name"),
+                                    doc.getString("description"),
+                                    Integer.parseInt(String.valueOf(doc.getLong("maxPeople"))),
+                                    doc.getString("locationPlace"),
+                                    Integer.parseInt(String.valueOf(doc.getLong("maxDistance"))),
+                                    doc.getDate("dateEvent"),
+                                    doc.getBoolean("available"));
+
+                            eventsFromDb.add(event);
+                        }
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Toast.makeText(CreateProductActivity.this, e.getMessage(), Toast.LENGTH_SHORT);
+                    }
+                });
     }
 }

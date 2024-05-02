@@ -13,6 +13,8 @@ navigationRuntime = "2.7.7"
 animationCoreAndroid = "1.6.4"
 googleServices = "4.4.1"
 firebaseMessaging = "23.4.1"
+firebaseDatabase = "20.3.1"
+firebaseFirestore = "24.11.1"
 
 [libraries]
 junit = { group = "junit", name = "junit", version.ref = "junit" }
@@ -28,6 +30,8 @@ navigation-runtime = { group = "androidx.navigation", name = "navigation-runtime
 animation-core-android = { group = "androidx.compose.animation", name = "animation-core-android", version.ref = "animationCoreAndroid" }
 google-services = { group = "com.google.gms", name = "google-services", version.ref = "googleServices" }
 firebase-messaging = { group = "com.google.firebase", name = "firebase-messaging", version.ref = "firebaseMessaging" }
+firebase-database = { group = "com.google.firebase", name = "firebase-database", version.ref = "firebaseDatabase" }
+firebase-firestore = { group = "com.google.firebase", name = "firebase-firestore", version.ref = "firebaseFirestore" }
 
 [plugins]
 androidApplication = { id = "com.android.application", version.ref = "agp" }

@@ -96,8 +96,8 @@ public class EditProductActivity extends AppCompatActivity {
         ImageAdapter adapter = new ImageAdapter(EditProductActivity.this, arrayList);
         recyclerView.setAdapter(adapter);
 
-        EventListAdapter eventListAdapter = new EventListAdapter(this, productEvents);
-        binding.events.setAdapter(eventListAdapter);
+        /*EventListAdapter eventListAdapter = new EventListAdapter(this, productEvents);
+        binding.events.setAdapter(eventListAdapter);*/
 
         CheckBox available = findViewById(R.id.availability);
         available.setChecked(productAvailability);

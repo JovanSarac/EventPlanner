@@ -117,11 +117,11 @@ public class EditServiceActivity extends AppCompatActivity {
         ImageAdapter adapter = new ImageAdapter(EditServiceActivity.this, arrayList);
         recyclerView.setAdapter(adapter);
 
-        EventListAdapter eventListAdapter = new EventListAdapter(this, serviceEvents);
-        binding.events.setAdapter(eventListAdapter);
+        /*EventListAdapter eventListAdapter = new EventListAdapter(this, serviceEvents);
+        binding.events.setAdapter(eventListAdapter);*/
 
-        EventListAdapter providerListAdapter = new EventListAdapter(this, serviceProviders);
-        binding.providers.setAdapter(providerListAdapter);
+        /*EventListAdapter providerListAdapter = new EventListAdapter(this, serviceProviders);
+        binding.providers.setAdapter(providerListAdapter);*/
 
         TextInputLayout reservationDue = findViewById(R.id.reservation_due);
         TextInputEditText reservationDueAutoComplete = (TextInputEditText) reservationDue.getEditText();

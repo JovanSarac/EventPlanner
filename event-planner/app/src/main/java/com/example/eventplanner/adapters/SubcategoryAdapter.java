@@ -1,8 +1,6 @@
 package com.example.eventplanner.adapters;
 
-
 import android.content.Context;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
@@ -10,30 +8,31 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import com.example.eventplanner.R;
+
 import com.example.eventplanner.model.Event;
+import com.example.eventplanner.model.Subcategory;
 
 import java.util.ArrayList;
 
-public class EventListAdapter  extends ArrayAdapter<Event> {
-    private ArrayList<Event> events;
+public class SubcategoryAdapter extends ArrayAdapter<Subcategory> {
+    private ArrayList<Subcategory> subcategories;
     private int resource;
 
-    public EventListAdapter(Context context, int resource, ArrayList<Event> events){
-        super(context, resource, events);
-        this.events = events;
+    public SubcategoryAdapter(Context context, int resource, ArrayList<Subcategory> subcategories){
+        super(context, resource, subcategories);
+        this.subcategories = subcategories;
         this.resource = resource;
     }
 
     @Override
     public int getCount() {
-        return this.events.size();
+        return this.subcategories.size();
     }
 
     @Nullable
     @Override
-    public Event getItem(int position) {
-        return this.events.get(position);
+    public Subcategory getItem(int position) {
+        return this.subcategories.get(position);
     }
 
     @Override
@@ -49,4 +48,5 @@ public class EventListAdapter  extends ArrayAdapter<Event> {
         textView.setText(getItem(position).getName());
         return view;
     }
+
 }

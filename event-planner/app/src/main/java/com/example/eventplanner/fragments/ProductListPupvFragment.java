@@ -45,11 +45,6 @@ public class ProductListPupvFragment extends Fragment{
 
         getProducts();
 
-        ProductListPupvAdapter productListAdapter = new ProductListPupvAdapter(requireContext(), products);
-
-        binding.productsListPupv.setAdapter(productListAdapter);
-        binding.productsListPupv.setClickable(true);
-
         return binding.getRoot();
     }
 
@@ -67,26 +62,34 @@ public class ProductListPupvFragment extends Fragment{
 
     }
     private void getProducts() {
-        db.collection("Events")
+        products = new ArrayList<>();
+
+        db.collection("Products")
                 .get()
                 .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                     @Override
                     public void onComplete(@NonNull Task<QuerySnapshot> task) {
                         for(DocumentSnapshot doc: task.getResult()){
-                            Product product = new Product(doc.getLong("id"),
+                            Product product = new Product(
+                                    Long.parseLong(doc.getId()),
                                     doc.getLong("categoryId"),
                                     doc.getLong("subcategoryId"),
                                     doc.getString("name"),
                                     doc.getString("description"),
-                                    doc.getDouble("price"),
-                                    doc.getDouble("discount"),
+                                    ((Number) doc.get("price")).doubleValue() ,
+                                    ((Number) doc.get("discount")).doubleValue(),
                                     new ArrayList<>(), //images
                                     new ArrayList<>(), //eventIds
-                                    doc.getBoolean("availabale"),
+                                    doc.getBoolean("available"),
                                     doc.getBoolean("visible"));
 
                             products.add(product);
                         }
+
+                        ProductListPupvAdapter productListAdapter = new ProductListPupvAdapter(requireContext(), products);
+
+                        binding.productsListPupv.setAdapter(productListAdapter);
+                        binding.productsListPupv.setClickable(true);
                     }
                 })
                 .addOnFailureListener(new OnFailureListener() {
