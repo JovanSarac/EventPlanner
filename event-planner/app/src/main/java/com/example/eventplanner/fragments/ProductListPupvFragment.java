@@ -43,14 +43,14 @@ public class ProductListPupvFragment extends Fragment{
 
         db = FirebaseFirestore.getInstance();
 
-        getProducts();
-
         return binding.getRoot();
     }
 
     @Override
     public void onResume() {
         super.onResume();
+
+        getProducts();
 
         binding.addProduct.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -79,7 +79,7 @@ public class ProductListPupvFragment extends Fragment{
                                     ((Number) doc.get("price")).doubleValue() ,
                                     ((Number) doc.get("discount")).doubleValue(),
                                     new ArrayList<>(), //images
-                                    new ArrayList<>(), //eventIds
+                                    (ArrayList<Long>) doc.get("eventIds"),
                                     doc.getBoolean("available"),
                                     doc.getBoolean("visible"));
 
