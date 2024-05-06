@@ -34,6 +34,7 @@ import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -63,12 +64,13 @@ public class EventTypesActivity extends AppCompatActivity {
         });
 
         listView = findViewById(R.id.list_view);
-        getEventTypes();
+        //getEventTypes();
 
     }
 
 
     private void getEventTypes() {
+        itemList=new ArrayList<>();
         db.collection("EventTypes")
                 .get()
                 .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
@@ -127,7 +129,12 @@ public class EventTypesActivity extends AppCompatActivity {
                     }
                 });
     }
+    @Override
+    protected void onResume() {
+        super.onResume();
 
+        getEventTypes();
+    }
 
     private void setUpAdapter(){
         adapter = new EventTypesListAdapter(EventTypesActivity.this, itemList);
@@ -139,6 +146,9 @@ public class EventTypesActivity extends AppCompatActivity {
                 intent.putExtra("editButtonFlag", true);
                 intent.putExtra("typeName", itemList.get(position).getTypeName());
                 intent.putExtra("typeDecription", itemList.get(position).getTypeDescription());
+                intent.putExtra("inUse", itemList.get(position).isInUse());
+                intent.putExtra("eventTypeId", itemList.get(position).getId());
+
 
                 ArrayList<String> temp_list=new ArrayList<>();
                 for (Subcategory sub:itemList.get(position).getRecomendedSubcategories()) {
@@ -151,7 +161,27 @@ public class EventTypesActivity extends AppCompatActivity {
 
             @Override
             public void onDeleteClick(int position) {
-                Toast.makeText(EventTypesActivity.this, "Delete is clicked on"+ itemList.get(position).getTypeName(), Toast.LENGTH_SHORT).show();
+                EventType eventType=itemList.get(position);
+                List<String> tempList=new ArrayList<>();
+                for (Subcategory s:itemList.get(position).getRecomendedSubcategories()) {
+                    tempList.add(s.getId().toString());
+                }
+
+                Map<String, Object> item = new HashMap<>();
+                item.put("Name", eventType.getTypeName());
+                item.put("Description", eventType.getTypeDescription());
+                item.put("InUse", !eventType.isInUse());
+                item.put("Subcategories", tempList);
+
+                db.collection("EventTypes")
+                        .document(eventType.getId().toString()).set(item)
+                        .addOnSuccessListener(aVoid -> {
+                            Toast.makeText(EventTypesActivity.this, "EventType status changed", Toast.LENGTH_SHORT).show();
+                            getEventTypes();
+                        })
+                        .addOnFailureListener(e -> {
+                            Toast.makeText(EventTypesActivity.this, "error while deleting", Toast.LENGTH_SHORT).show();
+                        });
             }
         });
     }
