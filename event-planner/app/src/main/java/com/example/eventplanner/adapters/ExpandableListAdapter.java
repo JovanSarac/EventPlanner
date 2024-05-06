@@ -10,19 +10,32 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+
 import com.example.eventplanner.R;
 import com.example.eventplanner.activities.AddSubcategoryActivity;
+import com.example.eventplanner.activities.CategoryActivity;
 import com.example.eventplanner.activities.EditCategoryActivity;
 import com.example.eventplanner.model.Category;
 import com.example.eventplanner.model.Subcategory;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QuerySnapshot;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Optional;
 
 public class ExpandableListAdapter extends BaseExpandableListAdapter {
     private Context context;
     private List<Category> listDataHeader;
     private HashMap<Category, List<Subcategory>> listHashMap;
+    FirebaseFirestore db = FirebaseFirestore.getInstance();
 
     public ExpandableListAdapter(Context context, List<Category> listDataHeader, HashMap<Category, List<Subcategory>> listHashMap) {
         this.context = context;
@@ -87,6 +100,7 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
                 Intent intent = new Intent(context, EditCategoryActivity.class);
                 intent.putExtra("categoryName", headerTitle.getName());
                 intent.putExtra("categoryDescription", headerTitle.getDescription());
+                intent.putExtra("categoryId", headerTitle.getId());
                 context.startActivity(intent);
             }
         });
@@ -96,7 +110,36 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
         iconDelete.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(context, "Icon delete clicked", Toast.LENGTH_SHORT).show();
+                CollectionReference collectionRef = db.collection("Subcategories");
+                collectionRef.whereEqualTo("CategoryName", headerTitle.getName())
+                        .get()
+                        .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                            @Override
+                            public void onComplete(Task<QuerySnapshot> task) {
+                                if (task.isSuccessful()) {
+                                    // Iterate through the query result and delete each document
+                                    for (DocumentSnapshot document : task.getResult()) {
+                                        // Delete the document
+                                        document.getReference().delete();
+
+                                    }
+
+                                } else {
+                                    Toast.makeText(context, "Deleting failed", Toast.LENGTH_SHORT).show();
+                                }
+                            }
+                        });
+                db.collection("Categories")
+                        .document(headerTitle.getId().toString()).delete()
+                        .addOnSuccessListener(aVoid -> {
+                            Toast.makeText(context, "Category deleted", Toast.LENGTH_SHORT).show();
+                        })
+                        .addOnFailureListener(e -> {
+                            Toast.makeText(context, "error while deleting", Toast.LENGTH_SHORT).show();
+                        });
+                ((CategoryActivity) context).getCategories();
+
+
             }
         });
 
@@ -127,6 +170,7 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(context, AddSubcategoryActivity.class);
+                intent.putExtra("subcategoryId", childText.getId());
                 intent.putExtra("editButtonFlag", true);
                 intent.putExtra("categoryName", childText.getCategoryName());
                 intent.putExtra("name", childText.getName());
@@ -140,12 +184,22 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
         iconDeleteSub.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(context, "Icon delete clicked", Toast.LENGTH_SHORT).show();
+                deleteSubcategory(childText.getId());
+                ((CategoryActivity) context).getCategories();
             }
         });
         return convertView;
     }
-
+    private void deleteSubcategory(Long id){
+        db.collection("Subcategories")
+                .document(id.toString()).delete()
+                .addOnSuccessListener(aVoid -> {
+                    Toast.makeText(context, "Subcategory deleted", Toast.LENGTH_SHORT).show();
+                })
+                .addOnFailureListener(e -> {
+                    Toast.makeText(context, "error while deleting", Toast.LENGTH_SHORT).show();
+                });
+    }
     @Override
     public boolean isChildSelectable(int groupPosition, int childPosition) {
         return true;

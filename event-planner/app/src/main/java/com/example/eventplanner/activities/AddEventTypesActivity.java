@@ -18,28 +18,28 @@ import java.util.Arrays;
 import java.util.List;
 
 public class AddEventTypesActivity extends AppCompatActivity {
-    List<String> subcategoriesList = Arrays.asList(
-            "Plumbing Services",
-            "Electrical Services",
-            "Home Cleaning",
-            "Gardening Services",
-            "Painting Services",
-            "Appliance Repair",
-            "Computer Repair",
-            "Mobile Phone Repair",
-            "Car Mechanics",
-            "Locksmith Services",
-            "Carpentry Services",
-            "Roofing Services",
-            "Pest Control Services",
-            "Moving Services",
-            "Event Planning",
-            "Photography Services",
-            "Tutoring Services",
-            "Fitness Training",
-            "Legal Services",
-            "Financial Consultancy"
-    );
+//    List<String> subcategoriesList = Arrays.asList(
+//            "Plumbing Services",
+//            "Electrical Services",
+//            "Home Cleaning",
+//            "Gardening Services",
+//            "Painting Services",
+//            "Appliance Repair",
+//            "Computer Repair",
+//            "Mobile Phone Repair",
+//            "Car Mechanics",
+//            "Locksmith Services",
+//            "Carpentry Services",
+//            "Roofing Services",
+//            "Pest Control Services",
+//            "Moving Services",
+//            "Event Planning",
+//            "Photography Services",
+//            "Tutoring Services",
+//            "Fitness Training",
+//            "Legal Services",
+//            "Financial Consultancy"
+//    );
     ListView subcategoriesView;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
