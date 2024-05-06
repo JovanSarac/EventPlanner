@@ -7,9 +7,11 @@ import androidx.annotation.Nullable;
 import androidx.core.util.Pair;
 import androidx.fragment.app.Fragment;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
@@ -18,6 +20,7 @@ import android.widget.TextView;
 
 import com.example.eventplanner.R;
 import com.example.eventplanner.databinding.FragmentProductsServicesPageBinding;
+import com.example.eventplanner.databinding.FragmentSearchPspBinding;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.datepicker.MaterialDatePicker;
 import com.google.android.material.slider.RangeSlider;
@@ -28,6 +31,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.List;
 import java.util.Locale;
 
 import com.example.eventplanner.adapters.PackageListAdapter;
@@ -40,11 +44,16 @@ import com.example.eventplanner.model.Service;
 
 public class ProductsServicesPageFragment extends Fragment {
 
+
     private FragmentProductsServicesPageBinding binding;
 
+    private FragmentSearchPspBinding bindingSearchPsp;
     TextInputEditText datetimeRangeEventInput;
 
     RangeSlider slider;
+
+    String selectedCategory;
+    String selectedSubcategory;
 
     public static ProductsServicesPageFragment newInstance() {
         return new ProductsServicesPageFragment();
@@ -82,7 +91,9 @@ public class ProductsServicesPageFragment extends Fragment {
             BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(getActivity(), R.style.FullScreenBottomSheetDialog);
             View dialogView = getLayoutInflater().inflate(R.layout.fragment_search_psp, null);
 
-            AutoCompleteTextView atv = dialogView.findViewById(R.id.autoCompleteInputTextView);
+            bindingSearchPsp = FragmentSearchPspBinding.bind(dialogView);
+
+            AutoCompleteTextView atv = dialogView.findViewById(R.id.inputEventType);
             String[] eventTypes = {"Svadbe", "Veridbe", "Rodjendani", "Godiscnjice", "Krstenja", "Rodjenja",
                     "Porodicna okupljanja i proslave", "Mature i proslave diploma", "Bebine zabave i krstenja",
                     "Konferencije i seminari", "Godisnje korporativne zabave", "Sajmovi i izlozbe"};
@@ -161,8 +172,71 @@ public class ProductsServicesPageFragment extends Fragment {
             slider = dialogView.findViewById(R.id.slider_multiple_thumbs);
             slider.setValues(1.0f, 1000.0f);
 
+
+            bindingSearchPsp.btnSort1.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                @Override
+                public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
+                    selectedCategory = parentView.getItemAtPosition(position).toString();
+                    // Ovde možete koristiti selectedItem prema potrebi
+                }
+                @Override
+                public void onNothingSelected(AdapterView<?> parentView) {
+                    // Implementacija ako nije izabrana ni jedna stavka
+                }
+            });
+
+            bindingSearchPsp.btnSort2.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                @Override
+                public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
+                    selectedSubcategory = parentView.getItemAtPosition(position).toString();
+                    // Ovde možete koristiti selectedItem prema potrebi
+                }
+                @Override
+                public void onNothingSelected(AdapterView<?> parentView) {
+                    // Implementacija ako nije izabrana ni jedna stavka
+                }
+            });
+            dialogView.findViewById(R.id.searchButton).setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    // Kod za prikupljanje podataka o pretrazi
+
+                    String searchByName = bindingSearchPsp.searchByNameInput.getText().toString();
+                    String searchByLocation = bindingSearchPsp.searchByLocationInput.getText().toString();
+                    String eventType = bindingSearchPsp.inputEventType.getText().toString();
+                    String category = selectedCategory;
+                    String subcategory = selectedSubcategory;
+                    String searchByNamePup = bindingSearchPsp.searchByNamePUPInput.getText().toString();
+                    String dateTimeRange = bindingSearchPsp.datetimeRangeEventInput.getText().toString();
+                    List<Float> range = bindingSearchPsp.sliderMultipleThumbs.getValues();
+                    Float priceFrom = range.get(0);
+                    Float priceTo = range.get(1);
+                    boolean available = bindingSearchPsp.radioButton1.isChecked();
+
+
+                    System.out.println(searchByName);
+                    System.out.println(category);
+                    System.out.println(subcategory);
+                    System.out.println(eventType);
+                    System.out.println(priceFrom);
+                    System.out.println(priceTo);
+                    System.out.println(available);
+                    System.out.println(dateTimeRange);
+
+
+
+
+
+
+                    // Zatvaranje BottomSheetDialog-a
+                    bottomSheetDialog.dismiss();
+                }
+            });
+
             bottomSheetDialog.setContentView(dialogView);
             bottomSheetDialog.show();
+
+
         });
 
 
@@ -383,5 +457,7 @@ public class ProductsServicesPageFragment extends Fragment {
 
         return  packages;
     }
+
+
 
 }

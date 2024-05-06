@@ -82,7 +82,7 @@
             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu">
 
             <AutoCompleteTextView
-                android:id="@+id/autoCompleteInputTextView"
+                android:id="@+id/inputEventType"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:inputType="none"

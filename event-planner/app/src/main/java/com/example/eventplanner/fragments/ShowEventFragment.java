@@ -82,7 +82,7 @@ public class ShowEventFragment extends Fragment {
                                     doc.getDate("dateEvent"),
                                     doc.getBoolean("available"));
 
-                            //System.out.println(event);
+                            //System.out.println(event.getName());
 
 
                             events.add(event);

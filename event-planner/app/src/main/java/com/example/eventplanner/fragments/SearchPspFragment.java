@@ -13,14 +13,17 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.DatePicker;
+import android.widget.RadioButton;
 import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.example.eventplanner.R;
 import com.example.eventplanner.databinding.FragmentSearchPspBinding;
+import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.slider.RangeSlider;
 import com.google.android.material.textfield.TextInputEditText;
@@ -35,11 +38,6 @@ import java.util.Locale;
 
 public class SearchPspFragment extends Fragment {
 
-    public interface OnSearchListener {
-        void onSearch(String searchByName, String searchByLocation, String eventType, String category, String subcategory, String searchByNamePUP, String dateTimeRange, RangeSlider slider, boolean available);
-    }
-
-    private OnSearchListener searchListener;
     FragmentSearchPspBinding binding;
     TextInputEditText datetimeRangeEventInput;
     MaterialButton buttonSearch;
@@ -48,8 +46,22 @@ public class SearchPspFragment extends Fragment {
     TextInputEditText searchByLocationInput;
     AutoCompleteTextView searchByEventType;
 
+    TextInputEditText searchByNamePUP;
+
+    TextInputEditText rangeDate;
+
     Spinner cat;
     Spinner subcat;
+
+    RangeSlider price;
+
+    RadioButton availab;
+
+    String selectedCategory;
+    String selectedSubcategory;
+
+    private BottomSheetDialog bottomSheetDialog;
+
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -58,29 +70,6 @@ public class SearchPspFragment extends Fragment {
         binding = FragmentSearchPspBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
 
-        buttonSearch = binding.searchButton;
-        searchByNameInput = binding.searchByNameInput;
-        searchByLocationInput = binding.searchByLocationInput;
-        searchByEventType = binding.autoCompleteInputTextView;
-        cat = binding.btnSort1;
-        subcat = binding.btnSort2;
-
-
-        /*buttonSearch.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                String searchByName = searchByNameInput.getText().toString();
-                String searchByLocation = searchByLocationInput.getText().toString();
-                String eventType = searchByEventType.getText().toString();
-                String category = cat.
-                String searchByNamePUP = searchByNamePUPInput.getText().toString();
-                String dateTimeRange = datetimeRangeEventInput.getText().toString();
-                RangeSlider slider = findViewById(R.id.slider_multiple_thumbs);
-                boolean available = radio_button_1.isChecked(); // Da li je dostupno ili ne
-
-                searchListener.onSearch(searchByName, searchByLocation, eventType, searchByNamePUP, dateTimeRange, slider, available);
-            }
-        });*/
 
         return root;
     }
