@@ -25,6 +25,11 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.AuthResult;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseAuthException;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.auth.UserProfileChangeRequest;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QuerySnapshot;
@@ -41,54 +46,12 @@ import java.util.Random;
 
 public class PUPV_RegisterCategoryActivity extends AppCompatActivity {
 
-
+    FirebaseAuth mAuth= FirebaseAuth.getInstance();
     FirebaseFirestore db = FirebaseFirestore.getInstance();
     List<Category> categories =new ArrayList<>();
-    List<String> categoriesList =new ArrayList<>(); //Arrays.asList(
-//            "Plumbing Services",
-//            "Electrical Services",
-//            "Home Cleaning",
-//            "Gardening Services",
-//            "Painting Services",
-//            "Appliance Repair",
-//            "Computer Repair",
-//            "Mobile Phone Repair",
-//            "Car Mechanics",
-//            "Locksmith Services",
-//            "Carpentry Services",
-//            "Roofing Services",
-//            "Pest Control Services",
-//            "Moving Services",
-//            "Event Planning",
-//            "Photography Services",
-//            "Tutoring Services",
-//            "Fitness Training",
-//            "Legal Services",
-//            "Financial Consultancy"
-//    );
+    List<String> categoriesList =new ArrayList<>();
     List<EventType> eventTypes =new ArrayList<>();
-    List<String> eventNames =new ArrayList<>();// Arrays.asList(
-//            "Birthday Party",
-//            "Wedding Ceremony",
-//            "Graduation Celebration",
-//            "Baby Shower",
-//            "Housewarming Party",
-//            "Anniversary Dinner",
-//            "Retirement Party",
-//            "Engagement Party",
-//            "Prom Night",
-//            "Holiday Gathering",
-//            "Farewell Party",
-//            "Reunion",
-//            "Barbecue Cookout",
-//            "Fundraising Gala",
-//            "Business Conference",
-//            "Product Launch",
-//            "Music Concert",
-//            "Art Exhibition",
-//            "Film Screening",
-//            "Fashion Show"
-//    );
+    List<String> eventNames =new ArrayList<>();
     String selectedImage;
     ListView selectedCategories;
     ListView selectedEvents;
@@ -124,6 +87,44 @@ public class PUPV_RegisterCategoryActivity extends AppCompatActivity {
         });
     }
     private void createUserPUPV(){
+        initializeLists();
+        Long id = new Random().nextLong();
+
+        mAuth.createUserWithEmailAndPassword(item.get("E-mail").toString(),item.get("Password").toString())
+                .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+                    @Override
+                    public void onComplete(@NonNull Task<AuthResult> task) {
+                        if (task.isSuccessful()) {
+                            FirebaseUser user = mAuth.getCurrentUser();
+                            UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder()
+                                    .setDisplayName("PUPV").build();
+
+                            user.updateProfile(profileUpdates)
+                                    .addOnCompleteListener(new OnCompleteListener<Void>() {
+                                        @Override
+                                        public void onComplete(@NonNull Task<Void> task) {
+                                            if (task.isSuccessful()) {
+                                                addToCollectionPUPV(user.getUid());
+                                            }
+                                        }
+                                    });
+
+                        } else {
+                            Exception exception = task.getException();
+                            if (exception instanceof FirebaseAuthException) {
+                                FirebaseAuthException firebaseAuthException = (FirebaseAuthException) exception;
+                                String errorCode = firebaseAuthException.getErrorCode();
+                                String errorMessage = firebaseAuthException.getMessage();
+                                Log.e("JovoFirebaseAuth", "Authentication failed with error code: " + errorCode + ", message: " + errorMessage);
+                            }
+                            Toast.makeText(PUPV_RegisterCategoryActivity.this, "Authentication failed.",
+                                    Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                });
+
+    }
+    private void initializeLists(){
         SparseBooleanArray checkedPositionsCategories = selectedCategories.getCheckedItemPositions();
         List<String> idCategories=new ArrayList<>();
         for (int i=0;i<categories.size();i++) {
@@ -143,19 +144,21 @@ public class PUPV_RegisterCategoryActivity extends AppCompatActivity {
         item.put("Categories",idCategories);
         item.put("EventTypes",idEventTypes);
         item.put("UserType","PUPV");
-        Long id = new Random().nextLong();
+    }
+    private void addToCollectionPUPV(String id){
         db.collection("User")
-                .document(id.toString())
+                .document(id)
                 .set(item)
                 .addOnCompleteListener(new OnCompleteListener<Void>() {
                     @Override
                     public void onComplete(@NonNull Task<Void> task) {
-                        if(selectedImage!="")uploadImage(id.toString());
+                        if(selectedImage!="")uploadImage(id);
                         Toast.makeText(PUPV_RegisterCategoryActivity.this, "User registered", Toast.LENGTH_SHORT).show();
 
                     }
                 });
     }
+
     private void setupListViewForCategories() {
         selectedCategories = findViewById(R.id.categoryView);
         ArrayAdapter<String> adapterCategories = new ArrayAdapter<>(this, android.R.layout.simple_list_item_multiple_choice, categoriesList);

@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
@@ -13,6 +14,7 @@ import androidx.core.view.WindowInsetsCompat;
 
 import com.example.eventplanner.R;
 import com.example.eventplanner.databinding.ActivityHomeBinding;
+import com.google.firebase.auth.FirebaseAuth;
 
 public class HomeActivity extends AppCompatActivity {
 
@@ -100,6 +102,10 @@ public class HomeActivity extends AppCompatActivity {
         binding.ownerDashboardBtn.setOnClickListener(v->{
             Intent intent = new Intent(HomeActivity.this, OwnerDashboard.class);
             startActivity(intent);
+        });
+        binding.signOut.setOnClickListener(v->{
+            FirebaseAuth.getInstance().signOut();
+            Toast.makeText(this, "SingedOut", Toast.LENGTH_SHORT).show();
         });
 
 
