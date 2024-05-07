@@ -18,7 +18,8 @@ import com.example.eventplanner.databinding.FragmentSearchPspBinding;
 
 public class AddSubcategoryOnBudgetPlannerFragment extends Fragment {
 
-        FragmentAddSubcategoryOnBudgetPlannerBinding binding;
+    FragmentAddSubcategoryOnBudgetPlannerBinding binding;
+
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,

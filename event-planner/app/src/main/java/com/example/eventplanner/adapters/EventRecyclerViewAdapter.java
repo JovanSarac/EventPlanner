@@ -1,5 +1,6 @@
 package com.example.eventplanner.adapters;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Handler;
 import android.view.LayoutInflater;
@@ -55,8 +56,10 @@ public class EventRecyclerViewAdapter  extends RecyclerView.Adapter<EventRecycle
         TextView eventDistanceLocation;
         TextView eventAvailable;
         TextView eventDate;
+        TextView idEvent;
 
         LinearLayout openEvent;
+
 
         public EventsViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -67,6 +70,7 @@ public class EventRecyclerViewAdapter  extends RecyclerView.Adapter<EventRecycle
             eventDistanceLocation = itemView.findViewById(R.id.doo);
             eventAvailable = itemView.findViewById(R.id.availableEvent);
             eventDate = itemView.findViewById(R.id.dateEvent);
+            idEvent = itemView.findViewById(R.id.eventId);
 
             openEvent = itemView.findViewById(R.id.eventCard);
             openEvent.setOnClickListener(new View.OnClickListener(){
@@ -80,7 +84,10 @@ public class EventRecyclerViewAdapter  extends RecyclerView.Adapter<EventRecycle
                         }
                     }, 100);
 
+
+
                     Intent intent = new Intent(itemView.getContext(), ShowOneEventActivity.class);
+                    intent.putExtra("eventId", idEvent.getText());
                     intent.putExtra("eventName", eventName.getText());
                     intent.putExtra("eventDescription", eventDescription.getText());
                     intent.putExtra("eventLocation", eventLocation.getText());
@@ -93,11 +100,13 @@ public class EventRecyclerViewAdapter  extends RecyclerView.Adapter<EventRecycle
             });
         }
 
+        @SuppressLint("SetTextI18n")
         public void bind(Event event) {
             eventName.setText(event.getName());
             eventType.setText("(" + event.getTypeEvent() + ")");
             eventDescription.setText(event.getDescription());
             eventLocation.setText(event.getLocationPlace());
+            idEvent.setText(Long.toString(event.getId()));
 
             eventDistanceLocation.setText(Integer.toString(event.getMaxDistance()));
             eventAvailable.setText(event.isAvailble() ? "Da" : "Ne");

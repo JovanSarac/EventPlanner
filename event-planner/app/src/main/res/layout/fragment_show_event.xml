@@ -3,6 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".fragments.ShowEventFragment"
     android:background="@color/purple_dark">
 
@@ -11,13 +12,41 @@
         android:layout_height="wrap_content"
         android:orientation="vertical">
 
-    <TextView
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textColor="@color/white"
-        android:text="@string/yourevents"
-        android:textSize="35sp"
-        android:gravity="center"/>
+        android:orientation="horizontal"
+        android:layout_marginHorizontal="15dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:textColor="@color/white"
+            android:text="@string/yourevents"
+            android:textSize="35sp"
+            android:layout_weight="0.7"
+            android:gravity="center"/>
+
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/floating_action_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="5dp"
+            android:layout_marginTop="5dp"
+            android:layout_weight="0.3"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:backgroundTint="@color/purple_light"
+            android:clickable="true"
+            android:contentDescription="@string/create_event"
+            android:theme="@style/Theme.EventPlanner"
+            android:tooltipText="@string/create_event"
+            app:srcCompat="@drawable/ic_add"
+            tools:ignore="ImageContrastCheck" />
+
+
+
+    </LinearLayout>
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/eventsRecyclerView"
         android:layout_width="match_parent"
@@ -26,6 +55,11 @@
         tools:listitem="@layout/event_card_purple_light"
         android:clickable="true"/>
 
+
     </LinearLayout>
+
+
+
+
 
 </FrameLayout>

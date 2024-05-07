@@ -14,6 +14,20 @@
         />
 
     <fragment
+        android:id="@+id/nav_events"
+        android:name="com.example.eventplanner.fragments.ShowEventFragment"
+        android:label="Events"
+        tools:layout="@layout/fragment_show_event"
+        app:popUpTo="@+id/nav_product_and_services"
+        app:popUpToInclusive="true">
+
+        <action
+            android:id="@+id/action_nav_events_to_nav_create_event"
+            app:destination="@id/nav_create_event" />
+
+        </fragment>
+
+    <fragment
         android:id="@+id/nav_create_event"
         android:name="com.example.eventplanner.fragments.CreateEventFragment"
         android:label="Create event"
@@ -22,14 +36,8 @@
         app:popUpToInclusive="true"
         />
 
-    <fragment
-        android:id="@+id/nav_events"
-        android:name="com.example.eventplanner.fragments.ShowEventFragment"
-        android:label="Events"
-        tools:layout="@layout/fragment_show_event"
-        app:popUpTo="@+id/nav_product_and_services"
-        app:popUpToInclusive="true"
-        />
+
+
 
 
 </navigation>

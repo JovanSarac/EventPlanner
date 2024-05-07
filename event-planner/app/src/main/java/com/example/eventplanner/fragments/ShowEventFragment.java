@@ -6,6 +6,9 @@ import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
+import androidx.navigation.NavDirections;
+import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -15,6 +18,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
+import com.example.eventplanner.R;
 import com.example.eventplanner.databinding.FragmentShowEventBinding;
 
 import java.io.Console;
@@ -52,17 +56,29 @@ public class ShowEventFragment extends Fragment {
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getActivity());
         recyclerView.setLayoutManager(layoutManager);
 
+        binding.floatingActionButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //NavDirections action =  ShowEventFragmentDirections.actionNavEventsToNavCreateEvent();
+
+                // Pokrenite navigaciju na odredišni fragment
+                //Navigation.findNavController(v).navigate(action);
+
+                Navigation.findNavController(v).navigate(R.id.nav_create_event);
+
+            }
+        });
 
         //ArrayList<Event> events = createEvents();
         db = FirebaseFirestore.getInstance();
-        createEvents();
+        getEvents();
 
 
 
         return root;
     }
 
-    private void createEvents() {
+    private void getEvents() {
         //ArrayList<Event> events = new ArrayList<>();
 
         events = new ArrayList<>();
@@ -73,7 +89,8 @@ public class ShowEventFragment extends Fragment {
                     @Override
                     public void onComplete(@NonNull Task<QuerySnapshot> task) {
                         for(DocumentSnapshot doc: task.getResult()){
-                            Event event = new Event(doc.getString("typeEvent"),
+                            Event event = new Event(doc.getLong("id"),
+                                    doc.getString("typeEvent"),
                                     doc.getString("name"),
                                     doc.getString("description"),
                                     Integer.parseInt(String.valueOf(doc.getLong("maxPeople"))),
@@ -82,7 +99,7 @@ public class ShowEventFragment extends Fragment {
                                     doc.getDate("dateEvent"),
                                     doc.getBoolean("available"));
 
-                            //System.out.println(event.getName());
+                            System.out.println(event.getId());
 
 
                             events.add(event);

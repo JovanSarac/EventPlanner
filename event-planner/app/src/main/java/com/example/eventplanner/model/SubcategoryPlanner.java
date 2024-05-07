@@ -1,27 +1,45 @@
 package com.example.eventplanner.model;
 
 public class SubcategoryPlanner {
-    private String serialNum;
+    private Long serialNum;
     private String NameCategory;
     private String NameSubcategory;
-    private String Price;
+    private Float Price;
+
+    private Long EventId;
 
     public SubcategoryPlanner(){
 
     }
 
-    public SubcategoryPlanner(String serialNum, String nameCategory, String nameSubcategory, String price) {
+    public SubcategoryPlanner(Long serialNum, String nameCategory, String nameSubcategory, Float price, Long eventId) {
+        this.serialNum = serialNum;
+        NameCategory = nameCategory;
+        NameSubcategory = nameSubcategory;
+        Price = price;
+        EventId = eventId;
+    }
+
+    public SubcategoryPlanner(Long serialNum, String nameCategory, String nameSubcategory, Float price) {
         this.serialNum = serialNum;
         NameCategory = nameCategory;
         NameSubcategory = nameSubcategory;
         Price = price;
     }
 
-    public String getSerialNum() {
+    public Long getEventId() {
+        return EventId;
+    }
+
+    public void setEventId(Long eventId) {
+        EventId = eventId;
+    }
+
+    public Long getSerialNum() {
         return serialNum;
     }
 
-    public void setSerialNum(String serialNum) {
+    public void setSerialNum(Long serialNum) {
         this.serialNum = serialNum;
     }
 
@@ -41,11 +59,11 @@ public class SubcategoryPlanner {
         NameSubcategory = nameSubcategory;
     }
 
-    public String getPrice() {
+    public Float getPrice() {
         return Price;
     }
 
-    public void setPrice(String price) {
+    public void setPrice(Float price) {
         Price = price;
     }
 }

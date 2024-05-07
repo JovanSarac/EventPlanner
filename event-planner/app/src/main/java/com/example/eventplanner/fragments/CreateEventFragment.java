@@ -7,6 +7,7 @@ import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
+import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -23,6 +24,7 @@ import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.Toast;
 
+import com.example.eventplanner.R;
 import com.example.eventplanner.databinding.FragmentCreateEventBinding;
 import com.example.eventplanner.model.Event;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -35,11 +37,13 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Random;
 
 import com.example.eventplanner.adapters.SubcategoryListAdapter;
 import com.example.eventplanner.model.Subcategory;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QuerySnapshot;
 
 public class CreateEventFragment extends Fragment {
 
@@ -129,11 +133,18 @@ public class CreateEventFragment extends Fragment {
             public void onClick(View v) {
 
                 try {
-                    addNewEvent(new Event(eventType.getText().toString(),
+
+
+
+                    addNewEvent(new Event(0L, eventType.getText().toString(),
                             nameEvent.getText().toString(),descriptionEvent.getText().toString(),
                             Integer.parseInt(maxNumberPeople.getText().toString()),placeEvent.getText().toString(),
                             Integer.parseInt(maxDistance.getText().toString()), sdf.parse(dateEvent.getText().toString()),
                             true));
+
+                    getParentFragmentManager().beginTransaction().remove(CreateEventFragment.this).commit();
+                    //getParentFragmentManager().popBackStack();
+                    Navigation.findNavController(v).navigate(R.id.nav_events);
                 } catch (ParseException e) {
                     throw new RuntimeException(e);
                 }
@@ -143,8 +154,65 @@ public class CreateEventFragment extends Fragment {
     }
 
     private void addNewEvent(Event event) {
+        // Prvo izvršite upit koji broji postojeće događaje
+        db.collection("Events")
+                .get()
+                .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+                    @Override
+                    public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                        // Broj postojećih događaja
+                        int numberOfEvents = queryDocumentSnapshots.size();
+
+                        // Generišite novi ID koristeći broj postojećih događaja
+                        long newEventId = numberOfEvents + 1;
+
+                        // Dodajte novi događaj sa generisanim ID-om
+                        event.setId(newEventId);
+                        saveEventToFirestore(event);
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Log.e(TAG, "Error counting existing events", e);
+                    }
+                });
+    }
+
+    private void saveEventToFirestore(Event event) {
+        Map<String, Object> elememt = new HashMap<>();
+        elememt.put("id", event.getId()); // Postavite ID na generisani ID
+        elememt.put("typeEvent", event.getTypeEvent());
+        elememt.put("name", event.getName());
+        elememt.put("description", event.getDescription());
+        elememt.put("maxPeople", event.getMaxPeople());
+        elememt.put("locationPlace", event.getLocationPlace());
+        elememt.put("maxDistance", event.getMaxDistance());
+        elememt.put("available", event.isAvailble());
+        elememt.put("dateEvent", event.getDateEvent());
+
+        // Dodajte novi dokument sa generisanim ID-om
+        db.collection("Events").document(event.getId().toString())
+                .set(elememt)
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                        Log.d(TAG, "DocumentSnapshot added with ID: " + event.getId());
+                        Toast.makeText(getContext(), "Uspješno dodat događaj", Toast.LENGTH_SHORT).show();
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Log.e(TAG, "Error adding document", e);
+                    }
+                });
+    }
+
+    /*private void addNewEvent(Event event) {
 
         Map<String, Object> elememt = new HashMap<>();
+        elememt.put("id",event.getId());
         elememt.put("typeEvent", event.getTypeEvent());
         elememt.put("name", event.getName());
         elememt.put("description", event.getDescription());
@@ -170,7 +238,10 @@ public class CreateEventFragment extends Fragment {
                         Log.w(TAG, "Error adding document", e);
                     }
                 });
-    }
+
+
+
+    }*/
 
     @Override
     public void onDestroyView() {

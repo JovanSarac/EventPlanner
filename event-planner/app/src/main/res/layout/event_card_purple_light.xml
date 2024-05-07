@@ -111,6 +111,14 @@
                     android:textAlignment="textStart"
                     android:textColor="@color/white"/>
 
+                <TextView
+                    android:id="@+id/eventId"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:visibility="invisible">
+
+                </TextView>
+
             </LinearLayout>
 
 
