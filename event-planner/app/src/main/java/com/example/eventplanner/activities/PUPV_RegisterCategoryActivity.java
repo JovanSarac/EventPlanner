@@ -95,8 +95,9 @@ public class PUPV_RegisterCategoryActivity extends AppCompatActivity {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()) {
-                            sendVerificationEmail();
+
                             updateUserType();
+
 
                         } else {
                             Exception exception = task.getException();
@@ -124,6 +125,7 @@ public class PUPV_RegisterCategoryActivity extends AppCompatActivity {
                     public void onComplete(@NonNull Task<Void> task) {
                         if (task.isSuccessful()) {
                             addToCollectionPUPV(user.getUid());
+                            sendVerificationEmail();
                         }
                     }
                 });
@@ -177,7 +179,7 @@ public class PUPV_RegisterCategoryActivity extends AppCompatActivity {
                     public void onComplete(@NonNull Task<Void> task) {
                         if(selectedImage!="")uploadImage(id);
                         Toast.makeText(PUPV_RegisterCategoryActivity.this, "User registered", Toast.LENGTH_SHORT).show();
-
+                        FirebaseAuth.getInstance().signOut();
                     }
                 });
     }

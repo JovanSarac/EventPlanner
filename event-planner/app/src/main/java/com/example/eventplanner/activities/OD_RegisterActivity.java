@@ -8,6 +8,7 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RadioGroup;
@@ -368,15 +369,26 @@ public class OD_RegisterActivity extends AppCompatActivity {
         TextInputEditText startSun=findViewById(R.id.startSunday);
         TextInputEditText endSun=findViewById(R.id.endSunday);
 
+        if(validateDates(startMon, endMon, startTue, endTue, startWed, endWed, startThu, endThu, startFri, endFri, startSat, endSat, startSun, endSun)){
+            return null;
+        }
 
+        CheckBox monCheckbox=findViewById(R.id.mondayCheckbox);
+        CheckBox tueCheckbox=findViewById(R.id.tuesdayCheckbox);
+        CheckBox wedCheckbox=findViewById(R.id.wednesdayCheckbox);
+        CheckBox thuCheckbox=findViewById(R.id.thursdayCheckbox);
+        CheckBox friCheckbox=findViewById(R.id.fridayCheckbox);
+        CheckBox satCheckbox=findViewById(R.id.saturdayCheckbox);
+        CheckBox sunCheckbox=findViewById(R.id.sundayCheckbox);
 
-        String workTime=startMon.getText().toString()+"-"+endMon.getText().toString();
-        workTime+="?"+startTue.getText().toString()+"-"+endTue.getText().toString();
-        workTime+="?"+startWed.getText().toString()+"-"+endWed.getText().toString();
-        workTime+="?"+startThu.getText().toString()+"-"+endThu.getText().toString();
-        workTime+="?"+startFri.getText().toString()+"-"+endFri.getText().toString();
-        workTime+="?"+startSat.getText().toString()+"-"+endSat.getText().toString();
-        workTime+="?"+startSun.getText().toString()+"-"+endSun.getText().toString();
+        String workTime;
+        workTime=monCheckbox.isChecked() ?"free" : startMon.getText().toString()+"-"+endMon.getText().toString();
+        workTime+="?"+(tueCheckbox.isChecked() ?"free" :startTue.getText().toString()+"-"+endTue.getText().toString());
+        workTime+="?"+(wedCheckbox.isChecked() ?"free" :startWed.getText().toString()+"-"+endWed.getText().toString());
+        workTime+="?"+(thuCheckbox.isChecked() ?"free" :startThu.getText().toString()+"-"+endThu.getText().toString());
+        workTime+="?"+(friCheckbox.isChecked() ?"free" :startFri.getText().toString()+"-"+endFri.getText().toString());
+        workTime+="?"+(satCheckbox.isChecked() ?"free" :startSat.getText().toString()+"-"+endSat.getText().toString());
+        workTime+="?"+(sunCheckbox.isChecked() ?"free" :startSun.getText().toString()+"-"+endSun.getText().toString());
 
         Map<String, Object> item = new HashMap<>();
         item.put("FirstName", firstNameTextField.getText().toString());
@@ -395,6 +407,67 @@ public class OD_RegisterActivity extends AppCompatActivity {
 
         return item;
 
+    }
+
+    private boolean validateDates(TextInputEditText startMon, TextInputEditText endMon, TextInputEditText startTue, TextInputEditText endTue, TextInputEditText startWed, TextInputEditText endWed, TextInputEditText startThu, TextInputEditText endThu, TextInputEditText startFri, TextInputEditText endFri, TextInputEditText startSat, TextInputEditText endSat, TextInputEditText startSun, TextInputEditText endSun) {
+        boolean error=false;
+        if(TextUtils.isEmpty(startMon.getText())){
+            startMon.setError("Fill textfield!");
+            error=true;
+        }
+        if(TextUtils.isEmpty(endMon.getText())){
+            endMon.setError("Fill textfield!");
+            error=true;
+        }
+        if(TextUtils.isEmpty(startTue.getText())){
+            startTue.setError("Fill textfield!");
+            error=true;
+        }
+        if(TextUtils.isEmpty(endTue.getText())){
+            endTue.setError("Fill textfield!");
+            error=true;
+        }
+        if(TextUtils.isEmpty(startWed.getText())){
+            startWed.setError("Fill textfield!");
+            error=true;
+        }
+        if(TextUtils.isEmpty(endWed.getText())){
+            endWed.setError("Fill textfield!");
+            error=true;
+        }
+        if(TextUtils.isEmpty(startThu.getText())){
+            startThu.setError("Fill textfield!");
+            error=true;
+        }
+        if(TextUtils.isEmpty(endThu.getText())){
+            endThu.setError("Fill textfield!");
+            error=true;
+        }
+        if(TextUtils.isEmpty(startFri.getText())){
+            startFri.setError("Fill textfield!");
+            error=true;
+        }
+        if(TextUtils.isEmpty(endFri.getText())){
+            endFri.setError("Fill textfield!");
+            error=true;
+        }
+        if(TextUtils.isEmpty(startSat.getText())){
+            startSat.setError("Fill textfield!");
+            error=true;
+        }
+        if(TextUtils.isEmpty(endSat.getText())){
+            endSat.setError("Fill textfield!");
+            error=true;
+        }
+        if(TextUtils.isEmpty(startSun.getText())){
+            startSun.setError("Fill textfield!");
+            error=true;
+        }
+        if(TextUtils.isEmpty(endSun.getText())){
+            endSun.setError("Fill textfield!");
+            error=true;
+        }
+        return error;
     }
 
 
