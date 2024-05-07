@@ -1,6 +1,8 @@
 package com.example.eventplanner.activities;
 
+import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 import android.util.SparseBooleanArray;
 import android.view.View;
 import android.widget.ArrayAdapter;
@@ -20,10 +22,15 @@ import com.example.eventplanner.adapters.ExpandableListAdapter;
 import com.example.eventplanner.model.Category;
 import com.example.eventplanner.model.EventType;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QuerySnapshot;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -82,10 +89,11 @@ public class PUPV_RegisterCategoryActivity extends AppCompatActivity {
 //            "Film Screening",
 //            "Fashion Show"
 //    );
-
+    String selectedImage;
     ListView selectedCategories;
     ListView selectedEvents;
     Map<String,Object> item;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -103,7 +111,7 @@ public class PUPV_RegisterCategoryActivity extends AppCompatActivity {
 
         item = new HashMap<>();
         item = (Map) getIntent().getSerializableExtra("object");
-        String selectedImage=getIntent().getStringExtra("pathImage");
+        selectedImage=getIntent().getStringExtra("pathImage");
 
         selectedCategories = findViewById(R.id.categoryView);
         Button registerButton = (Button) findViewById(R.id.registerUser);
@@ -111,40 +119,43 @@ public class PUPV_RegisterCategoryActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 //showSelectedItems(v);
-                SparseBooleanArray checkedPositionsCategories = selectedCategories.getCheckedItemPositions();
-                List<String> idCategories=new ArrayList<>();
-                for (int i=0;i<categories.size();i++) {
-                    if(checkedPositionsCategories.get(i)){
-                        idCategories.add(categories.get(i).getId().toString());
-                    }
-
-                }
-                SparseBooleanArray checkedPositionsEvents = selectedEvents.getCheckedItemPositions();
-                List<String> idEventTypes=new ArrayList<>();
-                for (int i=0;i<eventTypes.size();i++) {
-                    if(checkedPositionsEvents.get(i)){
-                        idEventTypes.add(eventTypes.get(i).getId().toString());
-                    }
-                }
-
-                item.put("Categories",idCategories);
-                item.put("EventTypes",idEventTypes);
-                item.put("UserType","PUPV");
-                Long id = new Random().nextLong();
-                db.collection("User")
-                        .document(id.toString())
-                        .set(item)
-                        .addOnCompleteListener(new OnCompleteListener<Void>() {
-                            @Override
-                            public void onComplete(@NonNull Task<Void> task) {
-                                Toast.makeText(PUPV_RegisterCategoryActivity.this, "User registered", Toast.LENGTH_SHORT).show();
-
-                            }
-                        });
+                createUserPUPV();
             }
         });
     }
+    private void createUserPUPV(){
+        SparseBooleanArray checkedPositionsCategories = selectedCategories.getCheckedItemPositions();
+        List<String> idCategories=new ArrayList<>();
+        for (int i=0;i<categories.size();i++) {
+            if(checkedPositionsCategories.get(i)){
+                idCategories.add(categories.get(i).getId().toString());
+            }
 
+        }
+        SparseBooleanArray checkedPositionsEvents = selectedEvents.getCheckedItemPositions();
+        List<String> idEventTypes=new ArrayList<>();
+        for (int i=0;i<eventTypes.size();i++) {
+            if(checkedPositionsEvents.get(i)){
+                idEventTypes.add(eventTypes.get(i).getId().toString());
+            }
+        }
+
+        item.put("Categories",idCategories);
+        item.put("EventTypes",idEventTypes);
+        item.put("UserType","PUPV");
+        Long id = new Random().nextLong();
+        db.collection("User")
+                .document(id.toString())
+                .set(item)
+                .addOnCompleteListener(new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                        if(selectedImage!="")uploadImage(id.toString());
+                        Toast.makeText(PUPV_RegisterCategoryActivity.this, "User registered", Toast.LENGTH_SHORT).show();
+
+                    }
+                });
+    }
     private void setupListViewForCategories() {
         selectedCategories = findViewById(R.id.categoryView);
         ArrayAdapter<String> adapterCategories = new ArrayAdapter<>(this, android.R.layout.simple_list_item_multiple_choice, categoriesList);
@@ -156,15 +167,39 @@ public class PUPV_RegisterCategoryActivity extends AppCompatActivity {
         selectedEvents.setAdapter(adapterEvents);
     }
 
-//    private void showSelectedItems(View v) {
-//        String str = "";
-//        for (int i = 0; i < selectedCategories.getCount(); i++) {
-//            if (selectedCategories.isItemChecked(i)) {
-//                str += selectedCategories.getItemAtPosition(i) + "\n";
-//            }
-//        }
-//        Toast.makeText(v.getContext(), str, Toast.LENGTH_SHORT).show();
-//    }
+    private void uploadImage(String userId){
+        FirebaseStorage storage = FirebaseStorage.getInstance();
+        StorageReference storageRef = storage.getReference();
+
+        Uri fileUri = Uri.parse(selectedImage);
+        StorageReference imageRef = storageRef.child("images/" + userId);
+
+        UploadTask uploadTask = imageRef.putFile(fileUri);
+
+        uploadTask.addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+            @Override
+            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                // Image uploaded successfully
+                Log.d("TAG", "Image uploaded successfully");
+
+                // Get the download URL for the uploaded image
+                imageRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                    @Override
+                    public void onSuccess(Uri downloadUri) {
+                        // Handle the download URL (e.g., save it to a database)
+                        String imageUrl = downloadUri.toString();
+                        Log.d("TAG", "Download URL: " + imageUrl);
+                    }
+                });
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                // Handle unsuccessful uploads
+                Log.e("TAG", "Error uploading image", e);
+            }
+        });
+    }
 
     private void getCategories() {
         db.collection("Categories")

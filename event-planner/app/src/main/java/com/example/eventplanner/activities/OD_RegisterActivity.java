@@ -87,7 +87,8 @@ public class OD_RegisterActivity extends AppCompatActivity {
                     Map<String, Object> item=createUserPUPV();
                     Intent intent = new Intent(OD_RegisterActivity.this, PUPV_RegisterCategoryActivity.class);
                     intent.putExtra("object", (Serializable) item);
-                    intent.putExtra("pathImage",selectedImage);
+                    if(selectedImage!=null)intent.putExtra("pathImage",selectedImage.toString());
+                    else intent.putExtra("pathImage","");
                     startActivity(intent);
                 }else{
                     createUserOd();
@@ -160,7 +161,6 @@ public class OD_RegisterActivity extends AppCompatActivity {
         item.put("IsValid", false);
         item.put("UserType", "OD");
         if(selectedImage!=null){
-            //item.put("ProfilePicture",getByteArrayFromImageURL(selectedImage.toString()));
             uploadImage(id.toString());
         }
 
@@ -232,26 +232,5 @@ public class OD_RegisterActivity extends AppCompatActivity {
 
     }
 
-//    private void setupTimePickComponents(){
-//
-//    }
-//    public void showHourPicker() {
-//        final Calendar myCalender = Calendar.getInstance();
-//        int hour = myCalender.get(Calendar.HOUR_OF_DAY);
-//        int minute = myCalender.get(Calendar.MINUTE);
-//        TimePickerDialog.OnTimeSetListener myTimeListener = new TimePickerDialog.OnTimeSetListener() {
-//            @Override
-//            public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
-//                if (view.isShown()) {
-//                    myCalender.set(Calendar.HOUR_OF_DAY, hourOfDay);
-//                    myCalender.set(Calendar.MINUTE, minute);
-//
-//                }
-//            }
-//        };
-//        TimePickerDialog timePickerDialog = new TimePickerDialog(OD_RegisterActivity.this, android.R.style.Theme_Holo_Light_Dialog_NoActionBar, myTimeListener, hour, minute, true);
-//        timePickerDialog.setTitle("Choose hour:");
-//        timePickerDialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
-//        timePickerDialog.show();
-//    }
+
 }
