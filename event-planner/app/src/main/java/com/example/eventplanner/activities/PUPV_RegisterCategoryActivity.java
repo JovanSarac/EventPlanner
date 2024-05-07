@@ -95,19 +95,8 @@ public class PUPV_RegisterCategoryActivity extends AppCompatActivity {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()) {
-                            FirebaseUser user = mAuth.getCurrentUser();
-                            UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder()
-                                    .setDisplayName("PUPV").build();
-
-                            user.updateProfile(profileUpdates)
-                                    .addOnCompleteListener(new OnCompleteListener<Void>() {
-                                        @Override
-                                        public void onComplete(@NonNull Task<Void> task) {
-                                            if (task.isSuccessful()) {
-                                                addToCollectionPUPV(user.getUid());
-                                            }
-                                        }
-                                    });
+                            sendVerificationEmail();
+                            updateUserType();
 
                         } else {
                             Exception exception = task.getException();
@@ -123,6 +112,40 @@ public class PUPV_RegisterCategoryActivity extends AppCompatActivity {
                     }
                 });
 
+    }
+    private void updateUserType(){
+        FirebaseUser user = mAuth.getCurrentUser();
+        UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder()
+                .setDisplayName("PUPV").build();
+
+        user.updateProfile(profileUpdates)
+                .addOnCompleteListener(new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                        if (task.isSuccessful()) {
+                            addToCollectionPUPV(user.getUid());
+                        }
+                    }
+                });
+    }
+    private void sendVerificationEmail() {
+        FirebaseUser user = mAuth.getCurrentUser();
+        if (user != null) {
+            user.sendEmailVerification()
+                    .addOnCompleteListener(new OnCompleteListener<Void>() {
+                        @Override
+                        public void onComplete(@NonNull Task<Void> emailTask) {
+                            if (emailTask.isSuccessful()) {
+                                // Email sent successfully
+                                Toast.makeText(PUPV_RegisterCategoryActivity.this, "Verification email sent", Toast.LENGTH_SHORT).show();
+                            } else {
+                                // Failed to send email
+                                Log.e("EmailFailedToSend", "sendEmailVerification", emailTask.getException());
+                                Toast.makeText(PUPV_RegisterCategoryActivity.this, "Failed to send verification email", Toast.LENGTH_SHORT).show();
+                            }
+                        }
+                    });
+        }
     }
     private void initializeLists(){
         SparseBooleanArray checkedPositionsCategories = selectedCategories.getCheckedItemPositions();

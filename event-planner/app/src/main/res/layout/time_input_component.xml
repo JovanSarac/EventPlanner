@@ -35,13 +35,15 @@
             android:layout_weight="1"
             android:layout_height="wrap_content"
             android:hint="start"
+
             android:layout_marginRight="10dp">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/startMonday"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:inputType="time"/>
+                android:inputType="time"
+                android:text="8:00"/>
 
         </com.google.android.material.textfield.TextInputLayout>
 

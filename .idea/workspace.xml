@@ -5,8 +5,12 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="73e2f88b-afcc-4234-9614-23fb219d9e2a" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/event-planner/app/src/main/java/com/example/eventplanner/services/NotificationService.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/event-planner/app/build.gradle" beforeDir="false" afterPath="$PROJECT_DIR$/event-planner/app/build.gradle" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/event-planner/app/src/main/java/com/example/eventplanner/activities/LoginActivity.java" beforeDir="false" afterPath="$PROJECT_DIR$/event-planner/app/src/main/java/com/example/eventplanner/activities/LoginActivity.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/event-planner/app/src/main/java/com/example/eventplanner/activities/OD_RegisterActivity.java" beforeDir="false" afterPath="$PROJECT_DIR$/event-planner/app/src/main/java/com/example/eventplanner/activities/OD_RegisterActivity.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/event-planner/app/src/main/java/com/example/eventplanner/activities/PUPV_RegisterCategoryActivity.java" beforeDir="false" afterPath="$PROJECT_DIR$/event-planner/app/src/main/java/com/example/eventplanner/activities/PUPV_RegisterCategoryActivity.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -23,7 +27,7 @@
     <option name="stateVersion" value="1" />
   </component>
   <component name="ProblemsViewState">
-    <option name="selectedTabId" value="CurrentFile" />
+    <option name="selectedTabId" value="ProjectErrors" />
   </component>
   <component name="ProjectColorInfo">{
   &quot;customColor&quot;: &quot;&quot;,
@@ -41,8 +45,8 @@
     "RunOnceActivity.cidr.known.project.marker": "true",
     "cf.first.check.clang-format": "false",
     "cidr.known.project.marker": "true",
-    "git-widget-placeholder": "main",
-    "last_opened_file_path": "D:/e2_ma_tim20_2024",
+    "git-widget-placeholder": "feat/CategoryAndSubcategoryWork",
+    "last_opened_file_path": "D:/e2_ma_tim20_2024/event-planner",
     "settings.editor.selected.configurable": "AndroidSdkUpdater"
   }
 }]]></component>

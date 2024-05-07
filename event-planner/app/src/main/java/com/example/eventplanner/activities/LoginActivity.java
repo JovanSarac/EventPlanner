@@ -2,6 +2,7 @@ package com.example.eventplanner.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -17,12 +18,14 @@ import com.example.eventplanner.databinding.ActivityHomeBinding;
 import com.example.eventplanner.databinding.ActivityLoginBinding;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.android.material.textfield.TextInputEditText;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
 public class LoginActivity extends AppCompatActivity {
     FirebaseAuth mAuth= FirebaseAuth.getInstance();
+    ActivityLoginBinding binding;
     @Override
     public void onStart() {
         super.onStart();
@@ -42,7 +45,7 @@ public class LoginActivity extends AppCompatActivity {
             return insets;
         });
 
-        ActivityLoginBinding binding= ActivityLoginBinding.inflate(getLayoutInflater());
+        binding= ActivityLoginBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
         binding.registerButton.setOnClickListener(v->{
@@ -51,13 +54,25 @@ public class LoginActivity extends AppCompatActivity {
         });
 
         binding.loginButton.setOnClickListener(v->{
+            if(!validateInput()){
+                Toast.makeText(this, "Please fill in required fields!", Toast.LENGTH_SHORT).show();
+                return;
+            }
+
             mAuth.signInWithEmailAndPassword(binding.emailTextField.getText().toString(), binding.passwordTextField.getText().toString())
                     .addOnCompleteListener( new OnCompleteListener<AuthResult>() {
                         @Override
                         public void onComplete(@NonNull Task<AuthResult> task) {
                             if (task.isSuccessful()) {
-                                Intent intent = new Intent(LoginActivity.this, HomeActivity.class);
-                                startActivity(intent);
+                                FirebaseUser user = mAuth.getCurrentUser();
+                                if (user.isEmailVerified()) {
+                                    Intent intent = new Intent(LoginActivity.this, HomeActivity.class);
+                                    startActivity(intent);
+                                } else {
+                                    mAuth.signOut();
+                                    Toast.makeText(LoginActivity.this, "Please verify your email before logging in", Toast.LENGTH_SHORT).show();
+                                }
+
 
                             } else {
 
@@ -69,5 +84,14 @@ public class LoginActivity extends AppCompatActivity {
                     });
 
         });
+
+    }
+    private boolean validateInput(){
+        TextInputEditText emailTextField= binding.emailTextField;
+        TextInputEditText passwordTextField= binding.passwordTextField;
+        if(TextUtils.isEmpty(passwordTextField.getText())) {
+            return false;
+        }
+        return !TextUtils.isEmpty(emailTextField.getText()) && android.util.Patterns.EMAIL_ADDRESS.matcher(emailTextField.getText()).matches();
     }
 }

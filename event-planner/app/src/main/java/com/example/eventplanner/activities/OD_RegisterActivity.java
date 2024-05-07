@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -70,7 +71,6 @@ public class OD_RegisterActivity extends AppCompatActivity {
             return insets;
         });
 
-        //setupTimePickComponents();
 
 
         RadioGroup radioGroup = findViewById(R.id.radioGroup);
@@ -100,6 +100,8 @@ public class OD_RegisterActivity extends AppCompatActivity {
             public void onClick(View v) {
                 if(radioGroup.getCheckedRadioButtonId()==R.id.PUPVRadio) {
                     Map<String, Object> item=createUserPUPV();
+                    if(item==null) return;
+
                     Intent intent = new Intent(OD_RegisterActivity.this, PUPV_RegisterCategoryActivity.class);
                     intent.putExtra("object", (Serializable) item);
                     if(selectedImage!=null)intent.putExtra("pathImage",selectedImage.toString());
@@ -162,8 +164,11 @@ public class OD_RegisterActivity extends AppCompatActivity {
         TextInputEditText addressTextField=findViewById(R.id.addressTextbox);
         TextInputEditText emailTextField=findViewById(R.id.emailTextbox);
         TextInputEditText passwordTextField=findViewById(R.id.passwordTextbox);
+        TextInputEditText confirmPasswordTextField=findViewById(R.id.confirmPasswordTextbox);
         TextInputEditText phoneNumberTextField=findViewById(R.id.phoneNumberTextbox);
 
+        if (validateOdInput(firstNameTextField, lastNameTextField, addressTextField, emailTextField, phoneNumberTextField, passwordTextField, confirmPasswordTextField))
+            return;
 
         Map<String, Object> item = new HashMap<>();
         item.put("FirstName", firstNameTextField.getText().toString());
@@ -180,23 +185,9 @@ public class OD_RegisterActivity extends AppCompatActivity {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()) {
-                            FirebaseUser user = mAuth.getCurrentUser();
-                            UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder()
-                                    .setDisplayName("OD").build();
-
-                            user.updateProfile(profileUpdates)
-                                    .addOnCompleteListener(new OnCompleteListener<Void>() {
-                                        @Override
-                                        public void onComplete(@NonNull Task<Void> task) {
-                                            if (task.isSuccessful()) {
-                                                if(selectedImage!=null){
-                                                    uploadImage(user.getUid());
-                                                }
-                                                addUserToCollection(item,user.getUid());
-                                            }
-                                        }
-                                    });
-
+                            sendVerificationEmail();
+                            updateUsersRole(item);
+                            mAuth.signOut();
                         } else {
                             Exception exception = task.getException();
                             if (exception instanceof FirebaseAuthException) {
@@ -212,6 +203,93 @@ public class OD_RegisterActivity extends AppCompatActivity {
                 });
 
     }
+
+    private boolean validateOdInput(TextInputEditText firstNameTextField, TextInputEditText lastNameTextField, TextInputEditText addressTextField, TextInputEditText emailTextField, TextInputEditText phoneNumberTextField, TextInputEditText passwordTextField, TextInputEditText confirmPasswordTextField) {
+        boolean error=false;
+        if(TextUtils.isEmpty(firstNameTextField.getText())){
+            firstNameTextField.setError("Fill textfield!");
+            error=true;
+        }
+        if(TextUtils.isEmpty(lastNameTextField.getText())){
+            lastNameTextField.setError("Fill textfield!");
+            error=true;
+        }
+        if(TextUtils.isEmpty(addressTextField.getText())){
+            addressTextField.setError("Fill textfield!");
+            error=true;
+        }
+        if(TextUtils.isEmpty(emailTextField.getText())){
+            emailTextField.setError("Fill textfield!");
+            error=true;
+        }
+        else if(!android.util.Patterns.EMAIL_ADDRESS.matcher(emailTextField.getText()).matches()){
+            emailTextField.setError("E-Mail is not valid!");
+            error=true;
+        }
+        if(TextUtils.isEmpty(phoneNumberTextField.getText())){
+            phoneNumberTextField.setError("Fill textfield!");
+            error=true;
+        }
+        if(TextUtils.isEmpty(passwordTextField.getText())){
+            passwordTextField.setError("Fill textfield!");
+            error=true;
+        }
+        if(TextUtils.isEmpty(confirmPasswordTextField.getText())){
+            confirmPasswordTextField.setError("Fill textfield!");
+            error=true;
+        }
+
+        if(error) return true;
+
+
+        if(!passwordTextField.getText().toString().equals(confirmPasswordTextField.getText().toString())){
+            passwordTextField.setError("Passwords dont match!");
+            return true;
+        }
+        else if(passwordTextField.getText().toString().length()<6){
+            passwordTextField.setError("Passwords should be 6 or more characters!");
+            return true;
+        }
+        return false;
+    }
+
+    private void sendVerificationEmail() {
+        FirebaseUser user = mAuth.getCurrentUser();
+        if (user != null) {
+            user.sendEmailVerification()
+                    .addOnCompleteListener(new OnCompleteListener<Void>() {
+                        @Override
+                        public void onComplete(@NonNull Task<Void> emailTask) {
+                            if (emailTask.isSuccessful()) {
+                                // Email sent successfully
+                                Toast.makeText(OD_RegisterActivity.this, "Verification email sent", Toast.LENGTH_SHORT).show();
+                            } else {
+                                // Failed to send email
+                                Log.e("EmailFailedToSend", "sendEmailVerification", emailTask.getException());
+                                Toast.makeText(OD_RegisterActivity.this, "Failed to send verification email", Toast.LENGTH_SHORT).show();
+                            }
+                        }
+                    });
+        }
+    }
+    private void updateUsersRole(Map<String, Object> item){
+        FirebaseUser user = mAuth.getCurrentUser();
+        UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder()
+                .setDisplayName("OD").build();
+        user.updateProfile(profileUpdates)
+                .addOnCompleteListener(new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                        if (task.isSuccessful()) {
+                            if(selectedImage!=null){
+                                uploadImage(user.getUid());
+                            }
+                            addUserToCollection(item,user.getUid());
+                        }
+                    }
+                });
+    }
+
     private void addUserToCollection(Map<String, Object> item,String id){
         db.collection("User")
                 .document(id)
@@ -225,6 +303,34 @@ public class OD_RegisterActivity extends AppCompatActivity {
                     }
                 });
     }
+    private boolean validateCompanyInput(TextInputEditText companyNameTextField, TextInputEditText companyAddressTextField, TextInputEditText companyEmailTextField, TextInputEditText companyDescriptionTextField, TextInputEditText companyPhoneNumberTextField) {
+        boolean error=false;
+        if(TextUtils.isEmpty(companyNameTextField.getText())){
+            companyNameTextField.setError("Fill textfield!");
+            error=true;
+        }
+        if(TextUtils.isEmpty(companyAddressTextField.getText())){
+            companyAddressTextField.setError("Fill textfield!");
+            error=true;
+        }
+        if(TextUtils.isEmpty(companyDescriptionTextField.getText())){
+            companyDescriptionTextField.setError("Fill textfield!");
+            error=true;
+        }
+        if(TextUtils.isEmpty(companyEmailTextField.getText())){
+            companyEmailTextField.setError("Fill textfield!");
+            error=true;
+        }
+        else if(!android.util.Patterns.EMAIL_ADDRESS.matcher(companyEmailTextField.getText()).matches()){
+            companyEmailTextField.setError("E-Mail is not valid!");
+            error=true;
+        }
+        if(TextUtils.isEmpty(companyPhoneNumberTextField.getText())){
+            companyPhoneNumberTextField.setError("Fill textfield!");
+            error=true;
+        }
+        return error;
+    }
     private Map<String, Object>  createUserPUPV() {
 
         TextInputEditText firstNameTextField=findViewById(R.id.firstNameTextbox);
@@ -232,13 +338,20 @@ public class OD_RegisterActivity extends AppCompatActivity {
         TextInputEditText addressTextField=findViewById(R.id.addressTextbox);
         TextInputEditText emailTextField=findViewById(R.id.emailTextbox);
         TextInputEditText passwordTextField=findViewById(R.id.passwordTextbox);
+        TextInputEditText confirmPasswordTextField=findViewById(R.id.passwordTextbox);
         TextInputEditText phoneNumberTextField=findViewById(R.id.phoneNumberTextbox);
+
+        if (validateOdInput(firstNameTextField, lastNameTextField, addressTextField, emailTextField, phoneNumberTextField, passwordTextField, confirmPasswordTextField))
+            return null;
 
         TextInputEditText companyNameTextField=findViewById(R.id.companyNameTextBox);
         TextInputEditText companyAddressTextField=findViewById(R.id.companyAddressTextBox);
         TextInputEditText companyEmailTextField=findViewById(R.id.companyEmailTextBox);
         TextInputEditText companyDescriptionTextField=findViewById(R.id.companyDescriptionTextBox);
         TextInputEditText companyPhoneNumberTextField=findViewById(R.id.companyPhoneTextBox);
+
+        if(validateCompanyInput(companyNameTextField,companyAddressTextField,companyEmailTextField,companyDescriptionTextField,companyPhoneNumberTextField))
+            return null;
 
         TextInputEditText startMon=findViewById(R.id.startMonday);
         TextInputEditText endMon=findViewById(R.id.endMonday);
@@ -254,6 +367,8 @@ public class OD_RegisterActivity extends AppCompatActivity {
         TextInputEditText endSat=findViewById(R.id.endSaturday);
         TextInputEditText startSun=findViewById(R.id.startSunday);
         TextInputEditText endSun=findViewById(R.id.endSunday);
+
+
 
         String workTime=startMon.getText().toString()+"-"+endMon.getText().toString();
         workTime+="?"+startTue.getText().toString()+"-"+endTue.getText().toString();

@@ -100,7 +100,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="@string/password"
-            app:endIconMode="password_toggle">
+            >
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/passwordTextbox"
@@ -115,9 +115,10 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="@string/confirm_password"
-            app:endIconMode="password_toggle">
+            >
 
             <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/confirmPasswordTextbox"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:inputType="textPassword"/>
