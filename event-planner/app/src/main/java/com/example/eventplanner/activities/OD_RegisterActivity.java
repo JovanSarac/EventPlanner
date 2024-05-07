@@ -26,6 +26,11 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.textfield.TextInputEditText;
+import com.google.firebase.auth.AuthResult;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseAuthException;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.auth.UserProfileChangeRequest;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
@@ -35,15 +40,25 @@ import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
-
+import com.google.firebase.auth.FirebaseUser;
 public class OD_RegisterActivity extends AppCompatActivity {
     FirebaseFirestore db = FirebaseFirestore.getInstance();
+    FirebaseAuth mAuth= FirebaseAuth.getInstance();
     Button buttonSelectImage;
     ImageView imageViewProfile;
     Uri selectedImage;
 
 
     static final int REQUEST_IMAGE_PICK = 1;
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        FirebaseUser currentUser = mAuth.getCurrentUser();
+        if(currentUser != null){
+            finish();
+        }
+    }
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -142,7 +157,6 @@ public class OD_RegisterActivity extends AppCompatActivity {
         });
     }
     private void  createUserOd(){
-        Long id= new Random().nextLong();
         TextInputEditText firstNameTextField=findViewById(R.id.firstNameTextbox);
         TextInputEditText lastNameTextField=findViewById(R.id.lastNameTextbox);
         TextInputEditText addressTextField=findViewById(R.id.addressTextbox);
@@ -160,17 +174,53 @@ public class OD_RegisterActivity extends AppCompatActivity {
         item.put("Password", passwordTextField.getText().toString());
         item.put("IsValid", false);
         item.put("UserType", "OD");
-        if(selectedImage!=null){
-            uploadImage(id.toString());
-        }
 
+        mAuth.createUserWithEmailAndPassword(item.get("E-mail").toString(),passwordTextField.getText().toString() )
+                .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+                    @Override
+                    public void onComplete(@NonNull Task<AuthResult> task) {
+                        if (task.isSuccessful()) {
+                            FirebaseUser user = mAuth.getCurrentUser();
+                            UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder()
+                                    .setDisplayName("OD").build();
+
+                            user.updateProfile(profileUpdates)
+                                    .addOnCompleteListener(new OnCompleteListener<Void>() {
+                                        @Override
+                                        public void onComplete(@NonNull Task<Void> task) {
+                                            if (task.isSuccessful()) {
+                                                if(selectedImage!=null){
+                                                    uploadImage(user.getUid());
+                                                }
+                                                addUserToCollection(item,user.getUid());
+                                            }
+                                        }
+                                    });
+
+                        } else {
+                            Exception exception = task.getException();
+                            if (exception instanceof FirebaseAuthException) {
+                                FirebaseAuthException firebaseAuthException = (FirebaseAuthException) exception;
+                                String errorCode = firebaseAuthException.getErrorCode();
+                                String errorMessage = firebaseAuthException.getMessage();
+                                Log.e("JovoFirebaseAuth", "Authentication failed with error code: " + errorCode + ", message: " + errorMessage);
+                            }
+                            Toast.makeText(OD_RegisterActivity.this, "Authentication failed.",
+                                    Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                });
+
+    }
+    private void addUserToCollection(Map<String, Object> item,String id){
         db.collection("User")
-                .document(id.toString())
+                .document(id)
                 .set(item)
                 .addOnCompleteListener(new OnCompleteListener<Void>() {
                     @Override
                     public void onComplete(@NonNull Task<Void> task) {
                         Toast.makeText(OD_RegisterActivity.this, "User created", Toast.LENGTH_SHORT).show();
+
                         finish();
                     }
                 });
