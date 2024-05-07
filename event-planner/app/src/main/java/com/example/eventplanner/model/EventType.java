@@ -3,16 +3,36 @@ package com.example.eventplanner.model;
 import java.util.List;
 
 public class EventType {
+    private Long id;
+    private boolean inUse;
     private String typeName;
     private String typeDescription;
     private List<Subcategory> recomendedSubcategories;
     public EventType() {
     }
 
-    public EventType(String typeName, String typeDescription, List<Subcategory> recomendedSubcategories) {
+    public EventType(Long id, boolean inUse, String typeName, String typeDescription, List<Subcategory> recomendedSubcategories) {
+        this.id = id;
+        this.inUse = inUse;
         this.typeName = typeName;
         this.typeDescription = typeDescription;
         this.recomendedSubcategories = recomendedSubcategories;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public boolean isInUse() {
+        return inUse;
+    }
+
+    public void setInUse(boolean inUse) {
+        this.inUse = inUse;
     }
 
     public List<Subcategory> getRecomendedSubcategories() {

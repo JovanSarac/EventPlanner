@@ -1,6 +1,7 @@
 package com.example.eventplanner.model;
 
 public class Subcategory {
+    private Long id;
     private String categoryName;
     private String name;
     private String description;
@@ -14,6 +15,22 @@ public class Subcategory {
         this.name = name;
         this.description = description;
         this.type = type;
+    }
+
+    public Subcategory(Long id, String categoryName, String name, String description, int type) {
+        this.id = id;
+        this.categoryName = categoryName;
+        this.name = name;
+        this.description = description;
+        this.type = type;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public String getCategoryName() {

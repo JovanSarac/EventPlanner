@@ -151,7 +151,8 @@
                                 android:layout_height="wrap_content"
                                 android:layout_marginStart="20dp"
                                 android:text="@string/opentype_event"
-                                android:textColor="@color/white"/>
+                                android:textColor="@color/white"
+                                android:checked="true"/>
                             <RadioButton
                                 android:id="@+id/radio_button_2"
                                 android:layout_width="wrap_content"
@@ -230,6 +231,7 @@
                         android:layout_margin="10dp">
 
                         <Button
+                            android:id="@+id/createButton"
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
                             android:width="200sp"
