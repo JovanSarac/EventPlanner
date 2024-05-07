@@ -107,7 +107,7 @@ public class EditServiceActivity extends AppCompatActivity {
         TextInputEditText locationAutoComplete = (TextInputEditText) location.getEditText();
         locationAutoComplete.setText(serviceLocation);
 
-        RecyclerView recyclerView = findViewById(R.id.recycler);
+        /*RecyclerView recyclerView = findViewById(R.id.recycler);
         ArrayList<Integer> arrayList = new ArrayList<>();
 
         for(int i = 0; i < serviceImageId.size(); i++){
@@ -115,7 +115,7 @@ public class EditServiceActivity extends AppCompatActivity {
         }
 
         ImageAdapter adapter = new ImageAdapter(EditServiceActivity.this, arrayList);
-        recyclerView.setAdapter(adapter);
+        recyclerView.setAdapter(adapter);*/
 
         /*EventListAdapter eventListAdapter = new EventListAdapter(this, serviceEvents);
         binding.events.setAdapter(eventListAdapter);*/

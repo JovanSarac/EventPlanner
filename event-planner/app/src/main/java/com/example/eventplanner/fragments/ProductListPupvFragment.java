@@ -2,6 +2,7 @@ package com.example.eventplanner.fragments;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -23,16 +24,21 @@ import com.example.eventplanner.adapters.ProductListPupvAdapter;
 import com.example.eventplanner.model.Product;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QuerySnapshot;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 
 public class ProductListPupvFragment extends Fragment{
     View view;
     FragmentProductListPupvBinding binding;
     ArrayList<Product> products;
+    ArrayList<Uri> images;
     FirebaseFirestore db;
+    FirebaseStorage storage;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -41,7 +47,11 @@ public class ProductListPupvFragment extends Fragment{
         view = inflater.inflate(R.layout.fragment_product_list_pupv, container, false);
         binding = FragmentProductListPupvBinding.inflate(getLayoutInflater());
 
+        images = new ArrayList<>();
+        products = new ArrayList<>();
+
         db = FirebaseFirestore.getInstance();
+        storage = FirebaseStorage.getInstance();
 
         return binding.getRoot();
     }
@@ -50,6 +60,7 @@ public class ProductListPupvFragment extends Fragment{
     public void onResume() {
         super.onResume();
 
+        products.clear();
         getProducts();
 
         binding.addProduct.setOnClickListener(new View.OnClickListener() {
@@ -62,13 +73,14 @@ public class ProductListPupvFragment extends Fragment{
 
     }
     private void getProducts() {
-        products = new ArrayList<>();
-
         db.collection("Products")
+                .whereEqualTo("pending", false)
+                .whereEqualTo("deleted", false)
                 .get()
                 .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                     @Override
                     public void onComplete(@NonNull Task<QuerySnapshot> task) {
+
                         for(DocumentSnapshot doc: task.getResult()){
                             Product product = new Product(
                                     Long.parseLong(doc.getId()),
@@ -81,15 +93,50 @@ public class ProductListPupvFragment extends Fragment{
                                     new ArrayList<>(), //images
                                     (ArrayList<Long>) doc.get("eventIds"),
                                     doc.getBoolean("available"),
-                                    doc.getBoolean("visible"));
+                                    doc.getBoolean("visible"),
+                                    doc.getBoolean("pending"),
+                                    doc.getBoolean("deleted"));
 
-                            products.add(product);
+                            ArrayList<String> imageUrls = (ArrayList<String>) doc.get("imageUrls");
+                            final int numImages = imageUrls.size(); // Number of images to fetch
+
+                            for (String image : imageUrls) {
+                                StorageReference imageRef = storage.getReference().child(image);
+                                imageRef.getDownloadUrl()
+                                        .addOnSuccessListener(new OnSuccessListener<Uri>() {
+                                            @Override
+                                            public void onSuccess(Uri uri) {
+                                                images.add(uri);
+                                                if (images.size() == numImages) {
+                                                    product.setImages(images);
+                                                    products.add(product);
+
+                                                    ProductListPupvAdapter productListAdapter = new ProductListPupvAdapter(requireContext(), products);
+
+                                                    binding.productsListPupv.setAdapter(productListAdapter);
+                                                    binding.productsListPupv.setClickable(true);
+                                                }
+                                            }
+                                        })
+                                        .addOnFailureListener(new OnFailureListener() {
+                                            @Override
+                                            public void onFailure(@NonNull Exception e) {
+                                                Toast.makeText(requireContext(), e.getMessage(), Toast.LENGTH_LONG).show();
+                                                if (images.size() == numImages) {
+                                                    product.setImages(images);
+                                                    products.add(product);
+
+                                                    ProductListPupvAdapter productListAdapter = new ProductListPupvAdapter(requireContext(), products);
+
+                                                    binding.productsListPupv.setAdapter(productListAdapter);
+                                                    binding.productsListPupv.setClickable(true);
+                                                }
+                                            }
+                                        });
+                            }
                         }
 
-                        ProductListPupvAdapter productListAdapter = new ProductListPupvAdapter(requireContext(), products);
 
-                        binding.productsListPupv.setAdapter(productListAdapter);
-                        binding.productsListPupv.setClickable(true);
                     }
                 })
                 .addOnFailureListener(new OnFailureListener() {

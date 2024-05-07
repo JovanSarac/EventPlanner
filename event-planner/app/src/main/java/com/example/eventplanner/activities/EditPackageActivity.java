@@ -63,7 +63,7 @@ public class EditPackageActivity extends AppCompatActivity {
         Boolean packageAvailability = getIntent().getBooleanExtra("Availability", false);
         Boolean packageVisibility = getIntent().getBooleanExtra("Visibility", false);
 
-        RecyclerView recyclerView = findViewById(R.id.recycler);
+        /*RecyclerView recyclerView = findViewById(R.id.recycler);
         ArrayList<Integer> arrayList = new ArrayList<>();
 
         for(int i = 0; i < packageImages.size(); i++){
@@ -71,7 +71,7 @@ public class EditPackageActivity extends AppCompatActivity {
         }
 
         ImageAdapter adapter = new ImageAdapter(EditPackageActivity.this, arrayList);
-        recyclerView.setAdapter(adapter);
+        recyclerView.setAdapter(adapter);*/
 
 
         TextInputLayout name = findViewById(R.id.name);

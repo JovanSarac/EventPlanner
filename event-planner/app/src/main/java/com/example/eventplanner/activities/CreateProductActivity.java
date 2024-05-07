@@ -20,15 +20,20 @@ import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.MultiAutoCompleteTextView;
 import android.widget.PopupWindow;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.eventplanner.R;
 import com.example.eventplanner.adapters.CategoryListAdapter;
 import com.example.eventplanner.adapters.EventListAdapter;
+import com.example.eventplanner.adapters.ImageAdapter;
 import com.example.eventplanner.adapters.SubcategoryAdapter;
 import com.example.eventplanner.databinding.ActivityCreateProductBinding;
 import com.example.eventplanner.model.Category;
@@ -36,19 +41,25 @@ import com.example.eventplanner.model.Event;
 import com.example.eventplanner.model.Subcategory;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QuerySnapshot;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 
-import org.checkerframework.checker.units.qual.A;
-
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Random;
 
@@ -59,6 +70,7 @@ public class CreateProductActivity extends AppCompatActivity {
     TextInputLayout name, description, price, discount, eventTextInputLayout;
     CheckBox available, visible;
     MultiAutoCompleteTextView eventMultiAutoCompleteTextView;
+    RecyclerView recyclerView;
 
     ArrayList<Event> eventsFromDb;
     ArrayList<Category> categoriesFromDb;
@@ -66,20 +78,34 @@ public class CreateProductActivity extends AppCompatActivity {
 
     ArrayList<Long> eventIds;
     Long categoryId;
+    String categoryName;
     Long subcategoryId;
+    ArrayList<Uri> images;
+    ArrayList<String> imageUrls;
+    Boolean pending;
 
     FirebaseFirestore db;
+    StorageReference storageRootReference ;
+
+    ImageAdapter imageAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_product);
 
+        images = new ArrayList<>();
+        imageUrls = new ArrayList<>();
+        subcategoriesFromDb = new ArrayList<>();
+
         db = FirebaseFirestore.getInstance();
+        storageRootReference  = FirebaseStorage.getInstance().getReference();
 
         getCategories();
         getEvents();
-        getSubcategories();
+
+        addSubcategory = findViewById(R.id.add_subcategory);
+        addSubcategory.setEnabled(false);
 
         TextInputLayout textInputLayout = findViewById(R.id.categories);
         AutoCompleteTextView autoCompleteTextView = (AutoCompleteTextView) textInputLayout.getEditText();
@@ -91,6 +117,10 @@ public class CreateProductActivity extends AppCompatActivity {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Category selectedCategory = (Category) parent.getItemAtPosition(position);
                 categoryId = selectedCategory.getId();
+                categoryName = selectedCategory.getName();
+                subcategoriesFromDb.clear();
+                getSubcategories(categoryName);
+                addSubcategory.setEnabled(true);
             }
         });
 
@@ -104,6 +134,7 @@ public class CreateProductActivity extends AppCompatActivity {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Subcategory selectedSubcategory = (Subcategory) parent.getItemAtPosition(position);
                 subcategoryId = selectedSubcategory.getId();
+                pending = false;
             }
         });
 
@@ -126,24 +157,49 @@ public class CreateProductActivity extends AppCompatActivity {
             }
         });
 
-        addSubcategory = findViewById(R.id.add_subcategory);
-
         addSubcategory.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 LayoutInflater inflater = (LayoutInflater) CreateProductActivity.this.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-                View popUpView = inflater.inflate(R.layout.request_new_subcategory, null);
+                View popUpView = inflater.inflate(R.layout.activity_add_subcategory, null);
+
+                popUpView.setBackground(ContextCompat.getDrawable(CreateProductActivity.this, R.drawable.gradient_background_2));
+
+                TextInputEditText categoryNameTextInput = popUpView.findViewById(R.id.categoryName);
+                categoryNameTextInput.setText(categoryName);
+
+                RadioGroup type = popUpView.findViewById(R.id.radioGroup);
+                RadioButton productRadioButton = popUpView.findViewById(R.id.productRadio);
+                type.check(productRadioButton.getId());
+                type.getChildAt(0).setClickable(false);
 
                 int width = ViewGroup.LayoutParams.MATCH_PARENT;
-                int height = ViewGroup.LayoutParams.MATCH_PARENT;
+                int height = ViewGroup.LayoutParams.WRAP_CONTENT;
                 boolean focusable = true;
                 PopupWindow popupWindow = new PopupWindow(popUpView, width, height, focusable);
 
                 popupWindow.showAtLocation(v, Gravity.CENTER, 0, 0);
+
+                Button addSubcategory = popUpView.findViewById(R.id.addSubcategory);
+                addSubcategory.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        TextInputEditText subcategoryNameTextInput = popUpView.findViewById(R.id.subcategoryName);
+                        TextInputEditText description = popUpView.findViewById(R.id.subcategoryDescription);
+
+                        subcategoryAutoCompleteTextView.setText(subcategoryNameTextInput.getText().toString()
+                                            +  " - " + description.getText().toString());
+
+                        pending = true;
+                        popupWindow.dismiss();
+                    }
+                });
             }
         });
 
         addImage = findViewById(R.id.add_image);
+        recyclerView = findViewById(R.id.recycler);
+        recyclerView.setAdapter(imageAdapter);
         addImage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -175,6 +231,23 @@ public class CreateProductActivity extends AppCompatActivity {
                 doc.put("eventIds", eventIds);
                 doc.put("available", available.isChecked());
                 doc.put("visible", visible.isChecked());
+                doc.put("pending", pending);
+                for (Uri image : images) {
+                    Long imageFile = new Random().nextLong();
+                    String imageFileName = imageFile.toString();
+                    String location = "images/" + imageFileName;
+                    StorageReference imageStorageReference = storageRootReference.child(location);
+                    imageUrls.add(location);
+
+                    imageStorageReference.putFile(image)
+                            .addOnFailureListener(new OnFailureListener() {
+                                @Override
+                                public void onFailure(@NonNull Exception e) {
+                                    Toast.makeText(CreateProductActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show();
+                                }
+                            });
+                }
+                doc.put("imageUrls", imageUrls);
 
                 db.collection("Products")
                         .document(id.toString())
@@ -192,6 +265,7 @@ public class CreateProductActivity extends AppCompatActivity {
                                 Toast.makeText(CreateProductActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show();
                             }
                         });
+
             }
         });
 
@@ -200,10 +274,10 @@ public class CreateProductActivity extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if(resultCode == RESULT_OK && data != null){
-            Uri selectedImage = data.getData();
-            ImageView imageView = findViewById(R.id.carousel_image_view);
-            imageView.setImageURI(selectedImage);
+        if(resultCode == RESULT_OK && data != null && data.getData() != null){
+            images.add(data.getData());
+            imageAdapter = new ImageAdapter(CreateProductActivity.this, images);
+            recyclerView.setAdapter(imageAdapter);
         }
     }
 
@@ -234,10 +308,9 @@ public class CreateProductActivity extends AppCompatActivity {
                 });
     }
 
-    private void getSubcategories(){
-        subcategoriesFromDb = new ArrayList<>();
-
+    private void getSubcategories(String catName){
         db.collection("Subcategories")
+                .whereEqualTo("CategoryName", catName)
                 .get()
                 .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                     @Override
