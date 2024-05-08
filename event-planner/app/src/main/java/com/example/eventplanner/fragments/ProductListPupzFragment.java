@@ -17,6 +17,7 @@ import com.example.eventplanner.databinding.FragmentProductListPupzBinding;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 import com.example.eventplanner.adapters.ProductListAdapter;
 import com.example.eventplanner.model.Product;
@@ -65,61 +66,61 @@ public class ProductListPupzFragment extends Fragment {
                 .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                     @Override
                     public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                        ArrayList<Uri> images = new ArrayList<>();
+                        if (task.isSuccessful()) {
+                            final List<DocumentSnapshot> productDocs = task.getResult().getDocuments();
+                            final int numProducts = productDocs.size();
+                            final int[] productsProcessed = {0};
 
-                        for (DocumentSnapshot doc : task.getResult()) {
-                            Product product = new Product(
-                                    Long.parseLong(doc.getId()),
-                                    doc.getLong("categoryId"),
-                                    doc.getLong("subcategoryId"),
-                                    doc.getString("name"),
-                                    doc.getString("description"),
-                                    ((Number) doc.get("price")).doubleValue(),
-                                    ((Number) doc.get("discount")).doubleValue(),
-                                    new ArrayList<>(), //images
-                                    (ArrayList<Long>) doc.get("eventIds"),
-                                    doc.getBoolean("available"),
-                                    doc.getBoolean("visible"),
-                                    doc.getBoolean("pending"),
-                                    doc.getBoolean("deleted"));
+                            for (DocumentSnapshot doc : productDocs) {
+                                Product product = new Product(
+                                        Long.parseLong(doc.getId()),
+                                        doc.getLong("categoryId"),
+                                        doc.getLong("subcategoryId"),
+                                        doc.getString("name"),
+                                        doc.getString("description"),
+                                        ((Number) doc.get("price")).doubleValue(),
+                                        ((Number) doc.get("discount")).doubleValue(),
+                                        new ArrayList<>(), //images
+                                        (ArrayList<Long>) doc.get("eventIds"),
+                                        doc.getBoolean("available"),
+                                        doc.getBoolean("visible"),
+                                        doc.getBoolean("pending"),
+                                        doc.getBoolean("deleted"));
 
-                            ArrayList<String> imageUrls = (ArrayList<String>) doc.get("imageUrls");
-                            final int numImages = imageUrls.size(); // Number of images to fetch
+                                ArrayList<String> imageUrls = (ArrayList<String>) doc.get("imageUrls");
+                                final int numImages = imageUrls.size();
 
-                            for (String image : imageUrls) {
-                                StorageReference imageRef = storage.getReference().child(image);
-                                imageRef.getDownloadUrl()
-                                        .addOnSuccessListener(new OnSuccessListener<Uri>() {
-                                            @Override
-                                            public void onSuccess(Uri uri) {
-                                                images.add(uri);
-                                                if (images.size() == numImages) {
-                                                    product.setImages(images);
-                                                    products.add(product);
+                                for (String imageUrl : imageUrls) {
+                                    StorageReference imageRef = storage.getReference().child(imageUrl);
+                                    imageRef.getDownloadUrl()
+                                            .addOnSuccessListener(new OnSuccessListener<Uri>() {
+                                                @Override
+                                                public void onSuccess(Uri uri) {
+                                                    product.getImages().add(uri);
 
-                                                    ProductListAdapter productListAdapter = new ProductListAdapter(requireContext(), products);
+                                                    if (product.getImages().size() == numImages) {
+                                                        productsProcessed[0]++;
 
-                                                    binding.productsListPupz.setAdapter(productListAdapter);
-                                                    binding.productsListPupz.setClickable(true);
+                                                        if (productsProcessed[0] == numProducts) {
+                                                            ProductListAdapter productListAdapter = new ProductListAdapter(requireContext(), products);
+                                                            binding.productsListPupz.setAdapter(productListAdapter);
+                                                            binding.productsListPupz.setClickable(true);
+                                                        }
+                                                    }
                                                 }
-                                            }
-                                        })
-                                        .addOnFailureListener(new OnFailureListener() {
-                                            @Override
-                                            public void onFailure(@NonNull Exception e) {
-                                                Toast.makeText(requireContext(), e.getMessage(), Toast.LENGTH_LONG).show();
-                                                if (images.size() == numImages) {
-                                                    product.setImages(images);
-                                                    products.add(product);
-
-                                                    ProductListAdapter productListAdapter = new ProductListAdapter(requireContext(), products);
-
-                                                    binding.productsListPupz.setAdapter(productListAdapter);
-                                                    binding.productsListPupz.setClickable(true);
+                                            })
+                                            .addOnFailureListener(new OnFailureListener() {
+                                                @Override
+                                                public void onFailure(@NonNull Exception e) {
+                                                    Toast.makeText(requireContext(), e.getMessage(), Toast.LENGTH_LONG).show();
                                                 }
-                                            }
-                                        });
+                                            });
+                                }
+
+                                products.add(product);
                             }
+                        } else {
+                            Toast.makeText(requireContext(), "Failed to fetch products: " + task.getException().getMessage(), Toast.LENGTH_LONG).show();
                         }
                     }
                 })

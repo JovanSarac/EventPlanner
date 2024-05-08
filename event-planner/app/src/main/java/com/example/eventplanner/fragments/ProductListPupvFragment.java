@@ -19,6 +19,7 @@ import com.example.eventplanner.databinding.FragmentProductListPupvBinding;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 import com.example.eventplanner.adapters.ProductListPupvAdapter;
 import com.example.eventplanner.model.Product;
@@ -36,7 +37,6 @@ public class ProductListPupvFragment extends Fragment{
     View view;
     FragmentProductListPupvBinding binding;
     ArrayList<Product> products;
-    ArrayList<Uri> images;
     FirebaseFirestore db;
     FirebaseStorage storage;
 
@@ -47,7 +47,6 @@ public class ProductListPupvFragment extends Fragment{
         view = inflater.inflate(R.layout.fragment_product_list_pupv, container, false);
         binding = FragmentProductListPupvBinding.inflate(getLayoutInflater());
 
-        images = new ArrayList<>();
         products = new ArrayList<>();
 
         db = FirebaseFirestore.getInstance();
@@ -80,63 +79,62 @@ public class ProductListPupvFragment extends Fragment{
                 .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                     @Override
                     public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        if (task.isSuccessful()) {
+                            final List<DocumentSnapshot> productDocs = task.getResult().getDocuments();
+                            final int numProducts = productDocs.size();
+                            final int[] productsProcessed = {0};
 
-                        for(DocumentSnapshot doc: task.getResult()){
-                            Product product = new Product(
-                                    Long.parseLong(doc.getId()),
-                                    doc.getLong("categoryId"),
-                                    doc.getLong("subcategoryId"),
-                                    doc.getString("name"),
-                                    doc.getString("description"),
-                                    ((Number) doc.get("price")).doubleValue() ,
-                                    ((Number) doc.get("discount")).doubleValue(),
-                                    new ArrayList<>(), //images
-                                    (ArrayList<Long>) doc.get("eventIds"),
-                                    doc.getBoolean("available"),
-                                    doc.getBoolean("visible"),
-                                    doc.getBoolean("pending"),
-                                    doc.getBoolean("deleted"));
+                            for (DocumentSnapshot doc : productDocs) {
+                                Product product = new Product(
+                                        Long.parseLong(doc.getId()),
+                                        doc.getLong("categoryId"),
+                                        doc.getLong("subcategoryId"),
+                                        doc.getString("name"),
+                                        doc.getString("description"),
+                                        ((Number) doc.get("price")).doubleValue(),
+                                        ((Number) doc.get("discount")).doubleValue(),
+                                        new ArrayList<>(), //images
+                                        (ArrayList<Long>) doc.get("eventIds"),
+                                        doc.getBoolean("available"),
+                                        doc.getBoolean("visible"),
+                                        doc.getBoolean("pending"),
+                                        doc.getBoolean("deleted"));
 
-                            ArrayList<String> imageUrls = (ArrayList<String>) doc.get("imageUrls");
-                            final int numImages = imageUrls.size(); // Number of images to fetch
+                                ArrayList<String> imageUrls = (ArrayList<String>) doc.get("imageUrls");
+                                final int numImages = imageUrls.size();
 
-                            for (String image : imageUrls) {
-                                StorageReference imageRef = storage.getReference().child(image);
-                                imageRef.getDownloadUrl()
-                                        .addOnSuccessListener(new OnSuccessListener<Uri>() {
-                                            @Override
-                                            public void onSuccess(Uri uri) {
-                                                images.add(uri);
-                                                if (images.size() == numImages) {
-                                                    product.setImages(images);
-                                                    products.add(product);
+                                for (String imageUrl : imageUrls) {
+                                    StorageReference imageRef = storage.getReference().child(imageUrl);
+                                    imageRef.getDownloadUrl()
+                                            .addOnSuccessListener(new OnSuccessListener<Uri>() {
+                                                @Override
+                                                public void onSuccess(Uri uri) {
+                                                    product.getImages().add(uri);
 
-                                                    ProductListPupvAdapter productListAdapter = new ProductListPupvAdapter(requireContext(), products);
+                                                    if (product.getImages().size() == numImages) {
+                                                        productsProcessed[0]++;
 
-                                                    binding.productsListPupv.setAdapter(productListAdapter);
-                                                    binding.productsListPupv.setClickable(true);
+                                                        if (productsProcessed[0] == numProducts) {
+                                                            ProductListPupvAdapter productListAdapter = new ProductListPupvAdapter(requireContext(), products);
+                                                            binding.productsListPupv.setAdapter(productListAdapter);
+                                                            binding.productsListPupv.setClickable(true);
+                                                        }
+                                                    }
                                                 }
-                                            }
-                                        })
-                                        .addOnFailureListener(new OnFailureListener() {
-                                            @Override
-                                            public void onFailure(@NonNull Exception e) {
-                                                Toast.makeText(requireContext(), e.getMessage(), Toast.LENGTH_LONG).show();
-                                                if (images.size() == numImages) {
-                                                    product.setImages(images);
-                                                    products.add(product);
-
-                                                    ProductListPupvAdapter productListAdapter = new ProductListPupvAdapter(requireContext(), products);
-
-                                                    binding.productsListPupv.setAdapter(productListAdapter);
-                                                    binding.productsListPupv.setClickable(true);
+                                            })
+                                            .addOnFailureListener(new OnFailureListener() {
+                                                @Override
+                                                public void onFailure(@NonNull Exception e) {
+                                                    Toast.makeText(requireContext(), e.getMessage(), Toast.LENGTH_LONG).show();
                                                 }
-                                            }
-                                        });
+                                            });
+                                }
+
+                                products.add(product);
                             }
+                        } else {
+                            Toast.makeText(requireContext(), "Failed to fetch products: " + task.getException().getMessage(), Toast.LENGTH_LONG).show();
                         }
-
-
                     }
                 })
                 .addOnFailureListener(new OnFailureListener() {
