@@ -22,6 +22,7 @@ import com.google.android.material.textfield.TextInputEditText;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.messaging.FirebaseMessaging;
 
 public class LoginActivity extends AppCompatActivity {
     FirebaseAuth mAuth= FirebaseAuth.getInstance();
@@ -44,6 +45,8 @@ public class LoginActivity extends AppCompatActivity {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
+
+
 
         binding= ActivityLoginBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
@@ -68,6 +71,23 @@ public class LoginActivity extends AppCompatActivity {
                                 if (user.isEmailVerified()) {
                                     Intent intent = new Intent(LoginActivity.this, HomeActivity.class);
                                     startActivity(intent);
+                                    String s=mAuth.getCurrentUser().getDisplayName();
+                                    Toast.makeText(LoginActivity.this,s,Toast.LENGTH_SHORT).show();
+                                    if(mAuth.getCurrentUser()!=null && mAuth.getCurrentUser().getDisplayName().equals("PUPV")){
+                                        FirebaseMessaging.getInstance().subscribeToTopic("PUPV")
+                                                .addOnCompleteListener(new OnCompleteListener<Void>() {
+                                                    @Override
+                                                    public void onComplete(@NonNull Task<Void> task) {
+                                                        String msg = "Poruka";
+                                                        if (!task.isSuccessful()) {
+                                                            msg = "Greska";
+                                                        }
+                                                        Log.d("NestoSeDesilo", msg);
+                                                        //Toast.makeText(LoginActivity.this, msg, Toast.LENGTH_SHORT).show();
+                                                    }
+                                                });
+                                    }
+
                                 } else {
                                     mAuth.signOut();
                                     Toast.makeText(LoginActivity.this, "Please verify your email before logging in", Toast.LENGTH_SHORT).show();
