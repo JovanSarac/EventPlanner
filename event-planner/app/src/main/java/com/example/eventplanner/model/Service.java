@@ -29,11 +29,13 @@ public class Service implements Parcelable {
     private Boolean automaticAffirmation;
     private Boolean available;
     private Boolean visible;
+    private Boolean pending;
+    private Boolean deleted;
 
     public Service() {
     }
 
-    public Service(Long id, Long categoryId, Long subcategoryId, String name, String description, ArrayList<Uri> images, String specific, Double pricePerHour, Double fullPrice, Double duration, Double durationMin, Double durationMax, String location, Double discount, ArrayList<String> providers, ArrayList<Long> eventIds, String reservationDue, String cancelationDue, Boolean automaticAffirmation, Boolean available, Boolean visible) {
+    public Service(Long id, Long categoryId, Long subcategoryId, String name, String description, ArrayList<Uri> images, String specific, Double pricePerHour, Double fullPrice, Double duration, Double durationMin, Double durationMax, String location, Double discount, ArrayList<String> providers, ArrayList<Long> eventIds, String reservationDue, String cancelationDue, Boolean automaticAffirmation, Boolean available, Boolean visible, Boolean pending, Boolean deleted) {
         this.id = id;
         this.categoryId = categoryId;
         this.subcategoryId = subcategoryId;
@@ -55,6 +57,8 @@ public class Service implements Parcelable {
         this.automaticAffirmation = automaticAffirmation;
         this.available = available;
         this.visible = visible;
+        this.pending = pending;
+        this.deleted = deleted;
     }
 
     protected Service(Parcel in) {
@@ -120,6 +124,10 @@ public class Service implements Parcelable {
         available = tmpAvailable == 0 ? null : tmpAvailable == 1;
         byte tmpVisible = in.readByte();
         visible = tmpVisible == 0 ? null : tmpVisible == 1;
+        byte tmpPending = in.readByte();
+        pending = tmpVisible == 0 ? null : tmpPending == 1;
+        byte tmpDeleted = in.readByte();
+        deleted = tmpDeleted == 0 ? null : tmpDeleted == 1;
     }
 
     public static final Creator<Service> CREATOR = new Creator<Service>() {
@@ -207,6 +215,8 @@ public class Service implements Parcelable {
         dest.writeByte((byte) (automaticAffirmation == null ? 0 : automaticAffirmation ? 1 : 2));
         dest.writeByte((byte) (available == null ? 0 : available ? 1 : 2));
         dest.writeByte((byte) (visible == null ? 0 : visible ? 1 : 2));
+        dest.writeByte((byte) (pending == null ? 0 : pending ? 1 : 2));
+        dest.writeByte((byte) (deleted == null ? 0 : deleted ? 1 : 2));
     }
 
     public Long getId() {
@@ -375,5 +385,21 @@ public class Service implements Parcelable {
 
     public void setVisible(Boolean visible) {
         this.visible = visible;
+    }
+
+    public Boolean getPending() {
+        return pending;
+    }
+
+    public void setPending(Boolean pending) {
+        this.pending = pending;
+    }
+
+    public Boolean getDeleted() {
+        return deleted;
+    }
+
+    public void setDeleted(Boolean deleted) {
+        this.deleted = deleted;
     }
 }
