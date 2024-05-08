@@ -86,21 +86,6 @@ public class ProductListPupvAdapter extends ArrayAdapter<Product> {
             public void onClick(View v) {
                 Intent intent = new Intent(finalConvertView.getContext(), EditProductActivity.class);
                 intent.putExtra("productId", product.getId());
-                intent.putExtra("productName", product.getName());
-                intent.putExtra("productCategory", product.getCategoryId());
-                intent.putExtra("productSubcategory", product.getSubcategoryId());
-                intent.putExtra("productName", product.getName());
-                intent.putExtra("productDescription", product.getDescription());
-                intent.putExtra("productPrice", product.getPrice());
-                intent.putExtra("productDiscount", product.getDiscount());
-                ArrayList<String> imageStrings = new ArrayList<>();
-                for (Uri uri : product.getImages()) {
-                    imageStrings.add(uri.toString());
-                }
-                intent.putStringArrayListExtra("productImage", imageStrings);
-                intent.putExtra("productEvents", product.getEventIds());
-                intent.putExtra("productAvailability", product.getAvailable());
-                intent.putExtra("productVisibility", product.getVisible());
 
                 finalConvertView.getContext().startActivity(intent);
             }

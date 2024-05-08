@@ -232,6 +232,7 @@ public class CreateProductActivity extends AppCompatActivity {
                 doc.put("available", available.isChecked());
                 doc.put("visible", visible.isChecked());
                 doc.put("pending", pending);
+                doc.put("deleted", false);
                 for (Uri image : images) {
                     Long imageFile = new Random().nextLong();
                     String imageFileName = imageFile.toString();

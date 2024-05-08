@@ -6,6 +6,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -17,6 +18,7 @@ import java.util.ArrayList;
 
 public class EventListAdapter  extends ArrayAdapter<Event> {
     private ArrayList<Event> events;
+    Button remove;
     private int resource;
 
     public EventListAdapter(Context context, int resource, ArrayList<Event> events){
@@ -44,9 +46,28 @@ public class EventListAdapter  extends ArrayAdapter<Event> {
     @NonNull
     @Override
     public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
-        View view = super.getView(position, convertView, parent);
-        TextView textView = (TextView) view.findViewById(android.R.id.text1);
-        textView.setText(getItem(position).getName());
+        View view = convertView;
+        if (view == null) {
+            LayoutInflater inflater = LayoutInflater.from(getContext());
+            view = inflater.inflate(resource, parent, false);
+        }
+
+        TextView eventNameTextView = resource == android.R.layout.simple_dropdown_item_1line ? view.findViewById(android.R.id.text1) : view.findViewById(R.id.event_name);
+        eventNameTextView.setText(getItem(position).getName());
+
+
+        if(resource != android.R.layout.simple_dropdown_item_1line) {
+            remove = view.findViewById(R.id.remove);
+
+            remove.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    events.remove(position);
+                    notifyDataSetChanged();
+                }
+            });
+        }
+
         return view;
     }
 }
