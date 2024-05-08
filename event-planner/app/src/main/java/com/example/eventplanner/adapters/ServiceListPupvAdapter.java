@@ -15,6 +15,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import com.bumptech.glide.Glide;
 import com.example.eventplanner.activities.EditServiceActivity;
 import com.example.eventplanner.R;
 
@@ -62,7 +63,9 @@ public class ServiceListPupvAdapter extends ArrayAdapter<Service> {
         TextView pricePerHour = convertView.findViewById(R.id.pricePerHour);
 
         if(service != null){
-            image.setImageURI(service.getImages().get(0));
+            Glide.with(getContext())
+                    .load(service.getImages().get(0))
+                    .into(image);
             name.setText(service.getName());
             description.setText(service.getDescription());
             fullPrice.setText(service.getFullPrice().toString() + "$");
@@ -78,24 +81,6 @@ public class ServiceListPupvAdapter extends ArrayAdapter<Service> {
             public void onClick(View v) {
                 Intent intent = new Intent(finalConvertView.getContext(), EditServiceActivity.class);
                 intent.putExtra("Id", service.getId());
-                intent.putExtra("Name", service.getName());
-                intent.putExtra("Category", service.getCategoryId());
-                intent.putExtra("Subcategory", service.getSubcategoryId());
-                intent.putExtra("Description", service.getDescription());
-                intent.putExtra("Specific", service.getSpecific());
-                intent.putExtra("PricePerHour", service.getPricePerHour());
-                intent.putExtra("FullPrice", service.getFullPrice());
-                intent.putExtra("Discount", service.getDiscount());
-                intent.putExtra("Duration", service.getDuration());
-                intent.putExtra("Location", service.getLocation());
-                intent.putExtra("Image", service.getImages());
-                intent.putExtra("Events", service.getEventIds());
-                intent.putExtra("Providers", service.getProviders());
-                intent.putExtra("ReservationDue", service.getReservationDue());
-                intent.putExtra("CancelationDue", service.getCancelationDue());
-                intent.putExtra("AutomaticAffirmation", service.getAutomaticAffirmation());
-                intent.putExtra("Availability", service.getAvailable());
-                intent.putExtra("Visibility", service.getVisible());
 
                 finalConvertView.getContext().startActivity(intent);
             }

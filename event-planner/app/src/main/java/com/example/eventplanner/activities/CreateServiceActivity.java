@@ -248,6 +248,7 @@ public class CreateServiceActivity extends AppCompatActivity {
                 doc.put("reservationDue", reservationDue.getEditText().getText().toString());
                 doc.put("cancelationDue", cancelationDue.getEditText().getText().toString());
                 doc.put("eventIds", eventIds);
+                doc.put("providers", providers);
                 doc.put("available", available.isChecked());
                 doc.put("visible", visible.isChecked());
                 doc.put("automaticAffirmation", automaticAffirmation.isChecked());
