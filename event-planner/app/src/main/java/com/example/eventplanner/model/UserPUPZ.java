@@ -1,6 +1,8 @@
 package com.example.eventplanner.model;
 
-public class UserPUPZ {
+import java.io.Serializable;
+
+public class UserPUPZ implements Serializable {
 
     private Long id;
     private String ownerId;

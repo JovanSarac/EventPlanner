@@ -2,24 +2,36 @@ package com.example.eventplanner.utils;
 
 import androidx.annotation.NonNull;
 
-import java.time.LocalTime;
+import java.util.HashMap;
+import java.util.Map;
 
 public class WorkingHours {
 
-    private LocalTime startTime;
-    private LocalTime endTime;
+    private String startTime;
+    private String endTime;
 
-    public WorkingHours(LocalTime startTime, LocalTime endTime) {
+    public WorkingHours() {
+    }
+
+    public WorkingHours(String startTime, String endTime) {
         this.startTime = startTime;
         this.endTime = endTime;
     }
 
-    public LocalTime getStartTime() {
+    public String getStartTime() {
         return startTime;
     }
 
-    public LocalTime getEndTime() {
+    public void setStartTime(String startTime) {
+        this.startTime = startTime;
+    }
+
+    public String getEndTime() {
         return endTime;
+    }
+
+    public void setEndTime(String endTime) {
+        this.endTime = endTime;
     }
 
     @Override
@@ -31,4 +43,17 @@ public class WorkingHours {
                 '}';
     }
 
+    public Map<String, Object> toMap() {
+        Map<String, Object> map = new HashMap<>();
+        map.put("startTime", startTime);
+        map.put("endTime", endTime);
+        return map;
+    }
+
+    public static WorkingHours fromMap(Map<String, Object> map) {
+        WorkingHours workingHours = new WorkingHours();
+        workingHours.setStartTime((String) map.get("startTime"));
+        workingHours.setEndTime((String) map.get("endTime"));
+        return workingHours;
+    }
 }

@@ -11,21 +11,25 @@ public class DateSchedule {
     private Long id;
     private Long workerId;
     private DateRange dateRange;
-    private HashMap<Days, WorkingHours> schedule;
+    private HashMap<String, WorkingHours> schedule;
 
     public DateSchedule() {
         this.dateRange = null;
 
         this.schedule = new HashMap<>();
         for (Days day : Days.values()) {
-            this.schedule.put(day, null);
+            this.schedule.put(day.toString(), null);
         }
     }
 
-    public DateSchedule(Long workerId, DateRange dateRange, HashMap<Days, WorkingHours> schedule) {
+    public DateSchedule(Long workerId, DateRange dateRange, HashMap<String, WorkingHours> schedule) {
         this.workerId = workerId;
         this.schedule = schedule;
         this.dateRange = dateRange;
+    }
+
+    public void setItem(String day, WorkingHours hours){
+        schedule.put(day, hours);
     }
 
     public Long getId() {
@@ -52,11 +56,11 @@ public class DateSchedule {
         this.dateRange = dateRange;
     }
 
-    public HashMap<Days, WorkingHours> getSchedule() {
+    public HashMap<String, WorkingHours> getSchedule() {
         return schedule;
     }
 
-    public void setSchedule(HashMap<Days, WorkingHours> schedule) {
+    public void setSchedule(HashMap<String, WorkingHours> schedule) {
         this.schedule = schedule;
     }
 }
