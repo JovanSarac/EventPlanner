@@ -13,19 +13,6 @@ public class Category {
         this.name = name;
         this.description = description;
     }
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public Category(Long id, String name, String description) {
-        this.id = id;
-        this.name = name;
-        this.description = description;
-    }
 
     @Override
     public String toString() {
