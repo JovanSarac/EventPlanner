@@ -560,6 +560,7 @@
                 android:layout_marginTop="16dp">
 
                 <TableLayout
+                    android:id="@+id/worker_schedules_table"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:background="@android:color/white"
@@ -605,93 +606,6 @@
                             />
 
                     </TableRow>
-
-                    <TableRow
-                        android:background="@color/white"
-                        android:id="@+id/table_row">
-
-                        <TextView
-                            android:background="@drawable/table_cell"
-                            android:textStyle="bold"
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:text="Marko"
-                            android:textColor="@android:color/black"
-                            android:padding="12sp"
-                            android:textSize="12sp"
-                            android:layout_weight="4"
-                            android:gravity="center_horizontal"
-                            />
-
-                        <TextView
-                            android:background="@drawable/table_cell"
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:text="01.01.2024"
-                            android:textColor="@android:color/black"
-                            android:padding="12sp"
-                            android:textSize="12sp"
-                            android:layout_weight="4"
-                            android:gravity="center_horizontal"
-                            />
-
-                        <TextView
-                            android:background="@drawable/table_cell"
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:text="20.01.2024"
-                            android:textColor="@android:color/black"
-                            android:padding="12sp"
-                            android:textSize="12sp"
-                            android:layout_weight="4"
-                            android:gravity="center_horizontal"
-                            />
-
-                    </TableRow>
-
-                    <TableRow
-                        android:background="@color/white">
-
-                        <TextView
-                            android:background="@drawable/table_cell"
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:text="Marko"
-                            android:textStyle="bold"
-                            android:textColor="@android:color/black"
-                            android:padding="12sp"
-                            android:textSize="12sp"
-                            android:layout_weight="4"
-                            android:gravity="center_horizontal"
-                            />
-
-                        <TextView
-                            android:background="@drawable/table_cell"
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:text="01.01.2024"
-                            android:textColor="@android:color/black"
-                            android:padding="12sp"
-                            android:textSize="12sp"
-                            android:layout_weight="4"
-                            android:gravity="center_horizontal"
-                            />
-
-                        <TextView
-                            android:background="@drawable/table_cell"
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:text="20.01.2024"
-                            android:textColor="@android:color/black"
-                            android:padding="12sp"
-                            android:textSize="12sp"
-                            android:layout_weight="4"
-                            android:gravity="center_horizontal"
-                            />
-
-                    </TableRow>
-
-
 
                 </TableLayout>
 
