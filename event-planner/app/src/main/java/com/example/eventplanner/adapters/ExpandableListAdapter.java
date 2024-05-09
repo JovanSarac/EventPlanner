@@ -2,6 +2,7 @@ package com.example.eventplanner.adapters;
 
 import android.content.Context;
 import android.content.Intent;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -81,6 +82,43 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
         return false;
     }
 
+//    private void getProductsAndServices(Long categoryId,Long subcategoryId){
+//        db.collection("Products").whereEqualTo("categoryId", categoryId)
+//                .get()
+//                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+//                    @Override
+//                    public void onComplete(Task<QuerySnapshot> task) {
+//                        if (task.isSuccessful()) {
+//
+//                            db.collection("Products").whereEqualTo("categoryId", categoryId)
+//                                    .get()
+//                                    .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+//                                        @Override
+//                                        public void onComplete(Task<QuerySnapshot> task2) {
+//                                            if (task2.isSuccessful()) {
+//                                                for (DocumentSnapshot document : task.getResult()) {
+//                                                    Log.d("NestoSeDesilo2", document.getString("name"));
+//                                                    return;
+//
+//                                                }
+//                                                for (DocumentSnapshot document : task2.getResult()) {
+//                                                    Log.d("NestoSeDesilo2", document.getString("name"));
+//                                                    return;
+//                                                }
+//
+//
+//                                            } else {
+//                                                Toast.makeText(context, "Deleting failed", Toast.LENGTH_SHORT).show();
+//                                            }
+//                                        }
+//                                    });
+//
+//                        } else {
+//                            Toast.makeText(context, "Deleting failed", Toast.LENGTH_SHORT).show();
+//                        }
+//                    }
+//                });
+//    }
     @Override
     public View getGroupView(int groupPosition, boolean isExpanded, View convertView, ViewGroup parent) {
         Category headerTitle =(Category) getGroup(groupPosition);
@@ -110,8 +148,9 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
         iconDelete.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                CollectionReference collectionRef = db.collection("Subcategories");
-                collectionRef.whereEqualTo("CategoryName", headerTitle.getName())
+
+                //getProductsAndServices(headerTitle.getId(),headerTitle.getId());
+                db.collection("Subcategories").whereEqualTo("CategoryName", headerTitle.getName())
                         .get()
                         .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                             @Override
@@ -133,11 +172,12 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
                         .document(headerTitle.getId().toString()).delete()
                         .addOnSuccessListener(aVoid -> {
                             Toast.makeText(context, "Category deleted", Toast.LENGTH_SHORT).show();
+                            ((CategoryActivity) context).getCategories();
                         })
                         .addOnFailureListener(e -> {
                             Toast.makeText(context, "error while deleting", Toast.LENGTH_SHORT).show();
                         });
-                ((CategoryActivity) context).getCategories();
+
 
 
             }

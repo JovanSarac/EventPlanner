@@ -36,7 +36,7 @@ public class HomeActivity extends AppCompatActivity {
     private Button butonSearchAndFilter;
 
     private Button buttonHome;
-
+    ActivityHomeBinding binding;
     FirebaseAuth mAuth=FirebaseAuth.getInstance();
     private final ActivityResultLauncher<String> requestPermissionLauncher =
             registerForActivityResult(new ActivityResultContracts.RequestPermission(), isGranted -> {
@@ -71,7 +71,9 @@ public class HomeActivity extends AppCompatActivity {
         }
         askNotificationPermission();
 
-        ActivityHomeBinding binding= ActivityHomeBinding.inflate(getLayoutInflater());
+
+
+        binding= ActivityHomeBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
         binding.productsManagmentPUPV.setOnClickListener(v ->{
@@ -142,7 +144,36 @@ public class HomeActivity extends AppCompatActivity {
         binding.signOut.setOnClickListener(v->{
             FirebaseAuth.getInstance().signOut();
             Toast.makeText(this, "SingedOut", Toast.LENGTH_SHORT).show();
+            this.onResume();
         });
+
+
+    }
+
+    @Override
+    protected void onResume() {
+
+        super.onResume();
+        FirebaseUser user= mAuth.getCurrentUser();
+        if(user==null){
+            binding.signOut.setVisibility(View.GONE);
+
+            binding.registerButton.setVisibility(View.VISIBLE);
+            binding.loginButton.setVisibility(View.VISIBLE);
+        }else{
+            binding.signOut.setVisibility(View.VISIBLE);
+
+            binding.registerButton.setVisibility(View.GONE);
+            binding.loginButton.setVisibility(View.GONE);
+            if(!user.getDisplayName().equals("ADMIN")){
+                binding.categoriesButton.setVisibility(View.GONE);
+                binding.typesOfEventsButton.setVisibility(View.GONE);
+            }
+            else{
+                binding.categoriesButton.setVisibility(View.VISIBLE);
+                binding.typesOfEventsButton.setVisibility(View.VISIBLE);
+            }
+        }
 
 
     }

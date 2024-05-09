@@ -1,5 +1,6 @@
 package com.example.eventplanner.activities;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -17,11 +18,14 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
 import com.example.eventplanner.R;
+import com.example.eventplanner.services.FCMHttpClient;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.textfield.TextInputEditText;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -83,6 +87,11 @@ public class AddSubcategoryActivity extends AppCompatActivity {
         });
 
     }
+    String serverKey="AAAA8GYmoZ8:APA91bHsjyzOSa2JtO_cQWFO-X1p9nMuHRO8DTfD1zhcY4mnqZ-2EZmIn8tMf1ISmnM31WB68Mzn2soeUgEISXlSc9WjRvcRhyYbmBgi7whJuYXX-24wkODByasquofLaMZydpg78esK";
+    public static void sendMessage(String serverKey, String jsonPayload) {
+        FCMHttpClient httpClient = new FCMHttpClient();
+        httpClient.sendMessageToTopic(serverKey, "PUPV", jsonPayload);
+    }
     private void addEditSubcategory(View v){
         Long id;
         if(!editButtonFlag){
@@ -117,7 +126,22 @@ public class AddSubcategoryActivity extends AppCompatActivity {
                     @Override
                     public void onComplete(@NonNull Task<Void> task) {
                         Toast.makeText(v.getContext(), "Subcategory created", Toast.LENGTH_SHORT).show();
-                        finish();
+                        db.collection("SuggestedSubcategories").document(id.toString())
+                                .get()
+                                .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                                    @Override
+                                    public void onComplete(Task<DocumentSnapshot> task) {
+                                        if (task.isSuccessful()) {
+                                            DocumentSnapshot document = task.getResult();
+                                            document.getReference().delete();
+                                            String jsonPayload = "{\"data\":{\"title\":\"New subcategory!\",\"body\":\""+item.get("Name").toString()+"\"},\"to\":\"/topics/" + "PUPV" + "\"}";
+                                            sendMessage(serverKey,jsonPayload);
+                                        }
+                                        finish();
+                                    }
+                                });
+
+
                     }
                 })
                 .addOnFailureListener(new OnFailureListener() {

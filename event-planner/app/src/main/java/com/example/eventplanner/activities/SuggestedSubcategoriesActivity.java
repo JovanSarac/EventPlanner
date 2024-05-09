@@ -1,6 +1,7 @@
 package com.example.eventplanner.activities;
 
 import android.os.Bundle;
+import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
@@ -13,12 +14,25 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.eventplanner.R;
 import com.example.eventplanner.adapters.SubcategoriesCardAdapter;
 import com.example.eventplanner.model.Subcategory;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class SuggestedSubcategoriesActivity extends AppCompatActivity {
+    List<Subcategory> dataList = new ArrayList<>();
+    FirebaseFirestore db = FirebaseFirestore.getInstance();
 
+    @Override
+    protected void onResume() {
+
+        super.onResume();
+        getSuggestedSubcategories();
+    }
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -29,17 +43,37 @@ public class SuggestedSubcategoriesActivity extends AppCompatActivity {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
-        List<Subcategory> dataList = new ArrayList<>();
-        dataList.add(new Subcategory("Electronics", "Smartphones", "The latest smartphones with advanced features.", 1));
-        dataList.add(new Subcategory("Electronics", "Laptops", "High-performance laptops for work and gaming.", 1));
-        dataList.add(new Subcategory("Electronics", "Cameras", "Professional cameras for photography enthusiasts.", 1));
-        dataList.add(new Subcategory("Clothing", "Men's T-shirts", "Stylish and comfortable t-shirts for men.", 2));
-        dataList.add(new Subcategory("Clothing", "Women's Dresses", "Elegant dresses for various occasions.", 2));
-        dataList.add(new Subcategory("Clothing", "Kids' Apparel", "Adorable clothing for children of all ages.", 2));
+        //getSuggestedSubcategories();
 
-        // Set up RecyclerView
-        RecyclerView recyclerView = findViewById(R.id.recyclerView);
-        recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        recyclerView.setAdapter(new SubcategoriesCardAdapter(dataList));
+
+    }
+
+    public void getSuggestedSubcategories(){
+        dataList = new ArrayList<>();
+        db.collection("SuggestedSubcategories")
+                .get()
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(Task<QuerySnapshot> task) {
+                        if (task.isSuccessful()) {
+                            for(DocumentSnapshot doc: task.getResult()) {
+                                Subcategory subcategory = new Subcategory(
+                                        Long.parseLong(doc.getId()),
+                                        doc.getString("categoryName"),
+                                        doc.getString("name"),
+                                        doc.getString("description"),
+                                        doc.getLong("type").intValue()
+                                );
+                                dataList.add(subcategory);
+                            }
+                            RecyclerView recyclerView = findViewById(R.id.recyclerView);
+                            recyclerView.setLayoutManager(new LinearLayoutManager(SuggestedSubcategoriesActivity.this));
+                            recyclerView.setAdapter(new SubcategoriesCardAdapter(dataList));
+
+                        } else {
+                            Toast.makeText(SuggestedSubcategoriesActivity.this, "Getting data failed", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                });
     }
 }
