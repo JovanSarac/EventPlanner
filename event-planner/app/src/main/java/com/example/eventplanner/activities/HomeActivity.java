@@ -160,11 +160,15 @@ public class HomeActivity extends AppCompatActivity {
 
             binding.registerButton.setVisibility(View.VISIBLE);
             binding.loginButton.setVisibility(View.VISIBLE);
+            binding.homeact.setVisibility(View.INVISIBLE);
         }else{
             binding.signOut.setVisibility(View.VISIBLE);
 
             binding.registerButton.setVisibility(View.GONE);
             binding.loginButton.setVisibility(View.GONE);
+            if(user.getDisplayName().equals("OD")){
+                binding.homeact.setVisibility(View.VISIBLE);
+            }
             if(!user.getDisplayName().equals("ADMIN")){
                 binding.categoriesButton.setVisibility(View.GONE);
                 binding.typesOfEventsButton.setVisibility(View.GONE);

@@ -1,5 +1,6 @@
 package com.example.eventplanner.fragments;
 
+import android.net.Uri;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -7,7 +8,6 @@ import androidx.annotation.Nullable;
 import androidx.core.util.Pair;
 import androidx.fragment.app.Fragment;
 
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,10 +17,19 @@ import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.eventplanner.R;
 import com.example.eventplanner.databinding.FragmentProductsServicesPageBinding;
 import com.example.eventplanner.databinding.FragmentSearchPspBinding;
+import com.example.eventplanner.model.Category;
+import com.example.eventplanner.model.Event;
+import com.example.eventplanner.model.EventType;
+import com.example.eventplanner.model.Subcategory;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.datepicker.MaterialDatePicker;
 import com.google.android.material.slider.RangeSlider;
@@ -29,17 +38,19 @@ import com.google.android.material.textfield.TextInputEditText;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
-import com.example.eventplanner.adapters.PackageListAdapter;
 import com.example.eventplanner.adapters.ProductListAdapter;
 import com.example.eventplanner.adapters.ServiceListAdapter;
-import com.example.eventplanner.model.Package;
 import com.example.eventplanner.model.Product;
 import com.example.eventplanner.model.Service;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QuerySnapshot;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 
 
 public class ProductsServicesPageFragment extends Fragment {
@@ -55,6 +66,13 @@ public class ProductsServicesPageFragment extends Fragment {
     String selectedCategory;
     String selectedSubcategory;
 
+    ArrayList<Product> products;
+
+    ArrayList<Service> services;
+    FirebaseFirestore db;
+    FirebaseStorage storage;
+
+    private List<EventType> itemList=new ArrayList<>();
     public static ProductsServicesPageFragment newInstance() {
         return new ProductsServicesPageFragment();
     }
@@ -93,69 +111,15 @@ public class ProductsServicesPageFragment extends Fragment {
 
             bindingSearchPsp = FragmentSearchPspBinding.bind(dialogView);
 
-            AutoCompleteTextView atv = dialogView.findViewById(R.id.inputEventType);
-            String[] eventTypes = {"Svadbe", "Veridbe", "Rodjendani", "Godiscnjice", "Krstenja", "Rodjenja",
-                    "Porodicna okupljanja i proslave", "Mature i proslave diploma", "Bebine zabave i krstenja",
-                    "Konferencije i seminari", "Godisnje korporativne zabave", "Sajmovi i izlozbe"};
-
-            ArrayAdapter<String> adapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_dropdown_item_1line, eventTypes);
-            atv.setAdapter(adapter);
-
-            // Dodavanje slušatelja za AutoCompleteTextView ako želite reagirati na odabir
-            atv.setOnItemClickListener((parent, view, position, id) -> {
-                //Ovdje možete dodati kôd koji se izvršava kada korisnik odabere neku stavku
-                String selectedEventType = (String) parent.getItemAtPosition(position);
-
-                System.out.println("Selected event type: " + selectedEventType);
-            });
+            getEventTypes(dialogView);
 
 
             Spinner spinner1 = dialogView.findViewById(R.id.btnSort1);
+            getCategory(spinner1);
             Spinner spinner2 = dialogView.findViewById(R.id.btnSort2);
+            getSubcategory(spinner2);
 
-            String[] Subcategories = {"Subcategory", "Hrana za događaje", "Ketering i priprema hrane", "Iznajmljivanje ugostiteljskih objekata za događaje", "Fotografisanje"};
-            String[] Categories = {"Category", "Ugostiteljski objekti, hrana, ketering, torte i kolači", "Muzika i zabava", "Smjestaj", "Logistika i obezbeđenje"};
-            ArrayAdapter<String> arrayAdapterForSubcategory = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item, Subcategories) {
-                @NonNull
-                @Override
-                public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
-                    View view = super.getView(position, convertView, parent);
-                    TextView textView = (TextView) view.findViewById(android.R.id.text1);
-                    textView.setTextColor(getResources().getColor(R.color.purple_light));
-                    return view;
-                }
 
-                @Override
-                public View getDropDownView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
-                    View view = super.getDropDownView(position, convertView, parent);
-                    TextView textView = (TextView) view.findViewById(android.R.id.text1);
-                    textView.setTextColor(getResources().getColor(R.color.purple_light));
-                    return view;
-                }
-            };
-            arrayAdapterForSubcategory.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-            ArrayAdapter<String> arrayAdapterForCattegory = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item, Categories) {
-                @NonNull
-                @Override
-                public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
-                    View view = super.getView(position, convertView, parent);
-                    TextView textView = (TextView) view.findViewById(android.R.id.text1);
-                    textView.setTextColor(getResources().getColor(R.color.purple_light));
-                    return view;
-                }
-
-                @Override
-                public View getDropDownView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
-                    View view = super.getDropDownView(position, convertView, parent);
-                    TextView textView = (TextView) view.findViewById(android.R.id.text1);
-                    textView.setTextColor(getResources().getColor(R.color.purple_light));
-                    return view;
-                }
-            };
-            arrayAdapterForCattegory.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-
-            spinner1.setAdapter(arrayAdapterForCattegory);
-            spinner2.setAdapter(arrayAdapterForSubcategory);
 
 
             datetimeRangeEventInput = dialogView.findViewById(R.id.datetimeRangeEventInput);
@@ -212,6 +176,7 @@ public class ProductsServicesPageFragment extends Fragment {
                     Float priceFrom = range.get(0);
                     Float priceTo = range.get(1);
                     boolean available = bindingSearchPsp.radioButton1.isChecked();
+                    boolean dontavailable = bindingSearchPsp.radioButton2.isChecked();
 
 
                     System.out.println(searchByName);
@@ -223,13 +188,9 @@ public class ProductsServicesPageFragment extends Fragment {
                     System.out.println(available);
                     System.out.println(dateTimeRange);
 
+                    SearchPsp(searchByName,searchByLocation,eventType,category,subcategory,searchByNamePup,priceFrom,priceTo,available,dontavailable,dateTimeRange,bottomSheetDialog);
 
 
-
-
-
-                    // Zatvaranje BottomSheetDialog-a
-                    bottomSheetDialog.dismiss();
                 }
             });
 
@@ -239,23 +200,17 @@ public class ProductsServicesPageFragment extends Fragment {
 
         });
 
+        db = FirebaseFirestore.getInstance();
+        storage = FirebaseStorage.getInstance();
 
-        ArrayList<Product> products = getProducts();
-        ProductListAdapter productListAdapter = new ProductListAdapter(requireContext(), products);
-        binding.productList.setAdapter(productListAdapter);
-        binding.productList.setClickable(true);
-
-
-        ArrayList<Service> services = getServices();
-        ServiceListAdapter serviceListAdapter = new ServiceListAdapter(requireContext(), services);
-        binding.serviceList.setAdapter(serviceListAdapter);
-        binding.serviceList.setClickable(true);
+        getProducts();
+        getServices();
 
 
-        ArrayList<Package> packages = getPackages();
+        /*ArrayList<Package> packages = getPackages();
         PackageListAdapter packageListAdapter = new PackageListAdapter(requireContext(), packages);
         binding.packageList.setAdapter(packageListAdapter);
-        binding.packageList.setClickable(true);
+        binding.packageList.setClickable(true);*/
 
         binding.tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
@@ -295,6 +250,95 @@ public class ProductsServicesPageFragment extends Fragment {
         });
         return root;
     }
+    private void SearchPsp(String searchByName, String searchByLocation, String eventType, String category, String subcategory, String searchByNamepup,
+                           Float priceFrom, Float priceTo, boolean available, boolean dontavilable, String dateTimeRange, BottomSheetDialog btm) {
+        ArrayList<Product> searchProducts = new ArrayList<>();
+        ArrayList<Service> searchServices = new ArrayList<>();
+        if(searchByName.equals("") && searchByLocation.equals("") && category.equals("Category") && subcategory.equals("Subcategory") && eventType.equals("")
+                && searchByNamepup.equals("") && priceFrom == 1.0f && priceTo == 1000.0f
+           && !available && !dontavilable && dateTimeRange.equals("")){
+            getProducts();
+            getServices();
+            btm.dismiss();
+            return;
+        }
+
+        if(!searchByName.equals("")){
+            for(Product p: products){
+                if(p.getName().contains(searchByName)){
+                    searchProducts.add(p);
+                }
+            }
+            products = searchProducts;
+
+            for(Service s : services){
+                if(s.getName().contains(searchByName)){
+                    searchServices.add(s);
+                }
+            }
+            services = searchServices;
+        }
+        if(priceFrom > 1.0f || priceTo < 1000.0f){
+            for(Product p: products){
+                if(p.getPrice() >= priceFrom && p.getPrice() <= priceTo){
+                    searchProducts.add(p);
+                }
+            }
+            products = searchProducts;
+
+            for(Service s : services){
+                if(s.getFullPrice() >= priceFrom && s.getFullPrice() <= priceTo){
+                    searchServices.add(s);
+                }
+            }
+            services = searchServices;
+
+        }
+        if(available){
+            for(Product p: products){
+                if(p.getAvailable()){
+                    searchProducts.add(p);
+                }
+            }
+            products = searchProducts;
+
+            for(Service s : services){
+                if(s.getAvailable()){
+                    searchServices.add(s);
+                }
+            }
+            services = searchServices;
+
+        }
+
+        if(dontavilable){
+            for(Product p: products){
+                if(!p.getAvailable()){
+                    searchProducts.add(p);
+                }
+            }
+            products = searchProducts;
+
+            for(Service s : services){
+                if(!s.getAvailable()){
+                    searchServices.add(s);
+                }
+            }
+            services = searchServices;
+
+        }
+
+        ProductListAdapter productListAdapter = new ProductListAdapter(requireContext(), products);
+        binding.productList.setAdapter(productListAdapter);
+        binding.productList.setClickable(true);
+
+        ServiceListAdapter serviceListAdapter = new ServiceListAdapter(requireContext(), services);
+        binding.serviceList.setAdapter(serviceListAdapter);
+        binding.serviceList.setClickable(true);
+
+        btm.dismiss();
+
+    }
 
     @Override
     public void onDestroyView() {
@@ -303,122 +347,191 @@ public class ProductsServicesPageFragment extends Fragment {
     }
 
     private void DatePickerdialog() {
-        // Creating a MaterialDatePicker builder for selecting a date range
         MaterialDatePicker.Builder<Pair<Long, Long>> builder = MaterialDatePicker.Builder.dateRangePicker();
         builder.setTitleText("Select a date range");
 
-        // Building the date picker dialog
         MaterialDatePicker<Pair<Long, Long>> datePicker = builder.build();
         datePicker.addOnPositiveButtonClickListener(selection -> {
 
-            // Retrieving the selected start and end dates
             Long startDate = selection.first;
             Long endDate = selection.second;
 
-            // Formating the selected dates as strings
             SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
             String startDateString = sdf.format(new Date(startDate));
             String endDateString = sdf.format(new Date(endDate));
 
-            // Creating the date range string
             String selectedDateRange = startDateString + " - " + endDateString;
 
-            // Displaying the selected date range in the TextView
             datetimeRangeEventInput.setText(selectedDateRange);
         });
 
-        // Showing the date picker dialog
         datePicker.show(getActivity().getSupportFragmentManager() , "DATE_PICKER");
     }
 
+    private void getProducts() {
+        products = new ArrayList<>();
+
+        db.collection("Products")
+                .whereEqualTo("pending", false)
+                .whereEqualTo("visible", true)
+                .whereEqualTo("deleted", false)
+                .get()
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        if (task.isSuccessful()) {
+                            final List<DocumentSnapshot> productDocs = task.getResult().getDocuments();
+                            final int numProducts = productDocs.size();
+                            final int[] productsProcessed = {0};
+
+                            for (DocumentSnapshot doc : productDocs) {
+                                Product product = new Product(
+                                        Long.parseLong(doc.getId()),
+                                        doc.getLong("categoryId"),
+                                        doc.getLong("subcategoryId"),
+                                        doc.getString("name"),
+                                        doc.getString("description"),
+                                        ((Number) doc.get("price")).doubleValue(),
+                                        ((Number) doc.get("discount")).doubleValue(),
+                                        new ArrayList<>(), //images
+                                        (ArrayList<Long>) doc.get("eventIds"),
+                                        doc.getBoolean("available"),
+                                        doc.getBoolean("visible"),
+                                        doc.getBoolean("pending"),
+                                        doc.getBoolean("deleted"));
+
+                                ArrayList<String> imageUrls = (ArrayList<String>) doc.get("imageUrls");
+                                final int numImages = imageUrls.size();
+
+                                for (String imageUrl : imageUrls) {
+                                    StorageReference imageRef = storage.getReference().child(imageUrl);
+                                    imageRef.getDownloadUrl()
+                                            .addOnSuccessListener(new OnSuccessListener<Uri>() {
+                                                @Override
+                                                public void onSuccess(Uri uri) {
+                                                    product.getImages().add(uri);
+
+                                                    if (product.getImages().size() == numImages) {
+                                                        productsProcessed[0]++;
+
+                                                        if (productsProcessed[0] == numProducts) {
+                                                            ProductListAdapter productListAdapter = new ProductListAdapter(requireContext(), products);
+                                                            binding.productList.setAdapter(productListAdapter);
+                                                            binding.productList.setClickable(true);
+                                                        }
+                                                    }
+                                                }
+                                            })
+                                            .addOnFailureListener(new OnFailureListener() {
+                                                @Override
+                                                public void onFailure(@NonNull Exception e) {
+                                                    Toast.makeText(requireContext(), e.getMessage(), Toast.LENGTH_LONG).show();
+                                                }
+                                            });
+                                }
+
+                                products.add(product);
+                            }
+                        } else {
+                            Toast.makeText(requireContext(), "Failed to fetch products: " + task.getException().getMessage(), Toast.LENGTH_LONG).show();
+                        }
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Toast.makeText(requireContext(), e.getMessage(), Toast.LENGTH_LONG).show();
+                    }
+                });
+    }
     @NonNull
-    private static ArrayList<Product> getProducts() {
-        Long[] ids = {1l, 2l, 3l, 4l, 5l};
-        String[] categories = {"Category 1", "Category 2", "Category 3", "Category 4", "Category 5"};
-        String[] subcategories = {"Subcategory 1", "Subcategory 2", "Subcategory 3", "Subcategory 4", "Subcategory 5"};
-        String[] names = {"Product 1", "Product 2", "Product 3", "Product 4", "Product 5"};
-        String[] description = {"Description 1", "Description 2", "Description 3", "Description 4", "Description 5"};
-        Double[] prices = {10.0, 20.0, 30.0, 40.0, 50.0};
-        Double[] discounts = {1.0, 2.0, 3.0, 4.0, 5.0};
-        Integer[] imageIds = {R.drawable.product_1, R.drawable.product_2, R.drawable.product_3,
-                R.drawable.product_4, R.drawable.product_5};
-        ArrayList<String> events = new ArrayList<>(Arrays.asList(
-                "Event 11", "Event 12", "Event 13", "Event 14", "Event 15",
-                "Event 21", "Event 22", "Event 23", "Event 24", "Event 25",
-                "Event 31", "Event 32", "Event 33", "Event 34", "Event 35",
-                "Event 41", "Event 42", "Event 43", "Event 44", "Event 45",
-                "Event 51", "Event 52", "Event 53", "Event 54", "Event 55"));
+    private void getServices() {
+        services = new ArrayList<>();
+        db.collection("Services")
+                .whereEqualTo("pending", false)
+                .whereEqualTo("deleted", false)
+                .whereEqualTo("visible", true)
+                .get()
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        if (task.isSuccessful()) {
+                            final List<DocumentSnapshot> serviceDocs = task.getResult().getDocuments();
+                            final int numServices = serviceDocs.size();
+                            final int[] servicesProccessed = {0};
 
-        Boolean[] available = {true, true, true, true, true};
-        Boolean[] visible = {true, true, true, true, true};
+                            for (DocumentSnapshot doc : serviceDocs) {
+                                Service service = new Service(
+                                        Long.parseLong(doc.getId()),
+                                        doc.getLong("categoryId"),
+                                        doc.getLong("subcategoryId"),
+                                        doc.getString("name"),
+                                        doc.getString("description"),
+                                        new ArrayList<>(), //images
+                                        doc.getString("specific"),
+                                        ((Number) doc.get("pricePerHour")).doubleValue(),
+                                        ((Number) doc.get("fullPrice")).doubleValue(),
+                                        ((Number) doc.get("duration")).doubleValue(),
+                                        ((Number) doc.get("durationMin")).doubleValue(),
+                                        ((Number) doc.get("durationMax")).doubleValue(),
+                                        doc.getString("location"),
+                                        ((Number) doc.get("discount")).doubleValue(),
+                                        (ArrayList<String>) doc.get("providers"),
+                                        (ArrayList<Long>) doc.get("eventIds"),
+                                        doc.getString("reservationDue"),
+                                        doc.getString("cancelationDue"),
+                                        doc.getBoolean("automaticAffirmation"),
+                                        doc.getBoolean("available"),
+                                        doc.getBoolean("visible"),
+                                        doc.getBoolean("pending"),
+                                        doc.getBoolean("deleted"));
 
-        ArrayList<Product> products = new ArrayList<>();
+                                ArrayList<String> imageUrls = (ArrayList<String>) doc.get("imageUrls");
+                                final int numImages = imageUrls.size();
 
-        for(int i = 0; i < ids.length; i++){
-            ArrayList<String> productEvents = new ArrayList<>();
-            for(int j = 5 * i; j < 5 * i + 5; j++){
-                productEvents.add(events.get(j));
-            }
+                                for (String imageUrl : imageUrls) {
+                                    StorageReference imageRef = storage.getReference().child(imageUrl);
+                                    imageRef.getDownloadUrl()
+                                            .addOnSuccessListener(new OnSuccessListener<Uri>() {
+                                                @Override
+                                                public void onSuccess(Uri uri) {
+                                                    service.getImages().add(uri);
 
-            /*products.add(new Product(ids[i], categories[i], subcategories[i],
-                    names[i], description[i], prices[i], discounts[i], new ArrayList<>(Arrays.asList(imageIds)), productEvents, available[i], visible[i]));*/
-        }
-        return products;
+                                                    if (service.getImages().size() == numImages) {
+                                                        servicesProccessed[0]++;
+
+                                                        if (servicesProccessed[0] == numServices) {
+                                                            ServiceListAdapter productListAdapter = new ServiceListAdapter(requireContext(), services);
+                                                            binding.serviceList.setAdapter(productListAdapter);
+                                                            binding.serviceList.setClickable(true);
+                                                        }
+                                                    }
+                                                }
+                                            })
+                                            .addOnFailureListener(new OnFailureListener() {
+                                                @Override
+                                                public void onFailure(@NonNull Exception e) {
+                                                    Toast.makeText(requireContext(), e.getMessage(), Toast.LENGTH_LONG).show();
+                                                }
+                                            });
+                                }
+
+                                services.add(service);
+                            }
+                        } else {
+                            Toast.makeText(requireContext(), "Failed to fetch services: " + task.getException().getMessage(), Toast.LENGTH_LONG).show();
+                        }
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Toast.makeText(requireContext(), e.getMessage(), Toast.LENGTH_LONG).show();
+                    }
+                });
     }
 
-    @NonNull
-    private static ArrayList<Service> getServices() {
-        Long[] ids = {1l, 2l, 3l, 4l, 5l};
-        String[] categories = {"Category 1", "Category 2", "Category 3", "Category 4", "Category 5"};
-        String[] subcategories = {"Subcategory 1", "Subcategory 2", "Subcategory 3", "Subcategory 4", "Subcategory 5"};
-        String[] names = {"Product 1", "Product 2", "Product 3", "Product 4", "Product 5"};
-        String[] description = {"Description 1", "Description 2", "Description 3", "Description 4", "Description 5"};
-        Integer[] imageIds = {R.drawable.product_1, R.drawable.product_2, R.drawable.product_3,
-                R.drawable.product_4, R.drawable.product_5};
-        String[] specifics = {"Specific 1", "Specific 2", "Specific 3", "Specific 4", "Specific 5"};
-        Double [] pricesPerHour = {1.0, 2.0, 3.0 , 4.0, 5.0};
-        Double[] fullPrices = {10.0, 20.0, 30.0, 40.0, 50.0};
-        Double[] durations = {1.0, 2.0, 3.0, 4.0, 5.0};
-        String[] locations = {"Location 1", "Location 2", "Location 3", "Location 4", "Location 5"};
-        Double[] discounts = {1.0, 2.0, 3.0, 4.0, 5.0};
-        ArrayList<String> providers = new ArrayList<>(Arrays.asList(
-                "Provider 11", "Provider 12", "Provider 13", "Provider 14", "Provider 15",
-                "Provider 21", "Provider 22", "Provider 23", "Provider 24", "Provider 25",
-                "Provider 31", "Provider 32", "Provider 33", "Provider 34", "Provider 35",
-                "Provider 41", "Provider 42", "Provider 43", "Provider 44", "Provider 45",
-                "Provider 51", "Provider 52", "Provider 53", "Provider 54", "Provider 55"));
-        ArrayList<String> events = new ArrayList<>(Arrays.asList(
-                "Event 11", "Event 12", "Event 13", "Event 14", "Event 15",
-                "Event 21", "Event 22", "Event 23", "Event 24", "Event 25",
-                "Event 31", "Event 32", "Event 33", "Event 34", "Event 35",
-                "Event 41", "Event 42", "Event 43", "Event 44", "Event 45",
-                "Event 51", "Event 52", "Event 53", "Event 54", "Event 55"));
-        String[] reservationDues = {"1 day", "2 days", "3 days", "4 days", "5 days"};
-        String[] cancelationDues = {"1 day", "2 days", "3 days", "4 days", "5 days"};
-        Boolean [] automaticAffirmations = {true, true, false, false, false};
-        Boolean[] available = {true, true, true, true, true};
-        Boolean[] visible = {true, true, true, true, true};
-
-        ArrayList<Service> services = new ArrayList<>();
-
-        for(int i = 0; i < ids.length; i++){
-            ArrayList<String> serviceEvents = new ArrayList<>();
-            ArrayList<String> serviceProviders = new ArrayList<>();
-            for(int j = i; j < i + 5; j++){
-                serviceEvents.add(events.get(j));
-                serviceProviders.add(providers.get(j));
-            }
-
-            /*services.add(new Service(ids[i], categories[i], subcategories[i],
-                    names[i], description[i], new ArrayList<>(Arrays.asList(imageIds)), specifics[i], pricesPerHour[i], fullPrices[i],
-                    durations[i], locations[i], discounts[i], serviceProviders, serviceEvents, reservationDues[i],
-                    cancelationDues[i], automaticAffirmations[i], available[i], visible[i]));*/
-        }
-
-        return services;
-    }
-
-    @NonNull
+    /*@NonNull
     private static ArrayList<Package> getPackages() {
         ArrayList<Product> products = getProducts();
         ArrayList<Service> services = getServices();
@@ -451,12 +564,171 @@ public class ProductsServicesPageFragment extends Fragment {
                 packageEvents.add(events.get(j));
             }
 
-            /*packages.add(new Package(ids[i], names[i], description[i], discounts[i], available[i], visible[i],
-                    categories[i], subcategories[i], products, services, packageEvents, prices[i], imageIds, reservationDues[i], cancelationDues[i], automaticAffirmations[i]));*/
+            packages.add(new Package(ids[i], names[i], description[i], discounts[i], available[i], visible[i],
+                    categories[i], subcategories[i], products, services, packageEvents, prices[i], imageIds, reservationDues[i], cancelationDues[i], automaticAffirmations[i]));
         }
 
         return  packages;
+    }*/
+
+    private void getEventTypes(View dialogView) {
+        itemList=new ArrayList<>();
+        db.collection("EventTypes")
+                .get()
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> taskEvent) {
+                        if (taskEvent.isSuccessful()) {
+                            // Process eventType documents
+
+                            // Perform subcategories query
+                            db.collection("Subcategories")
+                                    .get()
+                                    .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                                        @Override
+                                        public void onComplete(@NonNull Task<QuerySnapshot> taskSubcategories) {
+                                            if (taskSubcategories.isSuccessful()) {
+                                                for(DocumentSnapshot docEvent: taskEvent.getResult()){
+                                                    List<String> subcategoryIds=(List<String>)docEvent.get("Subcategories");
+
+                                                    List<Subcategory> subcategories = new ArrayList<>();
+                                                    for(DocumentSnapshot doc: taskSubcategories.getResult()){
+                                                        Long num=Long.parseLong(doc.getId());
+                                                        if(subcategoryIds.contains(num.toString())){
+                                                            Subcategory subcategory = new Subcategory(
+                                                                    Long.parseLong(doc.getId()),
+                                                                    doc.getString("CategoryName"),
+                                                                    doc.getString("Name"),
+                                                                    doc.getString("Description"),
+                                                                    doc.getLong("Type").intValue()
+                                                            );
+                                                            subcategories.add(subcategory);
+                                                        }
+
+                                                    }
+                                                    EventType type = new EventType(
+                                                            Long.parseLong(docEvent.getId()),
+                                                            docEvent.getBoolean("InUse"),
+                                                            docEvent.getString("Name"),
+                                                            docEvent.getString("Description"),
+                                                            subcategories
+                                                    );
+                                                    itemList.add(type);
+
+                                                }
+
+                                                ArrayList<String> eventTypesList = new ArrayList<>();
+                                                for(EventType et : itemList){
+                                                    eventTypesList.add(et.getTypeName());
+                                                }
+
+                                                AutoCompleteTextView atv = dialogView.findViewById(R.id.inputEventType);
+
+                                                ArrayAdapter<String> adapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_dropdown_item_1line, eventTypesList);
+                                                atv.setAdapter(adapter);
+
+                                                // Dodavanje slušatelja za AutoCompleteTextView ako želite reagirati na odabir
+                                                atv.setOnItemClickListener((parent, view, position, id) -> {
+                                                    //Ovdje možete dodati kôd koji se izvršava kada korisnik odabere neku stavku
+                                                    String selectedEventType = (String) parent.getItemAtPosition(position);
+
+                                                    System.out.println("Selected event type: " + selectedEventType);
+                                                });
+
+
+                                            }
+                                        }
+
+                                    });
+                        }
+                    }
+                });
     }
+
+    private void getCategory(Spinner spinner1) {
+        ArrayList<String> categories = new ArrayList<>();
+        categories.add("Category");
+        db.collection("Categories")
+                .get()
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        for(DocumentSnapshot doc: task.getResult()){
+                            categories.add(doc.getString("Name"));
+                        }
+                        ArrayAdapter<String> arrayAdapterForCattegory = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item, categories) {
+                            @NonNull
+                            @Override
+                            public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
+                                View view = super.getView(position, convertView, parent);
+                                TextView textView = (TextView) view.findViewById(android.R.id.text1);
+                                textView.setTextColor(getResources().getColor(R.color.purple_light));
+                                return view;
+                            }
+
+                            @Override
+                            public View getDropDownView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
+                                View view = super.getDropDownView(position, convertView, parent);
+                                TextView textView = (TextView) view.findViewById(android.R.id.text1);
+                                textView.setTextColor(getResources().getColor(R.color.purple_light));
+                                return view;
+                            }
+                        };
+                        arrayAdapterForCattegory.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+
+                        spinner1.setAdapter(arrayAdapterForCattegory);
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Toast.makeText(requireContext(), e.getMessage(), Toast.LENGTH_LONG).show();
+                    }
+                });
+    }
+
+    private void getSubcategory(Spinner spinner2) {
+        ArrayList<String> subcategories = new ArrayList<>();
+        subcategories.add("Subcategory");
+        db.collection("Subcategories")
+                .get()
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        for(DocumentSnapshot doc: task.getResult()){
+                            subcategories.add(doc.getString("Name"));
+                        }
+                        ArrayAdapter<String> arrayAdapterForSubcategory = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item, subcategories) {
+                            @NonNull
+                            @Override
+                            public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
+                                View view = super.getView(position, convertView, parent);
+                                TextView textView = (TextView) view.findViewById(android.R.id.text1);
+                                textView.setTextColor(getResources().getColor(R.color.purple_light));
+                                return view;
+                            }
+
+                            @Override
+                            public View getDropDownView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
+                                View view = super.getDropDownView(position, convertView, parent);
+                                TextView textView = (TextView) view.findViewById(android.R.id.text1);
+                                textView.setTextColor(getResources().getColor(R.color.purple_light));
+                                return view;
+                            }
+                        };
+                        arrayAdapterForSubcategory.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+
+                        spinner2.setAdapter(arrayAdapterForSubcategory);
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Toast.makeText(requireContext(), e.getMessage(), Toast.LENGTH_LONG).show();
+                    }
+                });
+    }
+
 
 
 
