@@ -196,7 +196,7 @@
                 android:layout_marginTop="5dp"/>
 
             <Button
-                android:id="@+id/add_product"
+                android:id="@+id/add_event"
                 android:layout_width="25dp"
                 android:layout_height="25dp"
                 android:layout_marginTop="10dp"
@@ -205,7 +205,7 @@
         </LinearLayout>
 
         <ListView
-            android:id="@+id/events"
+            android:id="@+id/eventList"
             android:layout_width="match_parent"
             android:layout_height="150dp"
             android:layout_marginTop="10dp"
@@ -265,7 +265,7 @@
                 />
 
             <Button
-                android:id="@+id/create_button"
+                android:id="@+id/edit_button"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"

@@ -2,20 +2,40 @@ package com.example.eventplanner.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
+import android.view.View;
 import android.widget.Button;
+import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
 import com.example.eventplanner.R;
+import com.example.eventplanner.services.FCMHttpClient;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.textfield.TextInputEditText;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.messaging.FirebaseMessaging;
+import com.google.firebase.messaging.RemoteMessage;
+
+import java.io.OutputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Random;
 
 public class EditCategoryActivity extends AppCompatActivity {
-
+    TextInputEditText descriptionInput;
+    TextInputEditText nameInput;
+    boolean isCategoryActive;
+    Long categoryId;
+    FirebaseFirestore db = FirebaseFirestore.getInstance();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -29,15 +49,68 @@ public class EditCategoryActivity extends AppCompatActivity {
         Intent intent = getIntent();
         String categoryName = intent.getStringExtra("categoryName");
         String categoryDescription = intent.getStringExtra("categoryDescription");
-        TextInputEditText name= findViewById(R.id.categoryName);
-        name.setText(categoryName);
-        TextInputEditText description= findViewById(R.id.categoryDescription);
-        description.setText(categoryDescription);
+        categoryId = intent.getLongExtra("categoryId",0);
 
-        boolean isCategoryActive = intent.getBooleanExtra("isAdd", false);
+        nameInput= findViewById(R.id.categoryName);
+        nameInput.setText(categoryName);
+        descriptionInput= findViewById(R.id.categoryDescription);
+        descriptionInput.setText(categoryDescription);
+
+        isCategoryActive = intent.getBooleanExtra("isAdd", false);
         if(isCategoryActive){
             Button button=findViewById(R.id.editCategory);
             button.setText("Add");
         }
+
+        findViewById(R.id.editCategory).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                addEditCategory(v);
+            }
+        });
+    }
+
+    String serverKey="AAAA8GYmoZ8:APA91bHsjyzOSa2JtO_cQWFO-X1p9nMuHRO8DTfD1zhcY4mnqZ-2EZmIn8tMf1ISmnM31WB68Mzn2soeUgEISXlSc9WjRvcRhyYbmBgi7whJuYXX-24wkODByasquofLaMZydpg78esK";
+    public static void sendMessage(String serverKey, String jsonPayload) {
+        FCMHttpClient httpClient = new FCMHttpClient();
+        httpClient.sendMessageToTopic(serverKey, "PUPV", jsonPayload);
+    }
+
+
+    private void addEditCategory(View v){
+        Long id;
+        if(isCategoryActive){
+            id = new Random().nextLong();
+        }
+        else{
+            id=categoryId;
+        }
+
+
+        Map<String, Object> item = new HashMap<>();
+        item.put("Name", nameInput.getText().toString());
+        item.put("Description", descriptionInput.getText().toString());
+
+        db.collection("Categories")
+                .document(id.toString())
+                .set(item)
+                .addOnCompleteListener(new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                        Toast.makeText(v.getContext(), "Product created", Toast.LENGTH_SHORT).show();
+                        String jsonPayload = "{\"data\":{\"title\":\"New category!\",\"body\":\""+item.get("Name").toString()+"\"},\"to\":\"/topics/" + "PUPV" + "\"}";
+                        sendMessage(serverKey,jsonPayload);
+                        finish();
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Toast.makeText(v.getContext(), e.getMessage(), Toast.LENGTH_SHORT).show();
+                    }
+                });
+
+
+
     }
 }

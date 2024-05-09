@@ -5,6 +5,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -19,26 +20,12 @@ import com.example.eventplanner.model.Service;
 
 public class ServiceListAddAdapter extends ArrayAdapter<Service> {
     private ArrayList<Service> services;
+    private OnItemClickListener listener;
 
-    public ServiceListAddAdapter(Context context, ArrayList<Service> services){
+    public ServiceListAddAdapter(Context context, OnItemClickListener listener, ArrayList<Service> services){
         super(context, R.layout.service_card_add, services);
         this.services = services;
-    }
-
-    @Override
-    public int getCount() {
-        return this.services.size();
-    }
-
-    @Nullable
-    @Override
-    public Service getItem(int position) {
-        return this.services.get(position);
-    }
-
-    @Override
-    public long getItemId(int position) {
-        return this.getItem(position).getId();
+        this.listener = listener;
     }
 
     @NonNull
@@ -56,14 +43,27 @@ public class ServiceListAddAdapter extends ArrayAdapter<Service> {
         TextView productFullPrice = convertView.findViewById(R.id.price);
         TextView productPricePerHour = convertView.findViewById(R.id.pricePerHour);
 
+        Button addButton = convertView.findViewById(R.id.add_service);
+
         if(service != null){
-            productImage.setImageResource(service.getImageId().get(0));
+            productImage.setImageURI(service.getImages().get(0));
             productName.setText(service.getName());
             productDescription.setText(service.getDescription());
             productFullPrice.setText(service.getFullPrice().toString() + "$");
             productPricePerHour.setText(service.getPricePerHour().toString() + "$/h");
         }
 
+        addButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                listener.onItemClick(service);
+            }
+        });
+
         return convertView;
+    }
+
+    public interface OnItemClickListener {
+        void onItemClick(Service item);
     }
 }

@@ -5,8 +5,10 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ExpandableListView;
+import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
@@ -17,6 +19,12 @@ import com.example.eventplanner.adapters.ExpandableListAdapter;
 
 import com.example.eventplanner.model.Category;
 import com.example.eventplanner.model.Subcategory;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -27,6 +35,7 @@ public class CategoryActivity extends AppCompatActivity {
     ExpandableListAdapter expandableListAdapter;
     List<Category> listDataHeader;
     HashMap<Category, List<Subcategory>> listDataChild;
+    FirebaseFirestore db = FirebaseFirestore.getInstance();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -47,10 +56,7 @@ public class CategoryActivity extends AppCompatActivity {
 
 
         expandableListView = findViewById(R.id.expandableListView);
-        prepareListData();
 
-        expandableListAdapter = new ExpandableListAdapter(this, listDataHeader, listDataChild);
-        expandableListView.setAdapter(expandableListAdapter);
         expandableListView.setOnGroupExpandListener(new ExpandableListView.OnGroupExpandListener() {
             int previousGroup = -1;
 
@@ -70,49 +76,89 @@ public class CategoryActivity extends AppCompatActivity {
                 Intent intent = new Intent(CategoryActivity.this, EditCategoryActivity.class);
                 intent.putExtra("categoryName", "");
                 intent.putExtra("categoryDescription", "");
+                intent.putExtra("categoryId", 0);
                 intent.putExtra("isAdd", true);
                 startActivity(intent);
             }
         });
 
     }
-    private void prepareListData() {
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        getCategories();
+    }
+
+    public void getCategories(){
         listDataHeader = new ArrayList<>();
+        HashMap<String, List<Subcategory>> map = new HashMap<>();
         listDataChild = new HashMap<>();
 
-        // Adding header data
-        listDataHeader.add(new Category("Group 1","Opis 1"));
-        listDataHeader.add(new Category("Group 2","Opis 2"));
-        listDataHeader.add(new Category("Group 3","Opis 3"));
-        listDataHeader.add(new Category("Group 11","Opis 1"));
-        listDataHeader.add(new Category("Group 21","Opis 2"));
-        listDataHeader.add(new Category("Group 31","Opis 3"));
-        listDataHeader.add(new Category("Group 12","Opis 1"));
-        listDataHeader.add(new Category("Group 22","Opis 2"));
-        listDataHeader.add(new Category("Group 32","Opis 3"));
-        listDataHeader.add(new Category("Group 13","Opis 1"));
-        listDataHeader.add(new Category("Group 23","Opis 2"));
-        listDataHeader.add(new Category("Group 33","Opis 3"));
-        // Adding child data
-        List<Subcategory> group1 = new ArrayList<>();
-        group1.add(new Subcategory("Group 1","Item 1","opis1",0));
-        group1.add(new Subcategory("Group 1","Item 2","opis2",0));
-        group1.add(new Subcategory("Group 1","Item 3","opis3",0));
 
-        List<Subcategory> group2 = new ArrayList<>();
-        group2.add(new Subcategory("Group 2","Item 4","opis1",0));
-        group2.add(new Subcategory("Group 2","Item 5","opis1",1));
-        group2.add(new Subcategory("Group 2","Item 6","opis1",1));
+        db.collection("Subcategories")
+                .get()
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        for(DocumentSnapshot doc: task.getResult()){
+                            Subcategory subcategory = new Subcategory(
+                                    Long.parseLong(doc.getId()),
+                                    doc.getString("CategoryName"),
+                                    doc.getString("Name"),
+                                    doc.getString("Description"),
+                                    doc.getLong("Type").intValue()
+                            );
+                            if (map.containsKey(subcategory.getCategoryName())) {
+                                List<Subcategory> list = map.get(subcategory.getCategoryName());
+                                list.add(subcategory);
+                            } else {
+                                List<Subcategory> newList = new ArrayList<>();
+                                newList.add(subcategory);
+                                // Put the ArrayList into the map with the key "More"
+                                map.put(subcategory.getCategoryName(), newList);
+                            }
+                        }
+                        db.collection("Categories")
+                                .get()
+                                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                                    @Override
+                                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                                        for(DocumentSnapshot doc: task.getResult()){
+                                            Category category = new Category(
+                                                    Long.parseLong(doc.getId()),
+                                                    doc.getString("Name"),
+                                                    doc.getString("Description")
+                                            );
+                                            if (map.containsKey(category.getName())) {
+                                                listDataChild.put(category,map.get(category.getName()));
+                                            }
+                                            listDataHeader.add(category);
+                                        }
 
-        List<Subcategory> group3 = new ArrayList<>();
-        group3.add(new Subcategory("Group 3","Item 7","opis1",1));
-        group3.add(new Subcategory("Group 3","Item 8","opis1",1));
-        group3.add(new Subcategory("Group 3","Item 9","opis1",0));
+                                        expandableListAdapter = new ExpandableListAdapter(CategoryActivity.this, listDataHeader, listDataChild);
+                                        expandableListView.setAdapter(expandableListAdapter);
+                                    }
+                                })
+                                .addOnFailureListener(new OnFailureListener() {
+                                    @Override
+                                    public void onFailure(@NonNull Exception e) {
+                                        Toast.makeText(CategoryActivity.this, e.getMessage(), Toast.LENGTH_SHORT);
+                                    }
+                                });
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Toast.makeText(CategoryActivity.this, e.getMessage(), Toast.LENGTH_SHORT);
+                    }
+                });
 
-        listDataChild.put(listDataHeader.get(0), group1);
-        listDataChild.put(listDataHeader.get(1), group2);
-        listDataChild.put(listDataHeader.get(2), group3);
+
+
     }
+
 
 
 

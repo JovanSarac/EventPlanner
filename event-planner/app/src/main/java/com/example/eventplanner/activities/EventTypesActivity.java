@@ -2,12 +2,14 @@ package com.example.eventplanner.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
@@ -15,17 +17,32 @@ import androidx.core.view.WindowInsetsCompat;
 
 import com.example.eventplanner.R;
 import com.example.eventplanner.adapters.EventTypesListAdapter;
+import com.example.eventplanner.adapters.ExpandableListAdapter;
+import com.example.eventplanner.model.Category;
 import com.example.eventplanner.model.EventType;
 import com.example.eventplanner.model.Subcategory;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class EventTypesActivity extends AppCompatActivity {
     private ListView listView;
     private EventTypesListAdapter adapter;
-    private List<EventType> itemList;
+    private List<EventType> itemList=new ArrayList<>();
+    FirebaseFirestore db = FirebaseFirestore.getInstance();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -47,26 +64,81 @@ public class EventTypesActivity extends AppCompatActivity {
         });
 
         listView = findViewById(R.id.list_view);
+        //getEventTypes();
 
-        itemList = new ArrayList<>();
-        itemList.add(new EventType("Ime","Opis",new ArrayList<>()));
-        itemList.add(new EventType("Ime1","Opis1",new ArrayList<>()));
-        itemList.add(new EventType("Ime2","Opis2",new ArrayList<>()));
-        itemList.add(new EventType("Ime3","Opis3",new ArrayList<>()));
-        itemList.add(new EventType("Ime11","Opis11",new ArrayList<>()));
-        itemList.add(new EventType("Ime12","Opis12",new ArrayList<>()));
-        itemList.add(new EventType("Ime22","Opis22",new ArrayList<>()));
-        itemList.add(new EventType("Ime32","Opis32",new ArrayList<>()));
-        itemList.add(new EventType("Ime112","Opis11",new ArrayList<>()));
-        itemList.add(new EventType("Ime122","Opis12",new ArrayList<>()));
-        itemList.add(new EventType("Ime222","Opis22",new ArrayList<>()));
-        itemList.add(new EventType("Ime322","Opis32",new ArrayList<>()));
-        itemList.add(new EventType("Ime422","Opis42",Arrays.asList(new Subcategory("neest","Home Cleaning","des",0),
-                new Subcategory("neest","Pest Control Services","des",0))));
+    }
 
-        adapter = new EventTypesListAdapter(this, itemList);
+
+    private void getEventTypes() {
+        itemList=new ArrayList<>();
+        db.collection("EventTypes")
+                .get()
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> taskEvent) {
+                        if (taskEvent.isSuccessful()) {
+                            // Process eventType documents
+
+                            // Perform subcategories query
+                            db.collection("Subcategories")
+                                    .get()
+                                    .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                                        @Override
+                                        public void onComplete(@NonNull Task<QuerySnapshot> taskSubcategories) {
+                                            if (taskSubcategories.isSuccessful()) {
+                                                for(DocumentSnapshot docEvent: taskEvent.getResult()){
+                                                    List<String> subcategoryIds=(List<String>)docEvent.get("Subcategories");
+
+                                                    List<Subcategory> subcategories = new ArrayList<>();
+                                                    for(DocumentSnapshot doc: taskSubcategories.getResult()){
+                                                        Long num=Long.parseLong(doc.getId());
+                                                        if(subcategoryIds.contains(num.toString())){
+                                                            Subcategory subcategory = new Subcategory(
+                                                                    Long.parseLong(doc.getId()),
+                                                                    doc.getString("CategoryName"),
+                                                                    doc.getString("Name"),
+                                                                    doc.getString("Description"),
+                                                                    doc.getLong("Type").intValue()
+                                                            );
+                                                            subcategories.add(subcategory);
+                                                        }
+
+                                                    }
+                                                    EventType type = new EventType(
+                                                            Long.parseLong(docEvent.getId()),
+                                                            docEvent.getBoolean("InUse"),
+                                                            docEvent.getString("Name"),
+                                                            docEvent.getString("Description"),
+                                                            subcategories
+                                                    );
+                                                    itemList.add(type);
+
+                                                }
+
+                                                setUpAdapter();
+                                            } else {
+                                                // Handle subcategories query failure
+                                                Toast.makeText(EventTypesActivity.this, "Error fetching subcategories: " + taskSubcategories.getException().getMessage(), Toast.LENGTH_SHORT).show();
+                                            }
+                                        }
+                                    });
+                        } else {
+                            // Handle eventTypes query failure
+                            Toast.makeText(EventTypesActivity.this, "Error fetching event types: " + taskEvent.getException().getMessage(), Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                });
+    }
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        getEventTypes();
+    }
+
+    private void setUpAdapter(){
+        adapter = new EventTypesListAdapter(EventTypesActivity.this, itemList);
         listView.setAdapter(adapter);
-
         adapter.setOnItemClickListener(new EventTypesListAdapter.OnItemClickListener() {
             @Override
             public void onEditClick(int position) {
@@ -74,6 +146,9 @@ public class EventTypesActivity extends AppCompatActivity {
                 intent.putExtra("editButtonFlag", true);
                 intent.putExtra("typeName", itemList.get(position).getTypeName());
                 intent.putExtra("typeDecription", itemList.get(position).getTypeDescription());
+                intent.putExtra("inUse", itemList.get(position).isInUse());
+                intent.putExtra("eventTypeId", itemList.get(position).getId());
+
 
                 ArrayList<String> temp_list=new ArrayList<>();
                 for (Subcategory sub:itemList.get(position).getRecomendedSubcategories()) {
@@ -86,10 +161,29 @@ public class EventTypesActivity extends AppCompatActivity {
 
             @Override
             public void onDeleteClick(int position) {
-                Toast.makeText(EventTypesActivity.this, "Delete is clicked on"+ itemList.get(position).getTypeName(), Toast.LENGTH_SHORT).show();
+                EventType eventType=itemList.get(position);
+                List<String> tempList=new ArrayList<>();
+                for (Subcategory s:itemList.get(position).getRecomendedSubcategories()) {
+                    tempList.add(s.getId().toString());
+                }
+
+                Map<String, Object> item = new HashMap<>();
+                item.put("Name", eventType.getTypeName());
+                item.put("Description", eventType.getTypeDescription());
+                item.put("InUse", !eventType.isInUse());
+                item.put("Subcategories", tempList);
+
+                db.collection("EventTypes")
+                        .document(eventType.getId().toString()).set(item)
+                        .addOnSuccessListener(aVoid -> {
+                            Toast.makeText(EventTypesActivity.this, "EventType status changed", Toast.LENGTH_SHORT).show();
+                            getEventTypes();
+                        })
+                        .addOnFailureListener(e -> {
+                            Toast.makeText(EventTypesActivity.this, "error while deleting", Toast.LENGTH_SHORT).show();
+                        });
             }
         });
     }
-
 
 }

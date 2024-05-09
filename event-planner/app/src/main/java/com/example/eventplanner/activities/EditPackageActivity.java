@@ -63,7 +63,7 @@ public class EditPackageActivity extends AppCompatActivity {
         Boolean packageAvailability = getIntent().getBooleanExtra("Availability", false);
         Boolean packageVisibility = getIntent().getBooleanExtra("Visibility", false);
 
-        RecyclerView recyclerView = findViewById(R.id.recycler);
+        /*RecyclerView recyclerView = findViewById(R.id.recycler);
         ArrayList<Integer> arrayList = new ArrayList<>();
 
         for(int i = 0; i < packageImages.size(); i++){
@@ -71,7 +71,7 @@ public class EditPackageActivity extends AppCompatActivity {
         }
 
         ImageAdapter adapter = new ImageAdapter(EditPackageActivity.this, arrayList);
-        recyclerView.setAdapter(adapter);
+        recyclerView.setAdapter(adapter);*/
 
 
         TextInputLayout name = findViewById(R.id.name);
@@ -128,14 +128,14 @@ public class EditPackageActivity extends AppCompatActivity {
         CheckBox visibility = findViewById(R.id.visibility);
         visibility.setChecked(packageVisibility);
 
-        ArrayList<Product> products = getProducts();
+       /* ArrayList<Product> products = getProducts();
         ProductListAddAdapter productListAddAdapter = new ProductListAddAdapter(this, products);
 
         LayoutInflater inflater = getLayoutInflater();
         View otherLayout = inflater.inflate(R.layout.add_product, null);
 
         ListView listView = otherLayout.findViewById(R.id.productsList);
-        listView.setAdapter(productListAddAdapter);
+        listView.setAdapter(productListAddAdapter);*/
 
         addProduct = findViewById(R.id.add_product);
 
@@ -146,7 +146,7 @@ public class EditPackageActivity extends AppCompatActivity {
                 View popUpView = inflater.inflate(R.layout.add_product, null);
 
                 ListView listView = popUpView.findViewById(R.id.productsList);
-                listView.setAdapter(productListAddAdapter);
+                //listView.setAdapter(productListAddAdapter);
 
                 int width = ViewGroup.LayoutParams.MATCH_PARENT;
                 int height = ViewGroup.LayoutParams.MATCH_PARENT;
@@ -157,7 +157,7 @@ public class EditPackageActivity extends AppCompatActivity {
             }
         });
 
-        ArrayList<Service> services = getServices();
+        /*ArrayList<Service> services = getServices();
         ServiceListAddAdapter serviceListAddAdapter = new ServiceListAddAdapter(this, services);
 
         LayoutInflater inflaterService = getLayoutInflater();
@@ -184,7 +184,7 @@ public class EditPackageActivity extends AppCompatActivity {
 
                 popupWindow.showAtLocation(v, Gravity.CENTER, 0, 0);
             }
-        });
+        });*/
     }
 
     private static ArrayList<Product> getProducts() {
@@ -215,8 +215,8 @@ public class EditPackageActivity extends AppCompatActivity {
                 productEvents.add(events.get(j));
             }
 
-            products.add(new Product(ids[i], categories[i], subcategories[i],
-                    names[i], description[i], prices[i], discounts[i], new ArrayList<>(Arrays.asList(imageIds)), productEvents, available[i], visible[i]));
+            /*products.add(new Product(ids[i], categories[i], subcategories[i],
+                    names[i], description[i], prices[i], discounts[i], new ArrayList<>(Arrays.asList(imageIds)), productEvents, available[i], visible[i]));*/
         }
         return products;
     }
@@ -264,10 +264,10 @@ public class EditPackageActivity extends AppCompatActivity {
                 serviceProviders.add(providers.get(j));
             }
 
-            services.add(new Service(ids[i], categories[i], subcategories[i],
+            /*services.add(new Service(ids[i], categories[i], subcategories[i],
                     names[i], description[i], new ArrayList<>(Arrays.asList(imageIds)), specifics[i], pricesPerHour[i], fullPrices[i],
                     durations[i], locations[i], discounts[i], serviceProviders, serviceEvents, reservationDues[i],
-                    cancelationDues[i], automaticAffirmations[i], available[i], visible[i]));
+                    cancelationDues[i], automaticAffirmations[i], available[i], visible[i]));*/
         }
 
         return services;

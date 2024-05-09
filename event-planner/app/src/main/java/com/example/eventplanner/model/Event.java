@@ -38,6 +38,11 @@ public class Event {
         Availble = availble;
     }
 
+    @Override
+    public String toString() {
+        return Name;
+    }
+
     public Long getId() {
         return Id;
     }

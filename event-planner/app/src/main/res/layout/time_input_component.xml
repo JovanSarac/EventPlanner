@@ -35,13 +35,15 @@
             android:layout_weight="1"
             android:layout_height="wrap_content"
             android:hint="start"
+
             android:layout_marginRight="10dp">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/startMonday"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:inputType="time"/>
+                android:inputType="time"
+                android:text="8:00"/>
 
         </com.google.android.material.textfield.TextInputLayout>
 
@@ -56,7 +58,8 @@
                 android:id="@+id/endMonday"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:inputType="time"/>
+                android:inputType="time"
+                android:text="17:00"/>
 
         </com.google.android.material.textfield.TextInputLayout>
         <CheckBox
@@ -92,7 +95,8 @@
                 android:id="@+id/startTuesday"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:inputType="time"/>
+                android:inputType="time"
+                android:text="8:00"/>
 
         </com.google.android.material.textfield.TextInputLayout>
 
@@ -107,7 +111,8 @@
                 android:id="@+id/endTuesday"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:inputType="time"/>
+                android:inputType="time"
+                android:text="17:00"/>
 
         </com.google.android.material.textfield.TextInputLayout>
         <CheckBox
@@ -143,7 +148,8 @@
                 android:id="@+id/startWednesday"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:inputType="time"/>
+                android:inputType="time"
+                android:text="8:00"/>
 
         </com.google.android.material.textfield.TextInputLayout>
 
@@ -158,7 +164,8 @@
                 android:id="@+id/endWednesday"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:inputType="time"/>
+                android:inputType="time"
+                android:text="17:00"/>
 
         </com.google.android.material.textfield.TextInputLayout>
         <CheckBox
@@ -194,7 +201,8 @@
                 android:id="@+id/startThursday"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:inputType="time"/>
+                android:inputType="time"
+                android:text="8:00"/>
 
         </com.google.android.material.textfield.TextInputLayout>
 
@@ -209,7 +217,8 @@
                 android:id="@+id/endThursday"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:inputType="time"/>
+                android:inputType="time"
+                android:text="17:00"/>
 
         </com.google.android.material.textfield.TextInputLayout>
         <CheckBox
@@ -245,7 +254,8 @@
                 android:id="@+id/startFriday"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:inputType="time"/>
+                android:inputType="time"
+                android:text="8:00"/>
 
         </com.google.android.material.textfield.TextInputLayout>
 
@@ -260,7 +270,8 @@
                 android:id="@+id/endFriday"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:inputType="time"/>
+                android:inputType="time"
+                android:text="17:00"/>
 
         </com.google.android.material.textfield.TextInputLayout>
         <CheckBox
@@ -296,7 +307,8 @@
                 android:id="@+id/startSaturday"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:inputType="time"/>
+                android:inputType="time"
+                android:text="8:00"/>
 
         </com.google.android.material.textfield.TextInputLayout>
 
@@ -311,7 +323,8 @@
                 android:id="@+id/endSaturday"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:inputType="time"/>
+                android:inputType="time"
+                android:text="17:00"/>
 
         </com.google.android.material.textfield.TextInputLayout>
         <CheckBox
@@ -347,7 +360,8 @@
                 android:id="@+id/startSunday"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:inputType="time"/>
+                android:inputType="time"
+                android:text="8:00"/>
 
         </com.google.android.material.textfield.TextInputLayout>
 
@@ -362,7 +376,8 @@
                 android:id="@+id/endSunday"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:inputType="time"/>
+                android:inputType="time"
+                android:text="17:00"/>
 
         </com.google.android.material.textfield.TextInputLayout>
         <CheckBox
