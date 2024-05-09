@@ -26,6 +26,7 @@ import com.example.eventplanner.adapters.CategoryListAdapter;
 import com.example.eventplanner.adapters.ImageAdapter;
 import com.example.eventplanner.adapters.ProductListAdapter;
 import com.example.eventplanner.adapters.ProductListPupvAdapter;
+import com.example.eventplanner.adapters.ServiceListAdapter;
 import com.example.eventplanner.adapters.ServiceListPupvAdapter;
 import com.example.eventplanner.model.Category;
 import com.example.eventplanner.model.Event;
@@ -173,13 +174,15 @@ public class CreatePackageActivity extends AppCompatActivity {
             }
         });
 
-        ServiceListAddAdapter serviceListAddAdapter = new ServiceListAddAdapter(this, servicesFromDb);
-
-        LayoutInflater inflaterService = getLayoutInflater();
+        /*LayoutInflater inflaterService = getLayoutInflater();
         View otherLayoutService = inflaterService.inflate(R.layout.add_service, null);
 
         ListView listViewService = otherLayoutService.findViewById(R.id.service_list);
-        listViewService.setAdapter(serviceListAddAdapter);
+        listViewService.setAdapter(serviceListAddAdapter);*/
+
+        ServiceListAdapter serviceListAdapter = new ServiceListAdapter(CreatePackageActivity.this, services);
+        ListView serviceListview = findViewById(R.id.service_list);
+        serviceListview.setAdapter(serviceListAdapter);
 
         addService = findViewById(R.id.add_service);
 
@@ -190,6 +193,12 @@ public class CreatePackageActivity extends AppCompatActivity {
                 View popUpView = inflater.inflate(R.layout.add_service, null);
 
                 ListView listView = popUpView.findViewById(R.id.service_list);
+                ServiceListAddAdapter serviceListAddAdapter = new ServiceListAddAdapter(CreatePackageActivity.this, new ServiceListAddAdapter.OnItemClickListener() {
+                    @Override
+                    public void onItemClick(Service item) {
+                        services.add(item);
+                    }
+                }, servicesFromDb);
                 listView.setAdapter(serviceListAddAdapter);
 
                 int width = ViewGroup.LayoutParams.MATCH_PARENT;
@@ -308,7 +317,7 @@ public class CreatePackageActivity extends AppCompatActivity {
     }
 
     private void getServices(){
-        services = new ArrayList<>();
+        servicesFromDb = new ArrayList<>();
 
         db.collection("Services")
                 .whereEqualTo("pending", false)

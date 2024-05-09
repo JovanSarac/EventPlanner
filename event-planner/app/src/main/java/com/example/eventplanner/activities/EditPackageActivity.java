@@ -157,7 +157,7 @@ public class EditPackageActivity extends AppCompatActivity {
             }
         });
 
-        ArrayList<Service> services = getServices();
+        /*ArrayList<Service> services = getServices();
         ServiceListAddAdapter serviceListAddAdapter = new ServiceListAddAdapter(this, services);
 
         LayoutInflater inflaterService = getLayoutInflater();
@@ -184,7 +184,7 @@ public class EditPackageActivity extends AppCompatActivity {
 
                 popupWindow.showAtLocation(v, Gravity.CENTER, 0, 0);
             }
-        });
+        });*/
     }
 
     private static ArrayList<Product> getProducts() {
