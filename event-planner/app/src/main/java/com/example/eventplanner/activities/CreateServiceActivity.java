@@ -79,6 +79,8 @@ public class CreateServiceActivity extends AppCompatActivity {
     FirebaseFirestore db;
     StorageReference storageRootReference;
 
+    Subcategory requestedSubcategory;
+
     ImageAdapter imageAdapter;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -161,6 +163,12 @@ public class CreateServiceActivity extends AppCompatActivity {
                         TextInputEditText subcategoryNameTextInput = popUpView.findViewById(R.id.subcategoryName);
                         TextInputEditText description = popUpView.findViewById(R.id.subcategoryDescription);
 
+                        requestedSubcategory = new Subcategory(
+                                categoryName,
+                                subcategoryNameTextInput.getText().toString(),
+                                description.getText().toString(),
+                                1);
+
                         subcategoryAutoCompleteTextView.setText(subcategoryNameTextInput.getText().toString()
                                 +  " - " + description.getText().toString());
 
@@ -233,7 +241,34 @@ public class CreateServiceActivity extends AppCompatActivity {
                 Long id = new Random().nextLong();
 
                 Map<String, Object> doc = new HashMap<>();
-                doc.put("categoryId", categoryId);
+                if(pending) {
+                    Long subcategoryId = new Random().nextLong();
+
+                    Map<String, Object> docSubcategory = new HashMap<>();
+                    docSubcategory.put("cateogryName", requestedSubcategory.getCategoryName());
+                    docSubcategory.put("name", requestedSubcategory.getName());
+                    docSubcategory.put("description", requestedSubcategory.getDescription());
+                    docSubcategory.put("type", requestedSubcategory.getType());
+
+                    db.collection("SuggestedSubcategories")
+                            .document(id.toString())
+                            .set(docSubcategory)
+                            .addOnCompleteListener(new OnCompleteListener<Void>() {
+                                @Override
+                                public void onComplete(@NonNull Task<Void> task) {
+                                    Toast.makeText(CreateServiceActivity.this, "Request for subcategory created", Toast.LENGTH_SHORT).show();
+                                    finish();
+                                }
+                            })
+                            .addOnFailureListener(new OnFailureListener() {
+                                @Override
+                                public void onFailure(@NonNull Exception e) {
+                                    Toast.makeText(CreateServiceActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show();
+                                }
+                            });
+                }
+                else
+                    doc.put("categoryId", categoryId);
                 doc.put("subcategoryId", subcategoryId);
                 doc.put("name", name.getEditText().getText().toString());
                 doc.put("description", description.getEditText().getText().toString());
@@ -248,7 +283,7 @@ public class CreateServiceActivity extends AppCompatActivity {
                 doc.put("reservationDue", reservationDue.getEditText().getText().toString());
                 doc.put("cancelationDue", cancelationDue.getEditText().getText().toString());
                 doc.put("eventIds", eventIds);
-                doc.put("providers", providers);
+                doc.put("providers", Arrays.asList(providers));
                 doc.put("available", available.isChecked());
                 doc.put("visible", visible.isChecked());
                 doc.put("automaticAffirmation", automaticAffirmation.isChecked());

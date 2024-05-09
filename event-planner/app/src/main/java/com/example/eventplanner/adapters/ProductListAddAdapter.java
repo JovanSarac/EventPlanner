@@ -4,7 +4,9 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -19,26 +21,12 @@ import com.example.eventplanner.model.Product;
 
 public class ProductListAddAdapter extends ArrayAdapter<Product> {
     private ArrayList<Product> products;
+    private OnItemClickListener listener; // Change to your custom OnItemClickListener interface
 
-    public ProductListAddAdapter(Context context, ArrayList<Product> products){
+    public ProductListAddAdapter(Context context, OnItemClickListener listener, ArrayList<Product> products){
         super(context, R.layout.product_card_add, products);
         this.products = products;
-    }
-
-    @Override
-    public int getCount() {
-        return this.products.size();
-    }
-
-    @Nullable
-    @Override
-    public Product getItem(int position) {
-        return this.products.get(position);
-    }
-
-    @Override
-    public long getItemId(int position) {
-        return this.getItem(position).getId();
+        this.listener = listener;
     }
 
     @NonNull
@@ -55,6 +43,8 @@ public class ProductListAddAdapter extends ArrayAdapter<Product> {
         TextView productDescription = convertView.findViewById(R.id.product_description);
         TextView productPrice = convertView.findViewById(R.id.product_price);
 
+        Button addProduct = convertView.findViewById(R.id.add_product);
+
         if(product != null){
             productImage.setImageURI(product.getImages().get(0));
             productName.setText(product.getName());
@@ -62,7 +52,16 @@ public class ProductListAddAdapter extends ArrayAdapter<Product> {
             productPrice.setText(product.getPrice().toString() + "$");
         }
 
+        addProduct.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                listener.onItemClick(product);
+            }
+        });
 
         return convertView;
+    }
+    public interface OnItemClickListener {
+        void onItemClick(Product item);
     }
 }

@@ -128,14 +128,14 @@ public class EditPackageActivity extends AppCompatActivity {
         CheckBox visibility = findViewById(R.id.visibility);
         visibility.setChecked(packageVisibility);
 
-        ArrayList<Product> products = getProducts();
+       /* ArrayList<Product> products = getProducts();
         ProductListAddAdapter productListAddAdapter = new ProductListAddAdapter(this, products);
 
         LayoutInflater inflater = getLayoutInflater();
         View otherLayout = inflater.inflate(R.layout.add_product, null);
 
         ListView listView = otherLayout.findViewById(R.id.productsList);
-        listView.setAdapter(productListAddAdapter);
+        listView.setAdapter(productListAddAdapter);*/
 
         addProduct = findViewById(R.id.add_product);
 
@@ -146,7 +146,7 @@ public class EditPackageActivity extends AppCompatActivity {
                 View popUpView = inflater.inflate(R.layout.add_product, null);
 
                 ListView listView = popUpView.findViewById(R.id.productsList);
-                listView.setAdapter(productListAddAdapter);
+                //listView.setAdapter(productListAddAdapter);
 
                 int width = ViewGroup.LayoutParams.MATCH_PARENT;
                 int height = ViewGroup.LayoutParams.MATCH_PARENT;
