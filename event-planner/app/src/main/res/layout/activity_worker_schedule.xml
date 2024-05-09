@@ -492,6 +492,7 @@
                             android:paddingBottom="4dp"/>
 
                         <EditText
+                            android:id="@+id/from_input"
                             android:lines="1"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
@@ -518,6 +519,7 @@
                             android:paddingBottom="4dp"/>
 
                         <EditText
+                            android:id="@id/to_input"
                             android:lines="1"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
@@ -529,6 +531,18 @@
                     </LinearLayout>
 
                 </LinearLayout>
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/enter_hours_btn"
+                    android:layout_width="wrap_content"
+                    android:layout_gravity="end"
+                    android:layout_height="wrap_content"
+                    android:text="Add Hours"
+                    android:layout_marginTop="12dp"
+                    android:paddingVertical="12dp"
+                    android:backgroundTint="@color/purple_light"
+                    android:textColor="@color/white"
+                    app:cornerRadius="10dp" />
 
                 <LinearLayout
                     android:layout_width="match_parent"

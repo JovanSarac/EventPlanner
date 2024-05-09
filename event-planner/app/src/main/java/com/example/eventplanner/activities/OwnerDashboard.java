@@ -93,6 +93,12 @@ public class OwnerDashboard extends AppCompatActivity {
 
                             TableRow tableRow = new TableRow(this);
 
+                            tableRow.setOnClickListener(v ->{
+                                Intent intent = new Intent(OwnerDashboard.this, WorkerScheduleActivity.class);
+                                intent.putExtra("workerId", schedule.getWorkerId());
+                                startActivity(intent);
+                            });
+
                             getUserBySchedule(schedule)
                                     .thenAccept(user -> {
                                         insertColumn(user.getFirstName().concat(" ".concat(user.getLastName())), tableRow,true);
