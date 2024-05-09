@@ -65,22 +65,22 @@ public class PackageListPupvAdapter extends ArrayAdapter<Package> {
             price.setText(pckage.getPrice().toString() + "$");
 
             String productNames = "";
-            ArrayList<Product> productList = pckage.getProducts();
+            /*ArrayList<Product> productList = pckage.getProducts();
             for(int i = 0; i < productList.size(); i++){
                 productNames += productList.get(i).getName();
                 if(i < productList.size() - 1){
                     productNames += ", ";
                 }
-            }
+            }*/
 
             String serviceNames = "";
-            ArrayList<Service> serviceList = pckage.getServices();
+            /*ArrayList<Service> serviceList = pckage.getServices();
             for(int i = 0; i < serviceList.size(); i++){
                 serviceNames += serviceList.get(i).getName();
                 if(i < serviceList.size() - 1){
                     serviceNames += ", ";
                 }
-            }
+            }*/
         }
 
         Button editButton = convertView.findViewById(R.id.edit);
@@ -93,14 +93,14 @@ public class PackageListPupvAdapter extends ArrayAdapter<Package> {
                 Intent intent = new Intent(finalConvertView.getContext(), EditPackageActivity.class);
                 intent.putExtra("Id", pckage.getId());
                 intent.putExtra("Name", pckage.getName());
-                intent.putExtra("Category", pckage.getCategory());
-                intent.putExtra("Subcategory", pckage.getSubCategory());
+                intent.putExtra("Category", pckage.getCategoryId());
+                intent.putExtra("Subcategory", pckage.getServiceIds());
                 intent.putExtra("Description", pckage.getDescription());
                 intent.putExtra("Price", pckage.getPrice());
                 intent.putExtra("Discount", pckage.getDiscount());
-                intent.putExtra("Products", pckage.getProducts());
-                intent.putExtra("Services", pckage.getServices());
-                intent.putExtra("Events", pckage.getEvents());
+                intent.putExtra("Products", pckage.getProductIds());
+                intent.putExtra("Services", pckage.getServiceIds());
+                intent.putExtra("Events", pckage.getEventIds());
                 intent.putExtra("ImageTypes", pckage.getImages());
                 intent.putExtra("ReservationDue", pckage.getReservationDue());
                 intent.putExtra("CancelationDue", pckage.getCancelationDue());

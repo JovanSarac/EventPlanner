@@ -60,22 +60,22 @@ public class PackageListAdapter extends ArrayAdapter<Package> {
             price.setText(pckage.getPrice().toString() + "$");
 
             String productNames = "";
-            ArrayList<Product> productList = pckage.getProducts();
+            /*ArrayList<Product> productList = pckage.getProducts();
             for(int i = 0; i < productList.size(); i++){
                 productNames += productList.get(i).getName();
                 if(i < productList.size() - 1){
                     productNames += ", ";
                 }
-            }
+            }*/
 
             String serviceNames = "";
-            ArrayList<Service> serviceList = pckage.getServices();
+            /*ArrayList<Service> serviceList = pckage.getServices();
             for(int i = 0; i < serviceList.size(); i++){
                 serviceNames += serviceList.get(i).getName();
                 if(i < serviceList.size() - 1){
                     serviceNames += ", ";
                 }
-            }
+            }*/
         }
 
         return convertView;

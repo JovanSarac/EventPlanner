@@ -11,6 +11,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import com.bumptech.glide.Glide;
 import com.example.eventplanner.R;
 
 import java.util.ArrayList;
@@ -56,7 +57,9 @@ public class ProductListAdapter extends ArrayAdapter<Product> {
         TextView productPrice = convertView.findViewById(R.id.product_price);
 
         if(product != null){
-            productImage.setImageResource(product.getImageId().get(0));
+            Glide.with(getContext())
+                    .load(product.getImages().get(0))
+                    .into(productImage);
             productName.setText(product.getName());
             productDescription.setText(product.getDescription());
             productPrice.setText(product.getPrice().toString() + "$");

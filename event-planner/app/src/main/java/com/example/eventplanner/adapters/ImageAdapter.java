@@ -1,9 +1,11 @@
 package com.example.eventplanner.adapters;
 
 import android.content.Context;
+import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 
 import androidx.annotation.NonNull;
@@ -16,9 +18,9 @@ import java.util.ArrayList;
 
 public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.ViewHolder> {
     private Context context;
-    private ArrayList<Integer> arrayList;
+    private ArrayList<Uri> arrayList;
 
-    public ImageAdapter(Context context, ArrayList<Integer> arrayList){
+    public ImageAdapter(Context context, ArrayList<Uri> arrayList){
         this.context = context;
         this.arrayList = arrayList;
     }
@@ -40,11 +42,24 @@ public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.ViewHolder> 
         return arrayList.size();
     }
 
-    public static class ViewHolder extends RecyclerView.ViewHolder {
+    public  class ViewHolder extends RecyclerView.ViewHolder {
         ImageView imageView;
+        Button remove;
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             imageView = itemView.findViewById(R.id.list_item_image);
+            remove = itemView.findViewById(R.id.remove_image);
+
+            remove.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    int position = getAdapterPosition();
+                    if(position != RecyclerView.NO_POSITION){
+                        arrayList.remove(position);
+                        notifyDataSetChanged();
+                    }
+                }
+            });
         }
     }
 }

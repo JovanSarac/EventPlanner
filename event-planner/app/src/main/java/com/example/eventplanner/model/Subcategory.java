@@ -10,6 +10,11 @@ public class Subcategory {
     public Subcategory() {
     }
 
+    @Override
+    public String toString() {
+        return name + " - " + description;
+    }
+
     public Subcategory(String categoryName, String name, String description, int type) {
         this.categoryName = categoryName;
         this.name = name;

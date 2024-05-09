@@ -1,5 +1,6 @@
 package com.example.eventplanner.model;
 
+import android.net.Uri;
 import android.os.Parcel;
 import android.os.Parcelable;
 
@@ -8,11 +9,11 @@ import java.util.ArrayList;
 public class Service implements Parcelable {
 
     private Long id;
-    private String category;
-    private String subcategory;
+    private Long categoryId;
+    private Long subcategoryId;
     private String name;
     private String description;
-    private ArrayList<Integer> imageId;
+    private ArrayList<Uri> images;
     private String specific;
     private Double pricePerHour;
     private Double fullPrice;
@@ -22,66 +23,25 @@ public class Service implements Parcelable {
     private String location;
     private Double discount;
     private ArrayList<String> providers;
-    private ArrayList<String> events;
+    private ArrayList<Long> eventIds;
     private String reservationDue;
     private String cancelationDue;
     private Boolean automaticAffirmation;
     private Boolean available;
     private Boolean visible;
+    private Boolean pending;
+    private Boolean deleted;
 
     public Service() {
     }
 
-    public Service(Long id, String category, String subcategory, String name, String description, ArrayList<Integer> imageId, String specific, Double pricePerHour, Double fullPrice, Double duration, String location, Double discount, ArrayList<String> providers, ArrayList<String> events, String reservationDue, String cancelationDue, Boolean automaticAffirmation, Boolean available, Boolean visible) {
+    public Service(Long id, Long categoryId, Long subcategoryId, String name, String description, ArrayList<Uri> images, String specific, Double pricePerHour, Double fullPrice, Double duration, Double durationMin, Double durationMax, String location, Double discount, ArrayList<String> providers, ArrayList<Long> eventIds, String reservationDue, String cancelationDue, Boolean automaticAffirmation, Boolean available, Boolean visible, Boolean pending, Boolean deleted) {
         this.id = id;
-        this.category = category;
-        this.subcategory = subcategory;
+        this.categoryId = categoryId;
+        this.subcategoryId = subcategoryId;
         this.name = name;
         this.description = description;
-        this.imageId = imageId;
-        this.specific = specific;
-        this.pricePerHour = pricePerHour;
-        this.fullPrice = fullPrice;
-        this.duration = duration;
-        this.location = location;
-        this.discount = discount;
-        this.providers = providers;
-        this.events = events;
-        this.reservationDue = reservationDue;
-        this.cancelationDue = cancelationDue;
-        this.automaticAffirmation = automaticAffirmation;
-        this.available = available;
-        this.visible = visible;
-    }
-
-    public Service(String category, String subcategory, String name, String description, ArrayList<Integer> imageId, String specific, Double pricePerHour, Double fullPrice, Double duration, String location, Double discount, ArrayList<String> providers, ArrayList<String> events, String reservationDue, String cancelationDue, Boolean automaticAffirmation, Boolean available, Boolean visible) {
-        this.category = category;
-        this.subcategory = subcategory;
-        this.name = name;
-        this.description = description;
-        this.imageId = imageId;
-        this.specific = specific;
-        this.pricePerHour = pricePerHour;
-        this.fullPrice = fullPrice;
-        this.duration = duration;
-        this.location = location;
-        this.discount = discount;
-        this.providers = providers;
-        this.events = events;
-        this.reservationDue = reservationDue;
-        this.cancelationDue = cancelationDue;
-        this.automaticAffirmation = automaticAffirmation;
-        this.available = available;
-        this.visible = visible;
-    }
-
-    public Service(Long id, String category, String subcategory, String name, String description, ArrayList<Integer> imageId, String specific, Double pricePerHour, Double fullPrice, Double duration, Double durationMin, Double durationMax, String location, Double discount, ArrayList<String> providers, ArrayList<String> events, String reservationDue, String cancelationDue, Boolean automaticAffirmation, Boolean available, Boolean visible) {
-        this.id = id;
-        this.category = category;
-        this.subcategory = subcategory;
-        this.name = name;
-        this.description = description;
-        this.imageId = imageId;
+        this.images = images;
         this.specific = specific;
         this.pricePerHour = pricePerHour;
         this.fullPrice = fullPrice;
@@ -91,35 +51,14 @@ public class Service implements Parcelable {
         this.location = location;
         this.discount = discount;
         this.providers = providers;
-        this.events = events;
+        this.eventIds = eventIds;
         this.reservationDue = reservationDue;
         this.cancelationDue = cancelationDue;
         this.automaticAffirmation = automaticAffirmation;
         this.available = available;
         this.visible = visible;
-    }
-
-    public Service(String category, String subcategory, String name, String description, ArrayList<Integer> imageId, String specific, Double pricePerHour, Double fullPrice, Double duration, Double durationMin, Double durationMax, String location, Double discount, ArrayList<String> providers, ArrayList<String> events, String reservationDue, String cancelationDue, Boolean automaticAffirmation, Boolean available, Boolean visible) {
-        this.category = category;
-        this.subcategory = subcategory;
-        this.name = name;
-        this.description = description;
-        this.imageId = imageId;
-        this.specific = specific;
-        this.pricePerHour = pricePerHour;
-        this.fullPrice = fullPrice;
-        this.duration = duration;
-        this.durationMin = durationMin;
-        this.durationMax = durationMax;
-        this.location = location;
-        this.discount = discount;
-        this.providers = providers;
-        this.events = events;
-        this.reservationDue = reservationDue;
-        this.cancelationDue = cancelationDue;
-        this.automaticAffirmation = automaticAffirmation;
-        this.available = available;
-        this.visible = visible;
+        this.pending = pending;
+        this.deleted = deleted;
     }
 
     protected Service(Parcel in) {
@@ -128,12 +67,20 @@ public class Service implements Parcelable {
         } else {
             id = in.readLong();
         }
-        category = in.readString();
-        subcategory = in.readString();
+        if (in.readByte() == 0) {
+            categoryId = null;
+        } else {
+            categoryId = in.readLong();
+        }
+        if (in.readByte() == 0) {
+            subcategoryId = null;
+        } else {
+            subcategoryId = in.readLong();
+        }
         name = in.readString();
         description = in.readString();
-        imageId = new ArrayList<>();
-        in.readList(imageId, Integer.class.getClassLoader());
+        images = new ArrayList<>();
+        in.readList(images, Integer.class.getClassLoader());
         specific = in.readString();
         if (in.readByte() == 0) {
             pricePerHour = null;
@@ -167,7 +114,8 @@ public class Service implements Parcelable {
             discount = in.readDouble();
         }
         providers = in.createStringArrayList();
-        events = in.createStringArrayList();
+        eventIds = new ArrayList<>();
+        in.readList(eventIds, Long.class.getClassLoader());
         reservationDue = in.readString();
         cancelationDue = in.readString();
         byte tmpAutomaticAffirmation = in.readByte();
@@ -176,6 +124,10 @@ public class Service implements Parcelable {
         available = tmpAvailable == 0 ? null : tmpAvailable == 1;
         byte tmpVisible = in.readByte();
         visible = tmpVisible == 0 ? null : tmpVisible == 1;
+        byte tmpPending = in.readByte();
+        pending = tmpVisible == 0 ? null : tmpPending == 1;
+        byte tmpDeleted = in.readByte();
+        deleted = tmpDeleted == 0 ? null : tmpDeleted == 1;
     }
 
     public static final Creator<Service> CREATOR = new Creator<Service>() {
@@ -203,11 +155,21 @@ public class Service implements Parcelable {
             dest.writeByte((byte) 1);
             dest.writeLong(id);
         }
-        dest.writeString(category);
-        dest.writeString(subcategory);
+        if (categoryId == null) {
+            dest.writeByte((byte) 0);
+        } else {
+            dest.writeByte((byte) 1);
+            dest.writeLong(categoryId);
+        }
+        if (subcategoryId == null) {
+            dest.writeByte((byte) 0);
+        } else {
+            dest.writeByte((byte) 1);
+            dest.writeLong(subcategoryId);
+        }
         dest.writeString(name);
         dest.writeString(description);
-        dest.writeList(imageId);
+        dest.writeList(images);
         dest.writeString(specific);
         if (pricePerHour == null) {
             dest.writeByte((byte) 0);
@@ -247,12 +209,14 @@ public class Service implements Parcelable {
             dest.writeDouble(discount);
         }
         dest.writeStringList(providers);
-        dest.writeStringList(events);
+        dest.writeList(eventIds);
         dest.writeString(reservationDue);
         dest.writeString(cancelationDue);
         dest.writeByte((byte) (automaticAffirmation == null ? 0 : automaticAffirmation ? 1 : 2));
         dest.writeByte((byte) (available == null ? 0 : available ? 1 : 2));
         dest.writeByte((byte) (visible == null ? 0 : visible ? 1 : 2));
+        dest.writeByte((byte) (pending == null ? 0 : pending ? 1 : 2));
+        dest.writeByte((byte) (deleted == null ? 0 : deleted ? 1 : 2));
     }
 
     public Long getId() {
@@ -263,20 +227,20 @@ public class Service implements Parcelable {
         this.id = id;
     }
 
-    public String getCategory() {
-        return category;
+    public Long getCategoryId() {
+        return categoryId;
     }
 
-    public void setCategory(String category) {
-        this.category = category;
+    public void setCategoryId(Long categoryId) {
+        this.categoryId = categoryId;
     }
 
-    public String getSubcategory() {
-        return subcategory;
+    public Long getSubcategoryId() {
+        return subcategoryId;
     }
 
-    public void setSubcategory(String subcategory) {
-        this.subcategory = subcategory;
+    public void setSubcategoryId(Long subcategoryId) {
+        this.subcategoryId = subcategoryId;
     }
 
     public String getName() {
@@ -295,12 +259,12 @@ public class Service implements Parcelable {
         this.description = description;
     }
 
-    public ArrayList<Integer> getImageId() {
-        return imageId;
+    public ArrayList<Uri> getImages() {
+        return images;
     }
 
-    public void setImageId(ArrayList<Integer> imageId) {
-        this.imageId = imageId;
+    public void setImages(ArrayList<Uri> images) {
+        this.images = images;
     }
 
     public String getSpecific() {
@@ -375,12 +339,12 @@ public class Service implements Parcelable {
         this.providers = providers;
     }
 
-    public ArrayList<String> getEvents() {
-        return events;
+    public ArrayList<Long> getEventIds() {
+        return eventIds;
     }
 
-    public void setEvents(ArrayList<String> events) {
-        this.events = events;
+    public void setEventIds(ArrayList<Long> eventIds) {
+        this.eventIds = eventIds;
     }
 
     public String getReservationDue() {
@@ -421,5 +385,21 @@ public class Service implements Parcelable {
 
     public void setVisible(Boolean visible) {
         this.visible = visible;
+    }
+
+    public Boolean getPending() {
+        return pending;
+    }
+
+    public void setPending(Boolean pending) {
+        this.pending = pending;
+    }
+
+    public Boolean getDeleted() {
+        return deleted;
+    }
+
+    public void setDeleted(Boolean deleted) {
+        this.deleted = deleted;
     }
 }

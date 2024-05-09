@@ -89,8 +89,8 @@ public class PackageListPupvFragment extends Fragment {
                 packageEvents.add(events.get(j));
             }
 
-            packages.add(new Package(ids[i], names[i], description[i], discounts[i], available[i], visible[i],
-                    categories[i], subcategories[i], products, services, packageEvents, prices[i], imageIds, reservationDues[i], cancelationDues[i], automaticAffirmations[i]));
+            /*packages.add(new Package(ids[i], names[i], description[i], discounts[i], available[i], visible[i],
+                    categories[i], subcategories[i], products, services, packageEvents, prices[i], imageIds, reservationDues[i], cancelationDues[i], automaticAffirmations[i]));*/
         }
 
         return  packages;
@@ -139,10 +139,10 @@ public class PackageListPupvFragment extends Fragment {
                 serviceProviders.add(providers.get(j));
             }
 
-            services.add(new Service(ids[i], categories[i], subcategories[i],
+            /*services.add(new Service(ids[i], categories[i], subcategories[i],
                     names[i], description[i], new ArrayList<>(Arrays.asList(imageIds)), specifics[i], pricesPerHour[i], fullPrices[i],
                     durations[i], locations[i], discounts[i], serviceProviders, serviceEvents, reservationDues[i],
-                    cancelationDues[i], automaticAffirmations[i], available[i], visible[i]));
+                    cancelationDues[i], automaticAffirmations[i], available[i], visible[i]));*/
         }
 
         return services;
@@ -177,8 +177,8 @@ public class PackageListPupvFragment extends Fragment {
                 productEvents.add(events.get(j));
             }
 
-            products.add(new Product(ids[i], categories[i], subcategories[i],
-                    names[i], description[i], prices[i], discounts[i], new ArrayList<>(Arrays.asList(imageIds)), productEvents, available[i], visible[i]));
+            /*products.add(new Product(ids[i], categories[i], subcategories[i],
+                    names[i], description[i], prices[i], discounts[i], new ArrayList<>(Arrays.asList(imageIds)), productEvents, available[i], visible[i]));*/
         }
         return products;
     }
