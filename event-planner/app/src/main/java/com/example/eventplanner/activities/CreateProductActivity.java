@@ -383,6 +383,7 @@ public class CreateProductActivity extends AppCompatActivity {
                         for (DocumentSnapshot doc : task.getResult()) {
                             Event event = new Event(
                                     Long.parseLong(doc.getId()),
+                                    doc.getString("userOdId"),
                                     doc.getString("typeEvent"),
                                     doc.getString("name"),
                                     doc.getString("description"),

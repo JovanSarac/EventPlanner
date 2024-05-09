@@ -53,6 +53,7 @@
                         android:textColorHint="@color/white"
                         app:hintTextColor="@color/yellow"
 
+
                         app:boxStrokeColor="@color/yellow"
                         app:boxStrokeWidth="2dp"
                         style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu">

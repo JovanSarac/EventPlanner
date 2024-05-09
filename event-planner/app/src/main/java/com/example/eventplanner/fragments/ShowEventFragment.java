@@ -31,6 +31,8 @@ import com.example.eventplanner.model.Event;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
@@ -44,6 +46,8 @@ public class ShowEventFragment extends Fragment {
 
     RecyclerView recyclerView;
 
+    FirebaseAuth mAuth = FirebaseAuth.getInstance();
+
     public static ShowEventFragment newInstance() {
         return new ShowEventFragment();
     }
@@ -52,6 +56,8 @@ public class ShowEventFragment extends Fragment {
         binding = FragmentShowEventBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
 
+        FirebaseUser user = mAuth.getCurrentUser();
+
         recyclerView = binding.eventsRecyclerView;
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getActivity());
         recyclerView.setLayoutManager(layoutManager);
@@ -59,11 +65,6 @@ public class ShowEventFragment extends Fragment {
         binding.floatingActionButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //NavDirections action =  ShowEventFragmentDirections.actionNavEventsToNavCreateEvent();
-
-                // Pokrenite navigaciju na odredišni fragment
-                //Navigation.findNavController(v).navigate(action);
-
                 Navigation.findNavController(v).navigate(R.id.nav_create_event);
 
             }
@@ -71,14 +72,14 @@ public class ShowEventFragment extends Fragment {
 
         //ArrayList<Event> events = createEvents();
         db = FirebaseFirestore.getInstance();
-        getEvents();
+        getEvents(user.getUid());
 
 
 
         return root;
     }
 
-    private void getEvents() {
+    public void getEvents(String userOdId) {
         //ArrayList<Event> events = new ArrayList<>();
 
         events = new ArrayList<>();
@@ -90,6 +91,7 @@ public class ShowEventFragment extends Fragment {
                     public void onComplete(@NonNull Task<QuerySnapshot> task) {
                         for(DocumentSnapshot doc: task.getResult()){
                             Event event = new Event(doc.getLong("id"),
+                                    doc.getString("userOdId"),
                                     doc.getString("typeEvent"),
                                     doc.getString("name"),
                                     doc.getString("description"),
@@ -103,10 +105,16 @@ public class ShowEventFragment extends Fragment {
 
 
                             events.add(event);
-
-                            EventRecyclerViewAdapter adapterEvents = new EventRecyclerViewAdapter(events);
-                            recyclerView.setAdapter(adapterEvents);
                         }
+                        ArrayList<Event> filteredEvents = new ArrayList<>();
+
+                        for (Event event : events) {
+                            if (event.getUserODId().equals(userOdId)) {
+                                filteredEvents.add(event);
+                            }
+                        }
+                        EventRecyclerViewAdapter adapterEvents = new EventRecyclerViewAdapter(filteredEvents);
+                        recyclerView.setAdapter(adapterEvents);
                     }
                 })
                 .addOnFailureListener(new OnFailureListener() {
@@ -115,28 +123,6 @@ public class ShowEventFragment extends Fragment {
                         Toast.makeText(requireContext(), e.getMessage(), Toast.LENGTH_LONG).show();
                     }
                 });
-
-        /*events.add((new Event("Vencanje", "Venčanje T i M" , " Ovo je dan kada se dvoje ljudi " +
-                "obećavaju jedno drugome vječnu ljubav i zajednički život. Pridružite nam se u ovom posebnom trenutku " +
-                "dok zajedno sa porodicom i prijateljima slavimo ljubav i stvaramo nezaboravne uspomene. " +
-                "Očekuje nas čarobno iskustvo, ispunjeno osmjesima, toplinom i veseljem, dok se započinje " +
-                "novo poglavlje u životima mladenaca.", 200, "Novi Sad", 40, new Date(), true)));
-
-        events.add((new Event("Koncerti i muzicki nastupi", "Koncert Aleksandre Prijovic" ,
-                "Dobrodošli na nezaboravan koncert Aleksandre Prijović, gdje će se spojiti njena strastvena" +
-                        " izvedba i nevjerojatan talent, pružajući vam veče puno uzbuđenja i muzičkih trenutaka za " +
-                        "pamćenje. Pripremite se za veče puno energije, emocija i nezaboravnih hitova dok zajedno sa " +
-                        "publikom stvaramo atmosferu punu ljubavi i zabave. Pridružite nam se na ovoj spektakularnoj" +
-                        " večeri uz Aleksandrinu prepoznatljivu interpretaciju i uživajte u nezaboravnom muzičkom" +
-                        " iskustvu koje će vas ostaviti bez daha.", 200, "Beograd",
-                50, new Date(), true)));
-
-        events.add((new Event("Turniri i prvenstva", "Turnir u malom fudbalu" , "Ovogodišnji " +
-                "turnir okuplja najbolje igrače iz naše zajednice kako bi se nadmetali u uzbudljivim utakmicama punim " +
-                "akcije i golova. Pridružite nam se na ovom nezaboravnom sportskom iskustvu uz sjajnu atmosferu i veliku" +
-                " podršku navijača. Uzbudljiv vikend malog fudbala je pred nama, obećavajući neizvjesnost, " +
-                "emocije i trenutke za pamćenje na terenu našeg turnira", 200,
-                "Beograd", 50, new Date(), true)));*/
     }
     @Override
     public void onDestroyView() {

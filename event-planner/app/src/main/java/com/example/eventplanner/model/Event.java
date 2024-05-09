@@ -4,6 +4,8 @@ import java.util.Date;
 
 public class Event {
     public Long Id;
+
+    public String UserODId;
     public String TypeEvent;
     public String Name;
     public String Description;
@@ -15,7 +17,7 @@ public class Event {
 
     public boolean Availble; //dostupno true, ne false
 
-    public Event(Long id, String typeEvent, String name, String description, int maxPeople, String locationPlace, int maxDistance, Date dateEvent, boolean availble) {
+    public Event(Long id, String userODId, String typeEvent, String name, String description, int maxPeople, String locationPlace, int maxDistance, Date dateEvent, boolean availble) {
         Id = id;
         TypeEvent = typeEvent;
         Name = name;
@@ -25,6 +27,7 @@ public class Event {
         MaxDistance = maxDistance;
         DateEvent = dateEvent;
         Availble = availble;
+        UserODId = userODId;
     }
 
     public Event( String typeEvent, String name, String description, int maxPeople, String locationPlace, int maxDistance, Date dateEvent, boolean availble) {
@@ -36,6 +39,15 @@ public class Event {
         MaxDistance = maxDistance;
         DateEvent = dateEvent;
         Availble = availble;
+    }
+
+
+    public String getUserODId() {
+        return UserODId;
+    }
+
+    public void setUserODId(String userODId) {
+        UserODId = userODId;
     }
 
     @Override

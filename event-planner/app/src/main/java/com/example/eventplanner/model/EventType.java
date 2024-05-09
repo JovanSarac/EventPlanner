@@ -19,6 +19,13 @@ public class EventType {
         this.recomendedSubcategories = recomendedSubcategories;
     }
 
+    public EventType(boolean inUse, String typeName, String typeDescription, List<Subcategory> recomendedSubcategories) {
+        this.inUse = inUse;
+        this.typeName = typeName;
+        this.typeDescription = typeDescription;
+        this.recomendedSubcategories = recomendedSubcategories;
+    }
+
     public Long getId() {
         return id;
     }

@@ -302,6 +302,7 @@ public class EditProductActivity extends AppCompatActivity {
                         for (DocumentSnapshot doc : task.getResult()) {
                             Event event = new Event(
                                     Long.parseLong(doc.getId()),
+                                    doc.getString("userOdId"),
                                     doc.getString("typeEvent"),
                                     doc.getString("name"),
                                     doc.getString("description"),
@@ -381,6 +382,7 @@ public class EditProductActivity extends AppCompatActivity {
                     .addOnSuccessListener(documentSnapshot -> {
                         Event event = new Event(
                                 Long.parseLong(documentSnapshot.getId()),
+                                documentSnapshot.getString("userOdId"),
                                 documentSnapshot.getString("typeEvent"),
                                 documentSnapshot.getString("name"),
                                 documentSnapshot.getString("description"),
