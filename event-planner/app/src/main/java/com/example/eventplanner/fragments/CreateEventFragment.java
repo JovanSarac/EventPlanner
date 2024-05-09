@@ -290,6 +290,7 @@ public class CreateEventFragment extends Fragment {
                 int people = Integer.parseInt(maxNumberPeople.getText().toString());
                 if(people <= 0){
                     maxNumberPeople.setError("Number of people must be >0!");
+                    error = true;
                 }
             }catch (Exception e){
                 maxNumberPeople.setError("Number people must be integer!");
@@ -308,6 +309,7 @@ public class CreateEventFragment extends Fragment {
                 int distance = Integer.parseInt(maxDistance.getText().toString());
                 if(distance <= 0){
                     maxDistance.setError("Distance must be >0!");
+                    error = true;
                 }
             }catch (Exception e){
                 maxDistance.setError("Distance must be integer!");
@@ -374,32 +376,5 @@ public class CreateEventFragment extends Fragment {
         }, 2024, 03, 6);
 
         datePickerDialog.show();
-    }
-
-    private ArrayList<Subcategory> createSubcategory(){
-        ArrayList<Subcategory> subcategories = new ArrayList<>();
-        subcategories.add(new Subcategory("Ugostiteljski objekti, hrana, ketering, torte i kolači","Ketering i priprema hrane",
-                "Kompletna ketering usluga (hrana i piće), specijalizovani ketering\n" +
-                        "(veganski, bez glutena), mobilni barovi i koktel usluge (gin-tonik bar, whiski bar),\n" +
-                        "profesionalne usluge posluživanja", 0));
-
-        subcategories.add(new Subcategory("Ugostiteljski objekti, hrana, ketering, torte i kolači","Iznajmljivanje ugostiteljskih objekata za događaje",
-                "Izbor lokacije sa ugostiteljskim kapacitetima, sala za bankete i restoran za\n" +
-                        "privatne događaje, ugostiteljske usluge na otvorenom.", 0));
-
-        subcategories.add(new Subcategory("Foto i video","Videografija",
-                "Snimanje događaja u visokoj rezoluciji. Izrada kratkih filmskih priča i\n" +
-                        "highlight videa. Livestreaming događaja", 0));
-
-        subcategories.add(new Subcategory("Foto i video","Video materijali",
-                "Finalizovani video snimci na USB uređajima ili digitalnim platformama.\n" +
-                        "Personalizovane kutije i pakovanja za USB uređaje", 1));
-
-        subcategories.add(new Subcategory("Foto i video","Digitalni proizvod",
-                "Online galerije i cloud skladištenje za laku distribuciju i deljenje. Digitalni\n" +
-                        "download linkovi za fotografije i video materijale", 1));
-
-        return subcategories;
-
     }
 }

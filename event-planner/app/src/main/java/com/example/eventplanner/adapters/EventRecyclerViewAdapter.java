@@ -103,7 +103,7 @@ public class EventRecyclerViewAdapter  extends RecyclerView.Adapter<EventRecycle
         @SuppressLint("SetTextI18n")
         public void bind(Event event) {
             eventName.setText(event.getName());
-            eventType.setText("(" + event.getTypeEvent() + ")");
+            eventType.setText(event.getTypeEvent());
             eventDescription.setText(event.getDescription());
             eventLocation.setText(event.getLocationPlace());
             idEvent.setText(Long.toString(event.getId()));

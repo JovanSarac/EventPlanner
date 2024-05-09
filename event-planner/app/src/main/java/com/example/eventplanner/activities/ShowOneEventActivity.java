@@ -1,8 +1,10 @@
 package com.example.eventplanner.activities;
 
+import static android.app.PendingIntent.getActivity;
 import static android.content.ContentValues.TAG;
 
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
@@ -16,10 +18,12 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.eventplanner.R;
 import com.example.eventplanner.adapters.EventRecyclerViewAdapter;
+import com.example.eventplanner.adapters.SubcategoryListAdapter;
 import com.example.eventplanner.databinding.FragmentAddSubcategoryOnBudgetPlannerBinding;
 import com.example.eventplanner.databinding.FragmentSearchPspBinding;
 import com.example.eventplanner.fragments.AddSubcategoryOnBudgetPlannerFragment;
 import com.example.eventplanner.model.Event;
+import com.example.eventplanner.model.EventType;
 import com.example.eventplanner.model.Subcategory;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -38,6 +42,7 @@ import java.util.stream.Collectors;
 import com.example.eventplanner.adapters.SubAndCategoryTableRowAdapter;
 
 import com.example.eventplanner.model.SubcategoryPlanner;
+import com.google.android.material.textfield.TextInputEditText;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FieldPath;
@@ -55,6 +60,8 @@ public class ShowOneEventActivity extends AppCompatActivity {
 
     RecyclerView recyclerView;
     Long eventId;
+
+    private List<EventType> itemList=new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -125,34 +132,14 @@ public class ShowOneEventActivity extends AppCompatActivity {
 
             bindingAdd = FragmentAddSubcategoryOnBudgetPlannerBinding.bind(dialogView);
 
-            String[] Category = {"Ugostiteljski objekti, hrana, ketering, torte i kolači", "Muzika i zabava", "Smjestaj", "Logistika i obezbeđenje"};
-            String[] Subcategories = {"Subcategory", "Hrana za događaje", "Ketering i priprema hrane", "Iznajmljivanje ugostiteljskih objekata za događaje", "Fotografisanje"};
-
-            ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_dropdown_item_1line, Category);
-            bindingAdd.categoryInput.setAdapter(adapter);
-
-            // Dodavanje slušatelja za AutoCompleteTextView ako želite reagirati na odabir
-            bindingAdd.categoryInput.setOnItemClickListener((parent, view, position, id) -> {
-                //Ovdje možete dodati kôd koji se izvršava kada korisnik odabere neku stavku
-                String selectedCategory = (String) parent.getItemAtPosition(position);
-
-                System.out.println("Selected category: " + selectedCategory);
-            });
-
-            ArrayAdapter<String> adapter2 = new ArrayAdapter<>(this, android.R.layout.simple_dropdown_item_1line, Subcategories);
-            bindingAdd.subcategoryInput.setAdapter(adapter2);
-
-            // Dodavanje slušatelja za AutoCompleteTextView ako želite reagirati na odabir
-            bindingAdd.subcategoryInput.setOnItemClickListener((parent, view, position, id) -> {
-                //Ovdje možete dodati kôd koji se izvršava kada korisnik odabere neku stavku
-                String selectedSubcategory = (String) parent.getItemAtPosition(position);
-
-                System.out.println("Selected category: " + selectedSubcategory);
-            });
+            getEventTypes();
 
             bindingAdd.saveAddBtn.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+                    if (validateCreteSubcategoryPlanner(bindingAdd.categoryInput, bindingAdd.subcategoryInput, bindingAdd.priceInput))
+                        return;
+
                     String category = bindingAdd.categoryInput.getText().toString();
                     String subcategory = bindingAdd.subcategoryInput.getText().toString();
                     Float price = Float.parseFloat(String.valueOf(bindingAdd.priceInput.getText()));
@@ -169,6 +156,37 @@ public class ShowOneEventActivity extends AppCompatActivity {
             bottomSheetDialog.show();
         });
 
+    }
+
+    private boolean validateCreteSubcategoryPlanner(AutoCompleteTextView categoryInput, AutoCompleteTextView subcategoryInput, TextInputEditText priceInput) {
+        boolean error=false;
+        if(TextUtils.isEmpty(categoryInput.getText())){
+            categoryInput.setError("Select option!");
+            error=true;
+        }
+        if(TextUtils.isEmpty(subcategoryInput.getText())){
+            subcategoryInput.setError("Fill textfield!");
+            error=true;
+        }
+        if(TextUtils.isEmpty(priceInput.getText())){
+            priceInput.setError("Fill textfield!");
+            error=true;
+        }
+        else{
+            try {
+                int price = Integer.parseInt(priceInput.getText().toString());
+                if(price <= 0){
+                    priceInput.setError("Price must be >0!");
+                }
+            }catch (Exception e){
+                priceInput.setError("Price must be integer!");
+                error = true;
+            }
+        }
+
+        if(error) return true;
+
+        return false;
     }
 
     private void createSubcategoryPlanner(SubcategoryPlanner subcategoryPlanner) {
@@ -279,15 +297,101 @@ public class ShowOneEventActivity extends AppCompatActivity {
                     }
                 });
 
-        /*subcategoryPlanners.add(new SubcategoryPlanner("1","Foto i video","Fotografisanje", "5000"));
-        subcategoryPlanners.add(new SubcategoryPlanner("2","Foto i video","Fotografije i albumi", "5000"));
-        subcategoryPlanners.add(new SubcategoryPlanner("3","Ugostiteljski objekti,\n" +
-                "hrana, ketering, torte\n" +
-                "i kolači","Iznajmljivanje\n" +
-                "ugostiteljskih\n" +
-                "objekata za događaje", "400000"));
-        subcategoryPlanners.add(new SubcategoryPlanner("4","Dekoracija i rasvjeta","Dekoracija stolova", "0"));*/
-
         return  subcategoryPlanners;
+    }
+
+    private void getEventTypes() {
+        itemList=new ArrayList<>();
+        db.collection("EventTypes")
+                .get()
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> taskEvent) {
+                        if (taskEvent.isSuccessful()) {
+                            // Process eventType documents
+
+                            // Perform subcategories query
+                            db.collection("Subcategories")
+                                    .get()
+                                    .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                                        @Override
+                                        public void onComplete(@NonNull Task<QuerySnapshot> taskSubcategories) {
+                                            if (taskSubcategories.isSuccessful()) {
+                                                for(DocumentSnapshot docEvent: taskEvent.getResult()){
+                                                    List<String> subcategoryIds=(List<String>)docEvent.get("Subcategories");
+
+                                                    List<Subcategory> subcategories = new ArrayList<>();
+                                                    for(DocumentSnapshot doc: taskSubcategories.getResult()){
+                                                        Long num=Long.parseLong(doc.getId());
+                                                        if(subcategoryIds.contains(num.toString())){
+                                                            Subcategory subcategory = new Subcategory(
+                                                                    Long.parseLong(doc.getId()),
+                                                                    doc.getString("CategoryName"),
+                                                                    doc.getString("Name"),
+                                                                    doc.getString("Description"),
+                                                                    doc.getLong("Type").intValue()
+                                                            );
+                                                            subcategories.add(subcategory);
+                                                        }
+
+                                                    }
+                                                    EventType type = new EventType(
+                                                            Long.parseLong(docEvent.getId()),
+                                                            docEvent.getBoolean("InUse"),
+                                                            docEvent.getString("Name"),
+                                                            docEvent.getString("Description"),
+                                                            subcategories
+                                                    );
+                                                    itemList.add(type);
+
+                                                }
+
+                                                EventType et = new EventType();
+                                                System.out.println(getIntent().getStringExtra("eventType"));
+                                                for(EventType e: itemList){
+                                                    if(e.getTypeName().equals(getIntent().getStringExtra("eventType"))){
+                                                        et = e;
+                                                    }
+                                                }
+
+                                                List<Subcategory> subcat = et.getRecomendedSubcategories();
+                                                ArrayList<Subcategory> subcategoriesArrayList = new ArrayList<>(subcat);
+
+                                                ArrayList<String> Category = new ArrayList<>();
+                                                ArrayList<String> Subcategories = new ArrayList<>();
+
+                                                for(Subcategory sub : subcategoriesArrayList){
+                                                    Category.add(sub.getCategoryName());
+                                                    Subcategories.add(sub.getName());
+                                                }
+
+                                                ArrayAdapter<String> adapter = new ArrayAdapter<>(ShowOneEventActivity.this, android.R.layout.simple_dropdown_item_1line, Category);
+                                                bindingAdd.categoryInput.setAdapter(adapter);
+
+                                                ArrayAdapter<String> adapter2 = new ArrayAdapter<>(ShowOneEventActivity.this, android.R.layout.simple_dropdown_item_1line, Subcategories);
+                                                bindingAdd.subcategoryInput.setAdapter(adapter2);
+
+                                                bindingAdd.categoryInput.setOnItemClickListener((parent, view, position, id) -> {
+                                                    String selectedCategory = (String) parent.getItemAtPosition(position);
+                                                    System.out.println("Selected category: " + selectedCategory);
+
+                                                });
+
+
+                                                bindingAdd.subcategoryInput.setOnItemClickListener((parent, view, position, id) -> {
+                                                    String selectedSubcategory = (String) parent.getItemAtPosition(position);
+                                                    System.out.println("Selected subcategory: " + selectedSubcategory);
+
+                                                });
+
+
+
+                                            }
+                                        }
+
+                                    });
+                        }
+                    }
+                });
     }
 }

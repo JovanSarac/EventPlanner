@@ -3,6 +3,7 @@ package com.example.eventplanner.adapters;
 import static android.content.ContentValues.TAG;
 
 import android.content.Context;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -21,19 +22,26 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.eventplanner.R;
 import com.example.eventplanner.activities.ShowOneEventActivity;
 import com.example.eventplanner.databinding.FragmentAddSubcategoryOnBudgetPlannerBinding;
+import com.example.eventplanner.model.EventType;
+import com.example.eventplanner.model.Subcategory;
 import com.example.eventplanner.model.SubcategoryPlanner;
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.textfield.TextInputEditText;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import com.example.eventplanner.model.SubcategoryPlanner;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QuerySnapshot;
 
 public class SubAndCategoryTableRowAdapter extends RecyclerView.Adapter<SubAndCategoryTableRowAdapter.SubAndCategoryViewHolder>{
 
@@ -78,6 +86,8 @@ public class SubAndCategoryTableRowAdapter extends RecyclerView.Adapter<SubAndCa
 
         ShowOneEventActivity activity;
 
+        private List<EventType> itemList=new ArrayList<>();
+
 
 
         public SubAndCategoryViewHolder(@NonNull View itemView) {
@@ -109,7 +119,7 @@ public class SubAndCategoryTableRowAdapter extends RecyclerView.Adapter<SubAndCa
                     popupWindow.showAtLocation(v, Gravity.CENTER, 0, 0);
 
                     Button cancelButton = popUpView.findViewById(R.id.cancel_button);
-                    Button deleteButton = popUpView.findViewById(R.id.create_button);
+                    Button deleteButton = popUpView.findViewById(R.id.delete_button);
 
                     cancelButton.setOnClickListener(new View.OnClickListener() {
                         @Override
@@ -169,39 +179,15 @@ public class SubAndCategoryTableRowAdapter extends RecyclerView.Adapter<SubAndCa
                     editPrice.setText(price.getText());
                     idSubcatPlanner.setText(idSubcategoryPlanner.getText());
 
-                    String[] Category = {"Ugostiteljski objekti, hrana, ketering, torte i kolači", "Muzika i zabava", "Smjestaj", "Logistika i obezbeđenje"};
-                    String[] Subcategories = {"Subcategory", "Hrana za događaje", "Ketering i priprema hrane", "Iznajmljivanje ugostiteljskih objekata za događaje", "Fotografisanje"};
-
-                    ArrayAdapter<String> adapter = new ArrayAdapter<>(itemView.getContext(), android.R.layout.simple_dropdown_item_1line, Category);
-                    editCategory.setAdapter(adapter);
-
-                    // Dodavanje slušatelja za AutoCompleteTextView ako želite reagirati na odabir
-                    editCategory.setOnItemClickListener((parent, view, position, id) -> {
-                        //Ovdje možete dodati kôd koji se izvršava kada korisnik odabere neku stavku
-                        String selectedCategory = (String) parent.getItemAtPosition(position);
-
-                        System.out.println("Selected category: " + selectedCategory);
-                    });
-
-                    ArrayAdapter<String> adapter2 = new ArrayAdapter<>(itemView.getContext(), android.R.layout.simple_dropdown_item_1line, Subcategories);
-                    editSubcategory.setAdapter(adapter2);
-
-                    // Dodavanje slušatelja za AutoCompleteTextView ako želite reagirati na odabir
-                    editSubcategory.setOnItemClickListener((parent, view, position, id) -> {
-                        //Ovdje možete dodati kôd koji se izvršava kada korisnik odabere neku stavku
-                        String selectedSubcategory = (String) parent.getItemAtPosition(position);
-
-                        System.out.println("Selected category: " + selectedSubcategory);
-                    });
-
-
-
-
                     buttonEdit.setText("Edit");
 
                     buttonEdit.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
+
+                            if (validateCreteSubcategoryPlanner(editPrice))
+                                return;
+
                             updateSubcategoryPlanner(new SubcategoryPlanner(Long.parseLong(String.valueOf(idSubcatPlanner.getText())), editCategory.getText().toString() , editSubcategory.getText().toString(),Float.parseFloat(String.valueOf(editPrice.getText()))));
                             bottomSheetDialog.dismiss();
                         }
@@ -273,5 +259,31 @@ public class SubAndCategoryTableRowAdapter extends RecyclerView.Adapter<SubAndCa
 
 
         }
+
+        private boolean validateCreteSubcategoryPlanner(TextInputEditText priceInput) {
+            boolean error=false;
+            if(TextUtils.isEmpty(priceInput.getText())){
+                priceInput.setError("Fill number!");
+                error=true;
+            }
+            else{
+                try {
+                    int price = Integer.parseInt(priceInput.getText().toString());
+                    if(price <= 0){
+                        priceInput.setError("Price must be >0!");
+                        error =  true;
+                    }
+                }catch (Exception e){
+                    priceInput.setError("Price must be integer!");
+                    error = true;
+                }
+            }
+
+            if(error) return true;
+
+            return false;
+        }
+
+
     }
 }
