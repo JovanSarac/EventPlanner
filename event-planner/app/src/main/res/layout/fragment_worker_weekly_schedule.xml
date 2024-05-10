@@ -30,6 +30,7 @@
                     android:layout_marginRight="4dp"/>
 
                 <TextView
+                    android:id="@+id/schedule_date_header"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="4dp"
@@ -51,7 +52,8 @@
                 <TableLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:background="@android:color/white">
+                    android:background="@android:color/white"
+                    android:id="@+id/fragment_worker_schedules_table">
 
                     <TableRow
                         android:background="@color/purple_light">
@@ -93,292 +95,7 @@
 
                     </TableRow>
 
-                    <TableRow
-                        android:background="@color/white">
 
-                        <TextView
-                            android:textStyle="bold"
-                            android:background="@drawable/table_cell"
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:text="Monday"
-                            android:textColor="@android:color/black"
-                            android:padding="12sp"
-                            android:textSize="12sp"
-                            android:layout_weight="4"
-                            android:gravity="center_horizontal"
-                            />
-
-                        <TextView
-                            android:background="@drawable/table_cell"
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:text="7:00"
-                            android:textColor="@android:color/black"
-                            android:padding="12sp"
-                            android:textSize="12sp"
-                            android:layout_weight="4"
-                            android:gravity="center_horizontal"
-                            />
-                        <TextView
-                            android:background="@drawable/table_cell"
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:text="20:00"
-                            android:textColor="@android:color/black"
-                            android:padding="12sp"
-                            android:textSize="12sp"
-                            android:layout_weight="4"
-                            android:gravity="center_horizontal"
-                            />
-
-                    </TableRow>
-
-                    <TableRow
-                        android:background="@color/white">
-
-                        <TextView
-                            android:textStyle="bold"
-                            android:background="@drawable/table_cell"
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:text="Tuesday"
-                            android:textColor="@android:color/black"
-                            android:padding="12sp"
-                            android:textSize="12sp"
-                            android:layout_weight="4"
-                            android:gravity="center_horizontal"
-                            />
-
-                        <TextView
-                            android:background="@drawable/table_cell"
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:text="7:00"
-                            android:textColor="@android:color/black"
-                            android:padding="12sp"
-                            android:textSize="12sp"
-                            android:layout_weight="4"
-                            android:gravity="center_horizontal"
-                            />
-                        <TextView
-                            android:background="@drawable/table_cell"
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:text="20:00"
-                            android:textColor="@android:color/black"
-                            android:padding="12sp"
-                            android:textSize="12sp"
-                            android:layout_weight="4"
-                            android:gravity="center_horizontal"
-                            />
-
-                    </TableRow>
-
-                    <TableRow
-                        android:background="@color/white">
-
-                        <TextView
-                            android:textStyle="bold"
-                            android:background="@drawable/table_cell"
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:text="Wednesday"
-                            android:textColor="@android:color/black"
-                            android:padding="12sp"
-                            android:textSize="12sp"
-                            android:layout_weight="4"
-                            android:gravity="center_horizontal"
-                            />
-
-                        <TextView
-                            android:background="@drawable/table_cell"
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:text="7:00"
-                            android:textColor="@android:color/black"
-                            android:padding="12sp"
-                            android:textSize="12sp"
-                            android:layout_weight="4"
-                            android:gravity="center_horizontal"
-                            />
-                        <TextView
-                            android:background="@drawable/table_cell"
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:text="20:00"
-                            android:textColor="@android:color/black"
-                            android:padding="12sp"
-                            android:textSize="12sp"
-                            android:layout_weight="4"
-                            android:gravity="center_horizontal"
-                            />
-
-                    </TableRow>
-
-                    <TableRow
-                        android:background="@color/white">
-
-                        <TextView
-                            android:textStyle="bold"
-                            android:background="@drawable/table_cell"
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:text="Thursday"
-                            android:textColor="@android:color/black"
-                            android:padding="12sp"
-                            android:textSize="12sp"
-                            android:layout_weight="4"
-                            android:gravity="center_horizontal"
-                            />
-
-                        <TextView
-                            android:background="@drawable/table_cell"
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:text="7:00"
-                            android:textColor="@android:color/black"
-                            android:padding="12sp"
-                            android:textSize="12sp"
-                            android:layout_weight="4"
-                            android:gravity="center_horizontal"
-                            />
-                        <TextView
-                            android:background="@drawable/table_cell"
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:text="20:00"
-                            android:textColor="@android:color/black"
-                            android:padding="12sp"
-                            android:textSize="12sp"
-                            android:layout_weight="4"
-                            android:gravity="center_horizontal"
-                            />
-
-                    </TableRow>
-
-                    <TableRow
-                        android:background="@color/white">
-
-                        <TextView
-                            android:textStyle="bold"
-                            android:background="@drawable/table_cell"
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:text="Friday"
-                            android:textColor="@android:color/black"
-                            android:padding="12sp"
-                            android:textSize="12sp"
-                            android:layout_weight="4"
-                            android:gravity="center_horizontal"
-                            />
-
-                        <TextView
-                            android:background="@drawable/table_cell"
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:text="7:00"
-                            android:textColor="@android:color/black"
-                            android:padding="12sp"
-                            android:textSize="12sp"
-                            android:layout_weight="4"
-                            android:gravity="center_horizontal"
-                            />
-                        <TextView
-                            android:background="@drawable/table_cell"
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:text="20:00"
-                            android:textColor="@android:color/black"
-                            android:padding="12sp"
-                            android:textSize="12sp"
-                            android:layout_weight="4"
-                            android:gravity="center_horizontal"
-                            />
-
-                    </TableRow>
-
-                    <TableRow
-                        android:background="@color/white">
-
-                        <TextView
-                            android:textStyle="bold"
-                            android:background="@drawable/table_cell"
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:text="Saturday"
-                            android:textColor="@android:color/black"
-                            android:padding="12sp"
-                            android:textSize="12sp"
-                            android:layout_weight="4"
-                            android:gravity="center_horizontal"
-                            />
-
-                        <TextView
-                            android:background="@drawable/table_cell"
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:text="7:00"
-                            android:textColor="@android:color/black"
-                            android:padding="12sp"
-                            android:textSize="12sp"
-                            android:layout_weight="4"
-                            android:gravity="center_horizontal"
-                            />
-                        <TextView
-                            android:background="@drawable/table_cell"
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:text="20:00"
-                            android:textColor="@android:color/black"
-                            android:padding="12sp"
-                            android:textSize="12sp"
-                            android:layout_weight="4"
-                            android:gravity="center_horizontal"
-                            />
-
-                    </TableRow>
-
-                    <TableRow
-                        android:background="@color/white">
-
-                        <TextView
-                            android:textStyle="bold"
-                            android:background="@drawable/table_cell"
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:text="Sunday"
-                            android:textColor="@android:color/black"
-                            android:padding="12sp"
-                            android:textSize="12sp"
-                            android:layout_weight="4"
-                            android:gravity="center_horizontal"
-                            />
-
-                        <TextView
-                            android:background="@drawable/table_cell"
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:text="Day off"
-                            android:textColor="@android:color/black"
-                            android:padding="12sp"
-                            android:textSize="12sp"
-                            android:layout_weight="4"
-                            android:gravity="center_horizontal"
-                            />
-                        <TextView
-                            android:background="@drawable/table_cell"
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:text="Day off"
-                            android:textColor="@android:color/black"
-                            android:padding="12sp"
-                            android:textSize="12sp"
-                            android:layout_weight="4"
-                            android:gravity="center_horizontal"
-                            />
-
-                    </TableRow>
 
                 </TableLayout>
 
@@ -412,6 +129,7 @@
 
 
                             <TextView
+                                android:id="@+id/event_header"
                                 android:shadowColor="@color/black"
                                 android:shadowDx="1"
                                 android:shadowDy="1"
@@ -427,28 +145,6 @@
                                 android:layout_marginBottom="4dp">
                             </TextView>
 
-                            <LinearLayout
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:gravity="center_vertical"
-                                android:layout_marginBottom="8dp">
-
-                                <ImageButton
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:padding="8dp"
-                                    android:layout_marginRight="12dp"
-                                    android:src="@drawable/chevron_left_24"
-                                    android:scaleType="centerInside"
-                                    android:background="@drawable/back_btn"/>
-                                <ImageButton
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:padding="8dp"
-                                    android:src="@drawable/chevron_right_24"
-                                    android:scaleType="centerInside"
-                                    android:background="@drawable/back_btn"/>
-                            </LinearLayout>
                         </LinearLayout>
 
                         <View
@@ -460,6 +156,7 @@
                     </LinearLayout>
 
                     <TextView
+                        android:id="@+id/start_hours"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginHorizontal="12dp"
@@ -472,71 +169,19 @@
                         android:layout_weight="1">
                     </TextView>
 
-                    <LinearLayout
-                        android:layout_marginHorizontal="12dp"
-                        android:layout_marginTop="8dp"
-                        android:background="@drawable/custom_radio_btn_normal"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="horizontal"
-                        android:gravity="center_vertical">
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginHorizontal="12dp"
-                            android:layout_marginVertical="4dp"
-                            android:text="09:00 - 11:00 "
-                            android:fontFamily="sans-serif"
-                            android:textSize="20sp"
-                            android:textStyle="normal"
-                            android:textColor="@color/black"
-                            android:layout_weight="1">
-                        </TextView>
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="Reserved"
-                            android:textColor="@color/purple_dark"
-                            android:layout_marginRight="12dp"
-                            android:textSize="16dp"
-                            android:textStyle="bold"/>
-                    </LinearLayout>
 
                     <LinearLayout
-                        android:layout_marginHorizontal="12dp"
-                        android:layout_marginTop="8dp"
-                        android:background="@drawable/custom_radio_btn_normal"
+                        android:id="@+id/event_list"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:orientation="horizontal"
-                        android:gravity="center_vertical">
+                        android:orientation="vertical">
 
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginHorizontal="12dp"
-                            android:layout_marginVertical="4dp"
-                            android:text="12:00 - 15:00 "
-                            android:fontFamily="sans-serif"
-                            android:textSize="20sp"
-                            android:textStyle="normal"
-                            android:textColor="@color/black"
-                            android:layout_weight="1">
-                        </TextView>
 
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="Busy"
-                            android:textColor="@color/purple_light"
-                            android:layout_marginRight="12dp"
-                            android:textSize="16dp"
-                            android:textStyle="bold"/>
+
                     </LinearLayout>
 
                     <TextView
+                        android:id="@+id/end_hours"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_margin="12dp"
@@ -591,6 +236,7 @@
                             android:paddingBottom="4dp"/>
 
                         <EditText
+                            android:id="@+id/event_name_input"
                             android:lines="1"
                             android:drawablePadding="8dp"
                             android:layout_width="match_parent"
@@ -624,6 +270,7 @@
                                 android:paddingBottom="4dp"/>
 
                             <EditText
+                                android:id="@+id/event_from_input"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:background="@drawable/custom_input"
@@ -650,6 +297,7 @@
                                 android:paddingBottom="4dp"/>
 
                             <EditText
+                                android:id="@+id/event_to_input"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:background="@drawable/custom_input"
@@ -665,7 +313,7 @@
                     </LinearLayout>
 
                     <com.google.android.material.button.MaterialButton
-                        android:id="@+id/continue_btn"
+                        android:id="@+id/add_event_btn"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:text="Add event"
