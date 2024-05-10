@@ -7,13 +7,14 @@ public class EventPUPZ {
     private String endHours;
     private String occurenceDate;
     private Long dateScheduleId;
+    private Long workerId;
     private String day;
     private String type;
 
     public EventPUPZ() {
     }
 
-    public EventPUPZ(Long id, String startHours, String endHours, String occurenceDate, Long dateScheduleId, String day, String type) {
+    public EventPUPZ(Long id, String startHours, String endHours, String occurenceDate, Long dateScheduleId, String day, String type, Long workerId) {
         this.id = id;
         this.startHours = startHours;
         this.endHours = endHours;
@@ -21,6 +22,15 @@ public class EventPUPZ {
         this.dateScheduleId = dateScheduleId;
         this.day = day;
         this.type = type;
+        this.workerId = workerId;
+    }
+
+    public Long getWorkerId() {
+        return workerId;
+    }
+
+    public void setWorkerId(Long workerId) {
+        this.workerId = workerId;
     }
 
     public Long getId() {

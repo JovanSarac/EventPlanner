@@ -79,7 +79,8 @@ public class WorkerWeeklyScheduleFragment extends Fragment {
                         formattedDate,
                         dateSchedule.getId(),
                         binding.eventHeader.getText().toString(),
-                        "BUSY"
+                        "BUSY",
+                        dateSchedule.getWorkerId()
                 );
 
                 db.collection("Event").add(event).addOnCompleteListener(c ->{
@@ -195,7 +196,8 @@ public class WorkerWeeklyScheduleFragment extends Fragment {
             CollectionReference eventCollection = db.collection("Event");
             Query query = eventCollection
                     .whereEqualTo("dateScheduleId", dateScheduleId)
-                    .whereEqualTo("day", day);
+                    .whereEqualTo("day", day)
+                    .whereEqualTo("workerId", dateSchedule.getWorkerId());
 
             query.get().addOnCompleteListener(v->{
                 if(v.isSuccessful()){
@@ -229,6 +231,7 @@ public class WorkerWeeklyScheduleFragment extends Fragment {
     }
 
     public void populateEventViews(Context context, List<EventPUPZ> events, LinearLayout parentLayout) {
+        parentLayout.removeAllViews();
         if (events != null && !events.isEmpty()) {
             for (EventPUPZ event : events) {
 
