@@ -1,12 +1,14 @@
 package com.example.eventplanner.utils;
 
 import androidx.annotation.NonNull;
+
+import java.io.Serializable;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
-public class DateRange {
+public class DateRange implements Serializable {
 
     private String startDate;
     private String endDate;

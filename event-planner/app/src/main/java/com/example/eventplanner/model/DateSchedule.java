@@ -3,10 +3,13 @@ package com.example.eventplanner.model;
 import com.example.eventplanner.utils.DateRange;
 import com.example.eventplanner.utils.Days;
 import com.example.eventplanner.utils.WorkingHours;
+import com.google.gson.Gson;
 
+import java.io.Serializable;
 import java.util.HashMap;
+import java.util.Map;
 
-public class DateSchedule {
+public class DateSchedule implements Serializable {
 
     private Long id;
     private Long workerId;
@@ -62,5 +65,10 @@ public class DateSchedule {
 
     public void setSchedule(HashMap<String, WorkingHours> schedule) {
         this.schedule = schedule;
+    }
+
+    public static DateSchedule fromFirestoreData(Map<String, Object> data) {
+        Gson gson = new Gson();
+        return gson.fromJson(gson.toJson(data), DateSchedule.class);
     }
 }
