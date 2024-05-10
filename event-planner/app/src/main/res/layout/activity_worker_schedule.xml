@@ -441,7 +441,7 @@
                     android:textSize="14dp"
                     android:paddingBottom="4dp"/>
 
-                <TextView
+                <EditText
                     android:id="@+id/date_range_picker"
                     android:drawableStart="@drawable/date_range"
                     android:drawablePadding="8dp"

@@ -3,6 +3,7 @@ package com.example.eventplanner.activities;
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.util.Pair;
 import android.widget.ArrayAdapter;
 import android.widget.DatePicker;
@@ -19,23 +20,31 @@ import com.example.eventplanner.R;
 import com.example.eventplanner.databinding.ActivityRegisterWorkerBinding;
 import com.example.eventplanner.databinding.ActivityWorkerScheduleBinding;
 import com.example.eventplanner.model.DateSchedule;
+import com.example.eventplanner.utils.DateRange;
 import com.example.eventplanner.utils.Days;
 import com.example.eventplanner.utils.WorkingHours;
 import com.google.android.material.datepicker.CalendarConstraints;
 import com.google.android.material.datepicker.DateValidatorPointForward;
 import com.google.android.material.datepicker.MaterialDatePicker;
+import com.google.android.material.datepicker.MaterialPickerOnPositiveButtonClickListener;
+import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
 
 import java.security.acl.Owner;
 import java.text.DateFormat;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
+import java.util.Map;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.TimeUnit;
 
 public class WorkerScheduleActivity extends AppCompatActivity {
 
     DateSchedule schedule = new DateSchedule();
-
+    FirebaseFirestore db = FirebaseFirestore.getInstance();
     @SuppressLint("SetTextI18n")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,44 +62,6 @@ public class WorkerScheduleActivity extends AppCompatActivity {
         ActivityWorkerScheduleBinding binding= ActivityWorkerScheduleBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
-        binding.dateRangePicker.setOnClickListener((v) -> {
-
-            CalendarConstraints.Builder constraintsBuilder = new CalendarConstraints.Builder();
-            long currentMillis = MaterialDatePicker.todayInUtcMilliseconds();
-
-            constraintsBuilder.setStart(currentMillis);
-
-            long maxDate = currentMillis + TimeUnit.DAYS.toMillis(7);
-            constraintsBuilder.setEnd(maxDate);
-
-            CalendarConstraints.DateValidator dateValidator = DateValidatorPointForward.from(currentMillis);
-            constraintsBuilder.setValidator(dateValidator);
-
-            MaterialDatePicker picker = MaterialDatePicker.Builder.dateRangePicker()
-                    .setTitleText("Select date range")
-                    .setTheme(R.style.ThemeMaterialCalendar)
-                    .setCalendarConstraints(constraintsBuilder.build())
-                    .build();
-
-            picker.show(getSupportFragmentManager(), picker.toString());
-
-            picker.addOnPositiveButtonClickListener((w)->{
-                Pair<Long, Long> selectedDates = (Pair<Long, Long>) picker.getSelection();
-
-                long startDate = selectedDates.first;
-                long endDate = selectedDates.second;
-
-                DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
-                String formattedStartDate = dateFormat.format(new Date(startDate));
-                String formattedEndDate = dateFormat.format(new Date(endDate));
-
-                binding.dateRangePicker.setText(formattedStartDate +"-"+formattedEndDate);
-            });
-
-            picker.addOnNegativeButtonClickListener((w)->{
-                picker.dismiss();
-            });
-        });
 
         Spinner spinner  = binding.daysSpinner;
 
@@ -103,6 +74,42 @@ public class WorkerScheduleActivity extends AppCompatActivity {
         spinner.setAdapter(arrayAdapter);
 
         binding.addScheduleBtn.setOnClickListener((v)->{
+
+            String dateSpan = binding.dateRangePicker.getText().toString();
+            DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
+
+            try {
+
+                String[] dates = dateSpan.split("-");
+                String startDateString = dates[0].trim();
+                String endDateString = dates[1].trim();
+
+                startDateString = startDateString.replace("/", "-");
+                endDateString = endDateString.replace("/", "-");
+
+                schedule.setDateRange(new DateRange(startDateString, endDateString));
+                getNumberOfItemsInUsersCollection().thenAccept(numberOfItems ->{
+
+                    for (Map.Entry<String, WorkingHours> entry : schedule.getSchedule().entrySet()) {
+                        if (entry.getValue() == null) {
+                            entry.setValue(new WorkingHours("9:00 AM", "17:00 PM"));
+                        }
+                    }
+                    schedule.setId(numberOfItems+1);
+                    db.collection("DateSchedule")
+                            .add(schedule)
+                            .addOnSuccessListener(documentReference -> {
+                                Log.d("Firestore", "Document added with ID: " + documentReference.getId());
+                            })
+                            .addOnFailureListener(e -> {
+                                Log.e("Firestore", "Error adding document", e);
+                            });
+                });
+            }
+            catch (Exception e){
+                e.printStackTrace();
+            }
+
             Intent intent = new Intent(this, OwnerDashboard.class);
             startActivity(intent);
         });
@@ -134,5 +141,22 @@ public class WorkerScheduleActivity extends AppCompatActivity {
             Intent intent = new Intent(this, OwnerDashboard.class);
             startActivity(intent);
         });
+    }
+
+    private CompletableFuture<Long> getNumberOfItemsInUsersCollection() {
+        CollectionReference dateScheduleCollection = db.collection("DateSchedule");
+
+        CompletableFuture<Long> future = new CompletableFuture<>();
+
+        dateScheduleCollection.get().addOnCompleteListener(task -> {
+            if (task.isSuccessful()) {
+                long numberOfItems = task.getResult().size();
+                future.complete(numberOfItems);
+            } else {
+                future.completeExceptionally(task.getException());
+            }
+        });
+
+        return future;
     }
 }
