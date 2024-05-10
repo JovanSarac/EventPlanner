@@ -92,6 +92,7 @@ public class OwnerDashboard extends AppCompatActivity {
                             tableRow.setOnClickListener(v ->{
                                 Intent intent = new Intent(OwnerDashboard.this, WorkerScheduleActivity.class);
                                 intent.putExtra("workerId", schedule.getWorkerId());
+                                intent.putExtra("schedule", schedule);
                                 startActivity(intent);
                             });
 

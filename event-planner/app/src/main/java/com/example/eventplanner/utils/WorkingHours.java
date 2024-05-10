@@ -2,10 +2,11 @@ package com.example.eventplanner.utils;
 
 import androidx.annotation.NonNull;
 
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
-public class WorkingHours {
+public class WorkingHours implements Serializable {
 
     private String startTime;
     private String endTime;
