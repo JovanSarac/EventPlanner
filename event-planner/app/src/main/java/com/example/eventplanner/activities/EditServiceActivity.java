@@ -175,7 +175,7 @@ public class EditServiceActivity extends AppCompatActivity {
         cancelationDueAutoComplete.setText(service.getCancelationDue().toString());
 
         recyclerView = findViewById(R.id.recycler);
-        imageAdapter = new ImageAdapter(EditServiceActivity.this, service.getImages());
+        imageAdapter = new ImageAdapter(EditServiceActivity.this, R.layout.image_carousel_card, service.getImages());
         recyclerView.setAdapter(imageAdapter);
 
         EventListAdapter eventListAdapter = new EventListAdapter(this, R.layout.event_card ,events);
@@ -499,7 +499,7 @@ public class EditServiceActivity extends AppCompatActivity {
         if(resultCode == RESULT_OK && data != null){
             service.getImages().add(data.getData());
             Uri selectedImage = data.getData();
-            imageAdapter = new ImageAdapter(EditServiceActivity.this, service.getImages());
+            imageAdapter = new ImageAdapter(EditServiceActivity.this, R.layout.image_carousel_card, service.getImages());
             recyclerView.setAdapter(imageAdapter);
         }
     }

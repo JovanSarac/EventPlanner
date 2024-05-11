@@ -21,11 +21,12 @@ public class Package {
     private String reservationDue;
     private String cancelationDue;
     private Boolean automaticAffirmation;
+    private Boolean deleted;
 
     public Package() {
     }
 
-    public Package(Long id, String name, String description, Double discount, Boolean available, Boolean visible, Long categoryId, ArrayList<Long> subCategoryId, ArrayList<Long> productIds, ArrayList<Long> serviceIds, ArrayList<Long> eventIds, Double price, ArrayList<Uri> images, String reservationDue, String cancelationDue, Boolean automaticAffirmation) {
+    public Package(Long id, String name, String description, Double discount, Boolean available, Boolean visible, Long categoryId, ArrayList<Long> subCategoryId, ArrayList<Long> productIds, ArrayList<Long> serviceIds, ArrayList<Long> eventIds, Double price, ArrayList<Uri> images, String reservationDue, String cancelationDue, Boolean automaticAffirmation, Boolean deleted) {
         this.id = id;
         this.name = name;
         this.description = description;
@@ -42,6 +43,7 @@ public class Package {
         this.reservationDue = reservationDue;
         this.cancelationDue = cancelationDue;
         this.automaticAffirmation = automaticAffirmation;
+        this.deleted = deleted;
     }
 
     public Long getId() {
@@ -170,5 +172,13 @@ public class Package {
 
     public void setAutomaticAffirmation(Boolean automaticAffirmation) {
         this.automaticAffirmation = automaticAffirmation;
+    }
+
+    public Boolean getDeleted() {
+        return deleted;
+    }
+
+    public void setDeleted(Boolean deleted) {
+        this.deleted = deleted;
     }
 }

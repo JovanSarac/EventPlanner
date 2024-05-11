@@ -56,7 +56,7 @@ public class EventListAdapter  extends ArrayAdapter<Event> {
         eventNameTextView.setText(getItem(position).getName());
 
 
-        if(resource != android.R.layout.simple_dropdown_item_1line) {
+        if(resource != android.R.layout.simple_dropdown_item_1line && resource != R.layout.event_card_package) {
             remove = view.findViewById(R.id.remove);
 
             remove.setOnClickListener(new View.OnClickListener() {

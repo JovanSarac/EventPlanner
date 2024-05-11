@@ -19,16 +19,18 @@ import java.util.ArrayList;
 public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.ViewHolder> {
     private Context context;
     private ArrayList<Uri> arrayList;
+    private int resource;
 
-    public ImageAdapter(Context context, ArrayList<Uri> arrayList){
+    public ImageAdapter(Context context, int resource, ArrayList<Uri> arrayList){
         this.context = context;
         this.arrayList = arrayList;
+        this.resource = resource;
     }
 
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(context).inflate(R.layout.image_carousel_card, parent, false);
+        View view = LayoutInflater.from(context).inflate(resource, parent, false);
         return new ViewHolder(view);
     }
 
@@ -48,18 +50,21 @@ public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.ViewHolder> 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             imageView = itemView.findViewById(R.id.list_item_image);
-            remove = itemView.findViewById(R.id.remove_image);
 
-            remove.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    int position = getAdapterPosition();
-                    if(position != RecyclerView.NO_POSITION){
-                        arrayList.remove(position);
-                        notifyDataSetChanged();
+            if(resource == R.layout.image_carousel_card) {
+                remove = itemView.findViewById(R.id.remove_image);
+
+                remove.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        int position = getAdapterPosition();
+                        if (position != RecyclerView.NO_POSITION) {
+                            arrayList.remove(position);
+                            notifyDataSetChanged();
+                        }
                     }
-                }
-            });
+                });
+            }
         }
     }
 }

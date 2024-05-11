@@ -312,7 +312,7 @@ public class CreateProductActivity extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
         if(resultCode == RESULT_OK && data != null && data.getData() != null){
             images.add(data.getData());
-            imageAdapter = new ImageAdapter(CreateProductActivity.this, images);
+            imageAdapter = new ImageAdapter(CreateProductActivity.this, R.layout.image_carousel_card, images);
             recyclerView.setAdapter(imageAdapter);
         }
     }

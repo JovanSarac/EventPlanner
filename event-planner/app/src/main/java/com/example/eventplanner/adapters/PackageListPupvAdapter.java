@@ -10,6 +10,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.PopupWindow;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -22,14 +23,19 @@ import java.util.ArrayList;
 import com.example.eventplanner.model.Package;
 import com.example.eventplanner.model.Product;
 import com.example.eventplanner.model.Service;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 public class PackageListPupvAdapter extends ArrayAdapter<Package> {
 
     private ArrayList<Package> packages;
+    private FirebaseFirestore db;
 
     public PackageListPupvAdapter(Context context, ArrayList<Package> packages){
         super(context, R.layout.package_card_pupv, packages);
         this.packages = packages;
+        db = FirebaseFirestore.getInstance();
     }
 
     @Override
@@ -63,24 +69,8 @@ public class PackageListPupvAdapter extends ArrayAdapter<Package> {
             name.setText(pckage.getName());
             description.setText(pckage.getDescription());
             price.setText(pckage.getPrice().toString() + "$");
-
-            String productNames = "";
-            /*ArrayList<Product> productList = pckage.getProducts();
-            for(int i = 0; i < productList.size(); i++){
-                productNames += productList.get(i).getName();
-                if(i < productList.size() - 1){
-                    productNames += ", ";
-                }
-            }*/
-
-            String serviceNames = "";
-            /*ArrayList<Service> serviceList = pckage.getServices();
-            for(int i = 0; i < serviceList.size(); i++){
-                serviceNames += serviceList.get(i).getName();
-                if(i < serviceList.size() - 1){
-                    serviceNames += ", ";
-                }
-            }*/
+            products.setText(String.valueOf(pckage.getProductIds().size()));
+            services.setText(String.valueOf(pckage.getServiceIds().size()));
         }
 
         Button editButton = convertView.findViewById(R.id.edit);
@@ -92,21 +82,6 @@ public class PackageListPupvAdapter extends ArrayAdapter<Package> {
             public void onClick(View v) {
                 Intent intent = new Intent(finalConvertView.getContext(), EditPackageActivity.class);
                 intent.putExtra("Id", pckage.getId());
-                intent.putExtra("Name", pckage.getName());
-                intent.putExtra("Category", pckage.getCategoryId());
-                intent.putExtra("Subcategory", pckage.getServiceIds());
-                intent.putExtra("Description", pckage.getDescription());
-                intent.putExtra("Price", pckage.getPrice());
-                intent.putExtra("Discount", pckage.getDiscount());
-                intent.putExtra("Products", pckage.getProductIds());
-                intent.putExtra("Services", pckage.getServiceIds());
-                intent.putExtra("Events", pckage.getEventIds());
-                intent.putExtra("ImageTypes", pckage.getImages());
-                intent.putExtra("ReservationDue", pckage.getReservationDue());
-                intent.putExtra("CancelationDue", pckage.getCancelationDue());
-                intent.putExtra("AutomaticAffirmation", pckage.getAutomaticAffirmation());
-                intent.putExtra("Availability", pckage.getAvailable());
-                intent.putExtra("Visibility", pckage.getVisible());
 
                 finalConvertView.getContext().startActivity(intent);
             }
@@ -124,9 +99,42 @@ public class PackageListPupvAdapter extends ArrayAdapter<Package> {
                 PopupWindow popupWindow = new PopupWindow(popUpView, width, height, focusable);
 
                 popupWindow.showAtLocation(v, Gravity.CENTER, 0, 0);
+                Button confrim = popUpView.findViewById(R.id.delete_button);
+                confrim.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        db.collection("Packages")
+                                .document(packages.get(position).getId().toString())
+                                .update("deleted", true)
+                                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                    @Override
+                                    public void onSuccess(Void unused) {
+                                        packages.remove(position);
+                                        notifyDataSetChanged();
+                                        Toast.makeText(finalConvertView.getContext(), "Product deleted", Toast.LENGTH_LONG).show();
+                                        popupWindow.dismiss();
+                                    }
+                                })
+
+                                .addOnFailureListener(new OnFailureListener() {
+                                    @Override
+                                    public void onFailure(@NonNull Exception e) {
+                                        Toast.makeText(finalConvertView.getContext(), e.getMessage(), Toast.LENGTH_LONG).show();
+                                    }
+                                });
+                    }
+                });
+
+                Button cancel = popUpView.findViewById(R.id.cancel_button);
+
+                cancel.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        popupWindow.dismiss();
+                    }
+                });
             }
         });
-
 
         return convertView;
     }

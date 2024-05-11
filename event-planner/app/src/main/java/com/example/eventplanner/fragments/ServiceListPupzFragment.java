@@ -55,7 +55,7 @@ public class ServiceListPupzFragment extends Fragment {
 
         getServices();
 
-        ServiceListAdapter serviceListAdapter = new ServiceListAdapter(requireContext(), services);
+        ServiceListAdapter serviceListAdapter = new ServiceListAdapter(requireContext(), R.layout.service_card, services);
 
         binding.serviceListPupz.setAdapter(serviceListAdapter);
         binding.serviceListPupz.setClickable(true);
@@ -119,7 +119,7 @@ public class ServiceListPupzFragment extends Fragment {
                                                         servicesProccessed[0]++;
 
                                                         if (servicesProccessed[0] == numServices) {
-                                                            ServiceListAdapter productListAdapter = new ServiceListAdapter(requireContext(), services);
+                                                            ServiceListAdapter productListAdapter = new ServiceListAdapter(requireContext(), R.layout.service_card, services);
                                                             binding.serviceListPupz.setAdapter(productListAdapter);
                                                             binding.serviceListPupz.setClickable(true);
                                                         }

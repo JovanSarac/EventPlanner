@@ -1,6 +1,7 @@
 package com.example.eventplanner.model;
 
 import java.util.Date;
+import java.util.Objects;
 
 public class Event {
     public Long Id;
@@ -39,6 +40,23 @@ public class Event {
         MaxDistance = maxDistance;
         DateEvent = dateEvent;
         Availble = availble;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null || getClass() != obj.getClass()) {
+            return false;
+        }
+        Event otherEvent = (Event) obj;
+        return Objects.equals(Id, otherEvent.Id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(Id);
     }
 
 

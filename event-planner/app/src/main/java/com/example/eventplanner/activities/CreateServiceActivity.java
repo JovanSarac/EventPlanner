@@ -331,7 +331,7 @@ public class CreateServiceActivity extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
         if(resultCode == RESULT_OK && data != null && data.getData() != null){
             images.add(data.getData());
-            imageAdapter = new ImageAdapter(CreateServiceActivity.this, images);
+            imageAdapter = new ImageAdapter(CreateServiceActivity.this, R.layout.image_carousel_card, images);
             recyclerView.setAdapter(imageAdapter);
         }
     }

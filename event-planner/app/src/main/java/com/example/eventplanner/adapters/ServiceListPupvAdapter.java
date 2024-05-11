@@ -11,6 +11,7 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.PopupWindow;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -22,13 +23,18 @@ import com.example.eventplanner.R;
 import java.util.ArrayList;
 
 import com.example.eventplanner.model.Service;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 public class ServiceListPupvAdapter extends ArrayAdapter<Service> {
     private ArrayList<Service> services;
+    private FirebaseFirestore db;
 
     public ServiceListPupvAdapter(Context context, ArrayList<Service> services){
         super(context, R.layout.service_card_pupv, services);
         this.services = services;
+        db = FirebaseFirestore.getInstance();
     }
 
     @Override
@@ -98,6 +104,41 @@ public class ServiceListPupvAdapter extends ArrayAdapter<Service> {
                 PopupWindow popupWindow = new PopupWindow(popUpView, width, height, focusable);
 
                 popupWindow.showAtLocation(v, Gravity.CENTER, 0, 0);
+
+                Button confrim = popUpView.findViewById(R.id.delete_button);
+                confrim.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        db.collection("Services")
+                                .document(services.get(position).getId().toString())
+                                .update("deleted", true)
+                                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                    @Override
+                                    public void onSuccess(Void unused) {
+                                        services.remove(position);
+                                        notifyDataSetChanged();
+                                        Toast.makeText(finalConvertView.getContext(), "Service deleted", Toast.LENGTH_LONG).show();
+                                        popupWindow.dismiss();
+                                    }
+                                })
+
+                                .addOnFailureListener(new OnFailureListener() {
+                                    @Override
+                                    public void onFailure(@NonNull Exception e) {
+                                        Toast.makeText(finalConvertView.getContext(), e.getMessage(), Toast.LENGTH_LONG).show();
+                                    }
+                                });
+                    }
+                });
+
+                Button cancel = popUpView.findViewById(R.id.cancel_button);
+
+                cancel.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        popupWindow.dismiss();
+                    }
+                });
             }
         });
 
