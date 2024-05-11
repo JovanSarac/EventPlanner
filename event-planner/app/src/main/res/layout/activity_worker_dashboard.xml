@@ -40,6 +40,7 @@
                         android:background="@drawable/back_btn"/>
 
                     <TextView
+                        android:id="@+id/worker_dashboard_name_surname"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:text="Marko Radetic"
@@ -86,6 +87,7 @@
                         android:layout_marginRight="2dp"/>
 
                     <TextView
+                        android:id="@+id/worker_dashboard_phone_number"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:text="0628562016"
@@ -107,6 +109,7 @@
                         android:layout_marginRight="2dp"/>
 
                     <TextView
+                        android:id="@+id/worker_dashboard_email"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:text="markoradetic67@gmail.com"
@@ -128,6 +131,7 @@
                         android:layout_marginRight="2dp"/>
 
                     <TextView
+                        android:id="@+id/worker_dashboard_location"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:text="Podunavci, Serbia"
@@ -159,37 +163,11 @@
                 android:fadeScrollbars="false">
 
                 <RadioGroup
+                    android:id="@+id/schedule_date_radio_grp"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal"
                     android:paddingBottom="12dp">
-
-                    <RadioButton
-                        android:background="@drawable/custom_radio_btn_selector"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:button="@color/transparent"
-                        android:textAlignment="center"
-                        android:text="01.01.2024 - 20.01.2024."
-                        android:layout_marginRight="18sp"/>
-
-                    <RadioButton
-                        android:background="@drawable/custom_radio_btn_selector"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:button="@color/transparent"
-                        android:textAlignment="center"
-                        android:text="01.01.2024 - 20.01.2024."
-                        android:layout_marginRight="18sp"/>
-
-                    <RadioButton
-                        android:background="@drawable/custom_radio_btn_selector"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:button="@color/transparent"
-                        android:textAlignment="center"
-                        android:text="01.01.2024 - 20.01.2024."
-                        android:layout_marginRight="18sp"/>
 
                 </RadioGroup>
 

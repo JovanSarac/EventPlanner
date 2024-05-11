@@ -19,6 +19,9 @@ public class DateRange implements Serializable {
         this.endDate = endDate;
     }
 
+    public DateRange() {
+    }
+
     public DateRange(Date startDate, Date endDate) {
         this.startDate = dateFormat.format(startDate);
         this.endDate = dateFormat.format(endDate);

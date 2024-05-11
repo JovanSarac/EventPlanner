@@ -181,23 +181,23 @@ public class WorkerScheduleActivity extends AppCompatActivity {
         return future;
     }
 
-    private void initializeScheduleTable(ActivityWorkerScheduleBinding binding){
-
+    private void initializeScheduleTable(ActivityWorkerScheduleBinding binding) {
         TableLayout table = binding.workerSchedulesTable;
-
-        TableRow tableRow = new TableRow(this);
 
         Map<String, WorkingHours> scheduleMap = currentSchedule.getSchedule();
         Set<Map.Entry<String, WorkingHours>> entries = scheduleMap.entrySet();
         for (Map.Entry<String, WorkingHours> entry : entries) {
             String key = entry.getKey();
             WorkingHours value = entry.getValue();
+
+            TableRow tableRow = new TableRow(this);
+
             insertColumn(key, tableRow, true);
             insertColumn(value.getStartTime(), tableRow, false);
             insertColumn(value.getEndTime(), tableRow, false);
-        }
 
-        table.addView(tableRow);
+            table.addView(tableRow);
+        }
     }
 
     private void insertColumn(String data, TableRow tableRow, boolean isUsername) {
@@ -214,6 +214,7 @@ public class WorkerScheduleActivity extends AppCompatActivity {
 
         tableRow.addView(textView);
     }
+
     private CompletableFuture<UserPUPZ> getUserBySchedule(DateSchedule schedule) {
         CompletableFuture<UserPUPZ> future = new CompletableFuture<>();
 
