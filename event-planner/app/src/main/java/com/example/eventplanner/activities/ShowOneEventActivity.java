@@ -250,7 +250,7 @@ public class ShowOneEventActivity extends AppCompatActivity {
                     @Override
                     public void onSuccess(Void avoid) {
                         Log.d(TAG, "DocumentSnapshot added with ID: " + agendaActivity.getId().toString());
-                        getSubcategoryPlanner();
+                        getAgendaActivities(eventId);
                     }
                 })
                 .addOnFailureListener(new OnFailureListener() {
