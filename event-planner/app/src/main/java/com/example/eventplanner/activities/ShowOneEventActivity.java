@@ -17,12 +17,14 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.eventplanner.R;
+import com.example.eventplanner.adapters.AgendaListAdapter;
 import com.example.eventplanner.adapters.EventRecyclerViewAdapter;
 import com.example.eventplanner.adapters.SubcategoryListAdapter;
 import com.example.eventplanner.databinding.FragmentAddSubcategoryOnBudgetPlannerBinding;
 import com.example.eventplanner.databinding.FragmentCreateAgendaBinding;
 import com.example.eventplanner.databinding.FragmentSearchPspBinding;
 import com.example.eventplanner.fragments.AddSubcategoryOnBudgetPlannerFragment;
+import com.example.eventplanner.model.AgendaActivity;
 import com.example.eventplanner.model.Event;
 import com.example.eventplanner.model.EventType;
 import com.example.eventplanner.model.Subcategory;
@@ -61,6 +63,8 @@ public class ShowOneEventActivity extends AppCompatActivity {
     FirebaseFirestore db = FirebaseFirestore.getInstance();
 
     RecyclerView recyclerView;
+
+    RecyclerView recyclerViewAgenda;
     Long eventId;
 
     private List<EventType> itemList=new ArrayList<>();
@@ -126,6 +130,12 @@ public class ShowOneEventActivity extends AppCompatActivity {
 
         ArrayList<SubcategoryPlanner> subcategories = getSubcategoryPlanner();
 
+        recyclerViewAgenda = binding.agendaActivityView;
+        RecyclerView.LayoutManager layoutManager2 = new LinearLayoutManager(this);
+        recyclerViewAgenda.setLayoutManager(layoutManager2);
+        getAgendaActivities(eventId);
+
+
 
 
         binding.addSubCategory.setOnClickListener(v -> {
@@ -162,9 +172,19 @@ public class ShowOneEventActivity extends AppCompatActivity {
             BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(ShowOneEventActivity.this, R.style.FullScreenBottomSheetDialog);
             View dialogView = getLayoutInflater().inflate(R.layout.fragment_create_agenda, null);
 
+            bindingAgenda = FragmentCreateAgendaBinding.bind(dialogView);
             bindingAgenda.createAgendaActivity.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+                    String name = bindingAgenda.nameAgendaActivity.getText().toString();
+                    String description = bindingAgenda.descriptionAgendaActivity.getText().toString();
+                    String durationFrom = bindingAgenda.durationFrom.getText().toString();
+                    String durationTo = bindingAgenda.durationTo.getText().toString();
+                    String address = bindingAgenda.addressAgendaActivity.getText().toString();
+
+                    getAgendaActivityId(new AgendaActivity(0L, eventId, name,description,durationFrom,durationTo,address));
+
+                    bottomSheetDialog.dismiss();
 
                 }
             });
@@ -174,6 +194,104 @@ public class ShowOneEventActivity extends AppCompatActivity {
         });
 
 
+    }
+
+    private Long getAgendaActivityId(AgendaActivity agendaActivity){
+        Long idActivity = 0L;
+        db.collection("AgendaActivities")
+                .get()
+                .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+                    @Override
+                    public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                        if(!queryDocumentSnapshots.isEmpty()){
+                            List<DocumentSnapshot> documents = queryDocumentSnapshots.getDocuments();
+
+                            String lastDocumentId = new String();
+                            if (!documents.isEmpty()) {
+                                DocumentSnapshot lastDocument = documents.get(documents.size() - 1);
+                                lastDocumentId = lastDocument.getId();
+                            }
+                            long newSubcategoryPlannerId = Long.parseLong(lastDocumentId) + 1;
+                            agendaActivity.setId(newSubcategoryPlannerId);
+                            createAgendaActivity(agendaActivity);
+                        }else{
+                            agendaActivity.setId(1L);
+                            createAgendaActivity(agendaActivity);
+                        }
+
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Log.e(TAG, "Error counting existing events", e);
+                    }
+                });
+
+        return idActivity;
+    }
+
+    private void createAgendaActivity(AgendaActivity agendaActivity) {
+        Map<String, Object> elememt = new HashMap<>();
+        elememt.put("id",agendaActivity.getId());
+        elememt.put("eventId",agendaActivity.getEventId());
+        elememt.put("name", agendaActivity.getName());
+        elememt.put("description", agendaActivity.getDescription());
+        elememt.put("durationFrom", agendaActivity.getDurationFrom());
+        elememt.put("durationTo", agendaActivity.getDurationTo());
+        elememt.put("address", agendaActivity.getAddress());
+
+
+
+        // Add a new document with a generated ID
+        db.collection("AgendaActivities").document(agendaActivity.getId().toString())
+                .set(elememt)
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void avoid) {
+                        Log.d(TAG, "DocumentSnapshot added with ID: " + agendaActivity.getId().toString());
+                        getSubcategoryPlanner();
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Log.w(TAG, "Error adding document", e);
+                    }
+                });
+    }
+
+    private void getAgendaActivities(long eventId) {
+        ArrayList<AgendaActivity> agendaActivities = new ArrayList<>();
+        db.collection("AgendaActivities")
+                .whereEqualTo("eventId", eventId)
+                .get()
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        for(DocumentSnapshot doc: task.getResult()){
+                            AgendaActivity agendaActivity = new AgendaActivity(doc.getLong("id"),
+                                    doc.getLong("eventId"),
+                                    doc.getString("name"),
+                                    doc.getString("description"),
+                                    doc.getString("durationFrom"),
+                                    doc.getString("durationTo"),
+                                    doc.getString("address"));
+
+                            agendaActivities.add(agendaActivity);
+                        }
+
+                        AgendaListAdapter adapterRecycle = new AgendaListAdapter(agendaActivities);
+                        recyclerViewAgenda.setAdapter(adapterRecycle);
+
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+
+                    }
+                });
     }
 
     private boolean validateCreteSubcategoryPlanner(AutoCompleteTextView categoryInput, AutoCompleteTextView subcategoryInput, TextInputEditText priceInput) {

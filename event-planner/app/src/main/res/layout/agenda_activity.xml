@@ -29,14 +29,18 @@
                     android:textSize="15sp"
                     android:textStyle="bold"
                     android:textColor="@color/white"
-                    android:layout_weight="0.9"/>
+                    android:textAlignment="center"
+                    android:padding="2sp"
+                    android:background="@color/purple_dark"
+                    android:layout_weight="0.92"/>
                 <TextView
                     android:id="@+id/nameActivity"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:textColor="@color/white"
                     android:textSize="15sp"
-                    android:layout_weight="0.1"/>
+                    android:layout_marginLeft="3dp"
+                    android:layout_weight="0.08"/>
 
             </LinearLayout>
 

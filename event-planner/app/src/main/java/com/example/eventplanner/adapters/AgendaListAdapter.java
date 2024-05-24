@@ -88,7 +88,7 @@ public class AgendaListAdapter extends RecyclerView.Adapter<AgendaListAdapter.Ag
             durationFrom.setText(agendaActivity.getDurationFrom());
             durationTo.setText(agendaActivity.getDurationTo());
             address.setText(agendaActivity.getAddress());
-            serialNum.setText(String.valueOf(position + 1));
+            serialNum.setText(String.valueOf(position + 1) + ":");
 
         }
     }
