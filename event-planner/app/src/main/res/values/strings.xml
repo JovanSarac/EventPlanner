@@ -102,4 +102,11 @@
     <string name="select_subcategory">Select subcategory:</string>
     <string name="enter_the_price">Enter the expected price for the selected category and subcategory:</string>
     <string name="enter_price">Enter the price:</string>
+    <string name="agenda_events">Event agenda</string>
+    <string name="create_agenda_activity">Create activity</string>
+    <string name="create_agenda_activity_title">Create an activity for your event that will be included in the agenda for your event:</string>
+    <string name="duration_activity">Duration activity:</string>
+    <string name="from">from</string>
+    <string name="to">to</string>
+    <string name="dash">-</string>
 </resources>

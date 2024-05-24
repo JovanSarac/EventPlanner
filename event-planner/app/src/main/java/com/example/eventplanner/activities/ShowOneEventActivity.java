@@ -20,6 +20,7 @@ import com.example.eventplanner.R;
 import com.example.eventplanner.adapters.EventRecyclerViewAdapter;
 import com.example.eventplanner.adapters.SubcategoryListAdapter;
 import com.example.eventplanner.databinding.FragmentAddSubcategoryOnBudgetPlannerBinding;
+import com.example.eventplanner.databinding.FragmentCreateAgendaBinding;
 import com.example.eventplanner.databinding.FragmentSearchPspBinding;
 import com.example.eventplanner.fragments.AddSubcategoryOnBudgetPlannerFragment;
 import com.example.eventplanner.model.Event;
@@ -56,6 +57,7 @@ public class ShowOneEventActivity extends AppCompatActivity {
 
     FragmentAddSubcategoryOnBudgetPlannerBinding bindingAdd;
 
+    FragmentCreateAgendaBinding bindingAgenda;
     FirebaseFirestore db = FirebaseFirestore.getInstance();
 
     RecyclerView recyclerView;
@@ -155,6 +157,22 @@ public class ShowOneEventActivity extends AppCompatActivity {
             bottomSheetDialog.setContentView(dialogView);
             bottomSheetDialog.show();
         });
+
+        binding.addAgendaActivity.setOnClickListener(v -> {
+            BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(ShowOneEventActivity.this, R.style.FullScreenBottomSheetDialog);
+            View dialogView = getLayoutInflater().inflate(R.layout.fragment_create_agenda, null);
+
+            bindingAgenda.createAgendaActivity.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+
+                }
+            });
+
+            bottomSheetDialog.setContentView(dialogView);
+            bottomSheetDialog.show();
+        });
+
 
     }
 
