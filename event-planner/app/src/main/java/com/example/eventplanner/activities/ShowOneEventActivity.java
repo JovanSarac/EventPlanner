@@ -20,6 +20,7 @@ import com.example.eventplanner.R;
 import com.example.eventplanner.adapters.AgendaListAdapter;
 import com.example.eventplanner.adapters.EventRecyclerViewAdapter;
 import com.example.eventplanner.adapters.SubcategoryListAdapter;
+import com.example.eventplanner.databinding.FragmentAddGuestBinding;
 import com.example.eventplanner.databinding.FragmentAddSubcategoryOnBudgetPlannerBinding;
 import com.example.eventplanner.databinding.FragmentCreateAgendaBinding;
 import com.example.eventplanner.databinding.FragmentSearchPspBinding;
@@ -60,6 +61,8 @@ public class ShowOneEventActivity extends AppCompatActivity {
     FragmentAddSubcategoryOnBudgetPlannerBinding bindingAdd;
 
     FragmentCreateAgendaBinding bindingAgenda;
+
+    FragmentAddGuestBinding bindingGuest;
     FirebaseFirestore db = FirebaseFirestore.getInstance();
 
     RecyclerView recyclerView;
@@ -192,6 +195,32 @@ public class ShowOneEventActivity extends AppCompatActivity {
             bottomSheetDialog.setContentView(dialogView);
             bottomSheetDialog.show();
         });
+
+        binding.addGuest.setOnClickListener(v -> {
+            BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(ShowOneEventActivity.this, R.style.FullScreenBottomSheetDialog);
+            View dialogView = getLayoutInflater().inflate(R.layout.fragment_add_guest, null);
+
+            bindingGuest = FragmentAddGuestBinding.bind(dialogView);
+            /*bindingAgenda.createAgendaActivity.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    String name = bindingAgenda.nameAgendaActivity.getText().toString();
+                    String description = bindingAgenda.descriptionAgendaActivity.getText().toString();
+                    String durationFrom = bindingAgenda.durationFrom.getText().toString();
+                    String durationTo = bindingAgenda.durationTo.getText().toString();
+                    String address = bindingAgenda.addressAgendaActivity.getText().toString();
+
+                    getAgendaActivityId(new AgendaActivity(0L, eventId, name,description,durationFrom,durationTo,address));
+
+                    bottomSheetDialog.dismiss();
+
+                }
+            });*/
+
+            bottomSheetDialog.setContentView(dialogView);
+            bottomSheetDialog.show();
+        });
+
 
 
     }

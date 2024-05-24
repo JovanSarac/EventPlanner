@@ -110,4 +110,17 @@
     <string name="to">to</string>
     <string name="dash">-</string>
     <string name="guest_list">Guest list:</string>
+    <string name="add_guest">Add guest</string>
+    <string name="fullname">Full name</string>
+    <string name="age_guest">Age guest:</string>
+    <string name="toddler">0-3</string>
+    <string name="child">3-10</string>
+    <string name="teenager">10-18</string>
+    <string name="young_adult">18-30</string>
+    <string name="adult">30-50</string>
+    <string name="middle_aged_adult">50-70</string>
+    <string name="elderly">70+</string>
+    <string name="isInvited">Is the guest invited?</string>
+    <string name="hasAccepted">Has the guest accepted the invitation?</string>
+    <string name="specialGuest">Special reust for guest</string>
 </resources>

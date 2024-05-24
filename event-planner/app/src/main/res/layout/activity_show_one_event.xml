@@ -385,6 +385,7 @@
 
             </LinearLayout>
         </LinearLayout>
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -435,6 +436,22 @@
                 android:textColor="@color/white"
                 android:textSize="20sp"
                 android:gravity="center"/>
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/addGuest"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="end"
+                app:icon="@drawable/ic_add"
+                android:text="@string/add_guest"
+
+                />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/guestListView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                tools:listitem="@layout/guest_row_table"/>
 
         </LinearLayout>
 
