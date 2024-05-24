@@ -20,6 +20,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.eventplanner.R;
 import com.example.eventplanner.adapters.AgendaListAdapter;
 import com.example.eventplanner.adapters.EventRecyclerViewAdapter;
+import com.example.eventplanner.adapters.GuestEventListAdapter;
 import com.example.eventplanner.adapters.SubcategoryListAdapter;
 import com.example.eventplanner.databinding.FragmentAddGuestBinding;
 import com.example.eventplanner.databinding.FragmentAddSubcategoryOnBudgetPlannerBinding;
@@ -70,6 +71,8 @@ public class ShowOneEventActivity extends AppCompatActivity {
     RecyclerView recyclerView;
 
     RecyclerView recyclerViewAgenda;
+
+    RecyclerView recyclerViewGuest;
     Long eventId;
 
     private List<EventType> itemList=new ArrayList<>();
@@ -140,6 +143,11 @@ public class ShowOneEventActivity extends AppCompatActivity {
         recyclerViewAgenda.setLayoutManager(layoutManager2);
         getAgendaActivities(eventId);
 
+
+        recyclerViewGuest = binding.guestListView;
+        RecyclerView.LayoutManager layoutManager3 = new LinearLayoutManager(this);
+        recyclerViewGuest.setLayoutManager(layoutManager3);
+        getEventGuests(eventId);
 
 
 
@@ -230,6 +238,38 @@ public class ShowOneEventActivity extends AppCompatActivity {
 
     }
 
+    private void getEventGuests(Long eventId) {
+        ArrayList<GuestEvent> guestEvents = new ArrayList<>();
+        db.collection("GuestsEvent")
+                .whereEqualTo("eventId", eventId)
+                .get()
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        for(DocumentSnapshot doc: task.getResult()){
+                            GuestEvent guestEvent = new GuestEvent(doc.getLong("eventId"),
+                                    doc.getString("fullname"),
+                                    doc.getString("age"),
+                                    doc.getString("invited"),
+                                    doc.getString("accepted"),
+                                    doc.getString("specialRequests"));
+
+                            guestEvents.add(guestEvent);
+                        }
+
+                        GuestEventListAdapter adapterRecycle = new GuestEventListAdapter(guestEvents);
+                        recyclerViewGuest.setAdapter(adapterRecycle);
+
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+
+                    }
+                });
+    }
+
     private void createGuest(GuestEvent guestEvent) {
         Map<String, Object> elememt = new HashMap<>();
         elememt.put("eventId",guestEvent.getEventId());
@@ -248,7 +288,7 @@ public class ShowOneEventActivity extends AppCompatActivity {
                     @Override
                     public void onSuccess(Void avoid) {
                         Log.d(TAG, "DocumentSnapshot added with fullname: " + guestEvent.getFullname());
-                        getAgendaActivities(eventId);
+                        getEventGuests(eventId);
                     }
                 })
                 .addOnFailureListener(new OnFailureListener() {

@@ -16,10 +16,18 @@
             android:textSize="12sp"
             android:textColor="@color/white"/>
         <TextView
+            android:id="@+id/fullNameGuest"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.6"
+            android:padding="10dip"
+            android:textSize="12sp"
+            android:textColor="@color/white"/>
+        <TextView
             android:id="@+id/ageGuest"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_weight="0.8"
+            android:layout_weight="0.4"
             android:padding="10dip"
             android:textSize="12sp"
             android:textColor="@color/white"/>
@@ -35,7 +43,7 @@
             android:id="@+id/acceptedInvite"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_weight="0.3"
+            android:layout_weight="0.35"
             android:padding="10dip"
             android:textSize="12sp"
             android:textColor="@color/white"/>
@@ -43,10 +51,11 @@
             android:id="@+id/specialRequest"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_weight="0.6"
+            android:layout_weight="0.05"
             android:padding="10dip"
             android:textSize="12sp"
-            android:textColor="@color/white"/>
+            android:textColor="@color/white"
+            android:visibility="invisible"/>
         <ImageView
             android:id="@+id/editGuest"
             android:layout_width="0dp"
