@@ -9,6 +9,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
+import android.widget.RadioButton;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -28,6 +29,7 @@ import com.example.eventplanner.fragments.AddSubcategoryOnBudgetPlannerFragment;
 import com.example.eventplanner.model.AgendaActivity;
 import com.example.eventplanner.model.Event;
 import com.example.eventplanner.model.EventType;
+import com.example.eventplanner.model.GuestEvent;
 import com.example.eventplanner.model.Subcategory;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -201,21 +203,24 @@ public class ShowOneEventActivity extends AppCompatActivity {
             View dialogView = getLayoutInflater().inflate(R.layout.fragment_add_guest, null);
 
             bindingGuest = FragmentAddGuestBinding.bind(dialogView);
-            /*bindingAgenda.createAgendaActivity.setOnClickListener(new View.OnClickListener() {
+            bindingGuest.createGuestForEvent.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    String name = bindingAgenda.nameAgendaActivity.getText().toString();
-                    String description = bindingAgenda.descriptionAgendaActivity.getText().toString();
-                    String durationFrom = bindingAgenda.durationFrom.getText().toString();
-                    String durationTo = bindingAgenda.durationTo.getText().toString();
-                    String address = bindingAgenda.addressAgendaActivity.getText().toString();
+                    String fullname = bindingGuest.fullNameGuest.getText().toString();
+                    RadioButton ageButton = dialogView.findViewById(bindingGuest.ageGroup.getCheckedRadioButtonId());
+                    String age = ageButton.getText().toString();
+                    RadioButton inviteButton = dialogView.findViewById(bindingGuest.inviteGroup.getCheckedRadioButtonId());
+                    String invite = inviteButton.getText().toString();
+                    RadioButton acceptInv = dialogView.findViewById(bindingGuest.acceptedInviteGroup.getCheckedRadioButtonId());
+                    String acceptInvite = acceptInv.getText().toString();
+                    String specialRequsts = bindingGuest.specialRequestGuest.getText().toString();
 
-                    getAgendaActivityId(new AgendaActivity(0L, eventId, name,description,durationFrom,durationTo,address));
+                    createGuest(new GuestEvent(eventId, fullname,age,invite,acceptInvite,specialRequsts));
 
                     bottomSheetDialog.dismiss();
 
                 }
-            });*/
+            });
 
             bottomSheetDialog.setContentView(dialogView);
             bottomSheetDialog.show();
@@ -223,6 +228,35 @@ public class ShowOneEventActivity extends AppCompatActivity {
 
 
 
+    }
+
+    private void createGuest(GuestEvent guestEvent) {
+        Map<String, Object> elememt = new HashMap<>();
+        elememt.put("eventId",guestEvent.getEventId());
+        elememt.put("fullname",guestEvent.getFullname());
+        elememt.put("age", guestEvent.getAge());
+        elememt.put("invited", guestEvent.getInvite());
+        elememt.put("accepted", guestEvent.getAcceptInvite());
+        elememt.put("specialRequests", guestEvent.getSpecialRequests());
+
+
+
+        // Add a new document with a generated ID
+        db.collection("GuestsEvent").document()
+                .set(elememt)
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void avoid) {
+                        Log.d(TAG, "DocumentSnapshot added with fullname: " + guestEvent.getFullname());
+                        getAgendaActivities(eventId);
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Log.w(TAG, "Error adding document", e);
+                    }
+                });
     }
 
     private Long getAgendaActivityId(AgendaActivity agendaActivity){
