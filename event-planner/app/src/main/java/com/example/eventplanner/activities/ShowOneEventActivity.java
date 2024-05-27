@@ -223,7 +223,7 @@ public class ShowOneEventActivity extends AppCompatActivity {
                     String acceptInvite = acceptInv.getText().toString();
                     String specialRequsts = bindingGuest.specialRequestGuest.getText().toString();
 
-                    createGuest(new GuestEvent(eventId, fullname,age,invite,acceptInvite,specialRequsts));
+                    createGuest(new GuestEvent(0L, eventId, fullname,age,invite,acceptInvite,specialRequsts));
 
                     bottomSheetDialog.dismiss();
 
@@ -238,7 +238,7 @@ public class ShowOneEventActivity extends AppCompatActivity {
 
     }
 
-    private void getEventGuests(Long eventId) {
+    public void getEventGuests(Long eventId) {
         ArrayList<GuestEvent> guestEvents = new ArrayList<>();
         db.collection("GuestsEvent")
                 .whereEqualTo("eventId", eventId)
@@ -247,7 +247,8 @@ public class ShowOneEventActivity extends AppCompatActivity {
                     @Override
                     public void onComplete(@NonNull Task<QuerySnapshot> task) {
                         for(DocumentSnapshot doc: task.getResult()){
-                            GuestEvent guestEvent = new GuestEvent(doc.getLong("eventId"),
+                            GuestEvent guestEvent = new GuestEvent(doc.getLong("id"),
+                                    doc.getLong("eventId"),
                                     doc.getString("fullname"),
                                     doc.getString("age"),
                                     doc.getString("invited"),
@@ -279,24 +280,52 @@ public class ShowOneEventActivity extends AppCompatActivity {
         elememt.put("accepted", guestEvent.getAcceptInvite());
         elememt.put("specialRequests", guestEvent.getSpecialRequests());
 
-
-
-        // Add a new document with a generated ID
-        db.collection("GuestsEvent").document()
-                .set(elememt)
-                .addOnSuccessListener(new OnSuccessListener<Void>() {
+        db.collection("GuestsEvent")
+                .get()
+                .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
                     @Override
-                    public void onSuccess(Void avoid) {
-                        Log.d(TAG, "DocumentSnapshot added with fullname: " + guestEvent.getFullname());
-                        getEventGuests(eventId);
+                    public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                        if(!queryDocumentSnapshots.isEmpty()){
+                            List<DocumentSnapshot> documents = queryDocumentSnapshots.getDocuments();
+
+                            String lastDocumentId = new String();
+                            if (!documents.isEmpty()) {
+                                DocumentSnapshot lastDocument = documents.get(documents.size() - 1);
+                                lastDocumentId = lastDocument.getId();
+                            }
+                            long newGuestId = Long.parseLong(lastDocumentId) + 1;
+                            guestEvent.setId(newGuestId);
+
+                        }else{
+                            guestEvent.setId(1L);
+                        }
+
+                        elememt.put("id",guestEvent.getId());
+                        db.collection("GuestsEvent").document(guestEvent.getId().toString())
+                                .set(elememt)
+                                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                    @Override
+                                    public void onSuccess(Void avoid) {
+                                        Log.d(TAG, "DocumentSnapshot added with fullname: " + guestEvent.getFullname());
+                                        getEventGuests(eventId);
+                                    }
+                                })
+                                .addOnFailureListener(new OnFailureListener() {
+                                    @Override
+                                    public void onFailure(@NonNull Exception e) {
+                                        Log.w(TAG, "Error adding document", e);
+                                    }
+                                });
+
                     }
                 })
                 .addOnFailureListener(new OnFailureListener() {
                     @Override
                     public void onFailure(@NonNull Exception e) {
-                        Log.w(TAG, "Error adding document", e);
+                        Log.e(TAG, "Error counting existing events", e);
                     }
                 });
+
     }
 
     private Long getAgendaActivityId(AgendaActivity agendaActivity){

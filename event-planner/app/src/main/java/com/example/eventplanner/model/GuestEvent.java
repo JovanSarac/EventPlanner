@@ -1,6 +1,7 @@
 package com.example.eventplanner.model;
 
 public class GuestEvent {
+    public Long Id;
     public Long eventId;
     public String Fullname;
     public String Age;
@@ -11,13 +12,22 @@ public class GuestEvent {
 
     public String specialRequests;
 
-    public GuestEvent(Long eventId, String fullname, String age, String invite, String acceptInvite, String specialRequests) {
+    public GuestEvent(Long id, Long eventId, String fullname, String age, String invite, String acceptInvite, String specialRequests) {
+        this.Id = id;
         this.eventId = eventId;
         Fullname = fullname;
         Age = age;
         Invite = invite;
         AcceptInvite = acceptInvite;
         this.specialRequests = specialRequests;
+    }
+
+    public Long getId() {
+        return Id;
+    }
+
+    public void setId(Long id) {
+        Id = id;
     }
 
     public Long getEventId() {
