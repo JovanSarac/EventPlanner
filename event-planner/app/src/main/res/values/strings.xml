@@ -25,7 +25,7 @@
     <string name="type">Type:</string>
     <string name="products">Products</string>
     <string name="services">Services</string>
-    <string name="packages">Package</string>
+    <string name="packages">Packages</string>
     <string name="filters">Filters</string>
     <string name="sort">Sort</string>
     <string name="searchbyname_hint">Search by name</string>
@@ -102,4 +102,5 @@
     <string name="select_subcategory">Select subcategory:</string>
     <string name="enter_the_price">Enter the expected price for the selected category and subcategory:</string>
     <string name="enter_price">Enter the price:</string>
+    <string name="pricelist">Pricelist</string>
 </resources>

@@ -76,7 +76,7 @@ public class HomeActivity extends AppCompatActivity {
         binding= ActivityHomeBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
-        binding.productsManagmentPUPV.setOnClickListener(v ->{
+        /*binding.productsManagmentPUPV.setOnClickListener(v ->{
             Intent intent = new Intent(HomeActivity.this, ProductsManegementActivity.class);
             intent.putExtra("used_fragment", "product_list_pupv");
             startActivity(intent);
@@ -109,6 +109,11 @@ public class HomeActivity extends AppCompatActivity {
         binding.packageManagmentPUPV.setOnClickListener(v -> {
             Intent intent = new Intent(HomeActivity.this, PackagesManagementActivity.class);
             intent.putExtra("used_fragment", "package_list_pupv");
+            startActivity(intent);
+        });*/
+
+        binding.pricelist.setOnClickListener(v ->{
+            Intent intent = new Intent(HomeActivity.this, PricelistActivity.class);
             startActivity(intent);
         });
 

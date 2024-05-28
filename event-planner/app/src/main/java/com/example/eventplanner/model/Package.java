@@ -27,7 +27,7 @@ public class Package {
     public Package() {
     }
 
-    public Package(Long id, Long pupvId, String name, String description, Double discount, Boolean available, Boolean visible, Long categoryId, ArrayList<Long> subCategoryId, ArrayList<Long> productIds, ArrayList<Long> serviceIds, ArrayList<Long> eventTypeIds, Double price, ArrayList<Uri> images, String reservationDue, String cancelationDue, Boolean automaticAffirmation) {
+    public Package(Long id, Long pupvId, String name, String description, Double discount, Boolean available, Boolean visible, Long categoryId, ArrayList<Long> subCategoryId, ArrayList<Long> productIds, ArrayList<Long> serviceIds, ArrayList<Long> eventTypeIds, Double price, ArrayList<Uri> images, String reservationDue, String cancelationDue, Boolean automaticAffirmation, Boolean deleted) {
         this.id = id;
         this.pupvId = pupvId;
         this.name = name;
