@@ -69,7 +69,7 @@ public class PackageListPupzFragment extends Fragment {
                             final int[] productsProcessed = {0};
 
                             for (DocumentSnapshot doc : packageDocs) {
-                                Package packagee = new Package(
+                                Package packagee = new Package(/*
                                         Long.parseLong(doc.getId()),
                                         doc.getString("name"),
                                         doc.getString("description"),
@@ -86,7 +86,7 @@ public class PackageListPupzFragment extends Fragment {
                                         doc.getString("reservationDue"),
                                         doc.getString("cancelationDue"),
                                         doc.getBoolean("automaticAffirmation"),
-                                        doc.getBoolean("deleted"));
+                                        doc.getBoolean("deleted")*/);
 
                                 ArrayList<String> imageUrls = (ArrayList<String>) doc.get("imageUrls");
                                 final int numImages = imageUrls.size();

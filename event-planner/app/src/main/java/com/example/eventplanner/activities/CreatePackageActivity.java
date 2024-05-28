@@ -191,7 +191,7 @@ public class CreatePackageActivity extends AppCompatActivity implements ProductL
                             imageAdapter = new ImageAdapter(CreatePackageActivity.this, R.layout.image_carousel_card_package, packageImages);
                             recyclerView.setAdapter(imageAdapter);
 
-                            for(Long eventId : item.getEventIds()){
+                            for(Long eventId : item.getEventTypeIds()){
                                 getEventById(eventId);
                             }
 
@@ -248,7 +248,7 @@ public class CreatePackageActivity extends AppCompatActivity implements ProductL
                             imageAdapter = new ImageAdapter(CreatePackageActivity.this, R.layout.image_carousel_card_package, packageImages);
                             recyclerView.setAdapter(imageAdapter);
 
-                            for(Long eventId : item.getEventIds()){
+                            for(Long eventId : item.getEventTypeIds()){
                                 getEventById(eventId);
                             }
 
@@ -388,9 +388,9 @@ public class CreatePackageActivity extends AppCompatActivity implements ProductL
         imageAdapter = new ImageAdapter(CreatePackageActivity.this, R.layout.image_carousel_card_package, packageImages);
         recyclerView.setAdapter(imageAdapter);
 
-        for(Long eventId: removedItem.getEventIds()){
-            if(!(products.stream().filter(p -> p.getEventIds().contains(eventId)).count() != 0
-                || services.stream().filter(s -> s.getEventIds().contains(eventId)).count() != 0)){
+        for(Long eventId: removedItem.getEventTypeIds()){
+            if(!(products.stream().filter(p -> p.getEventTypeIds().contains(eventId)).count() != 0
+                || services.stream().filter(s -> s.getEventTypeIds().contains(eventId)).count() != 0)){
                 packageEvents.removeIf(p -> p.getId().equals(eventId));
                 eventIds.remove(eventId);
                 eventListAdapter = new EventListAdapter(CreatePackageActivity.this, R.layout.event_card_package, packageEvents);
@@ -418,9 +418,9 @@ public class CreatePackageActivity extends AppCompatActivity implements ProductL
         imageAdapter = new ImageAdapter(CreatePackageActivity.this, R.layout.image_carousel_card_package, packageImages);
         recyclerView.setAdapter(imageAdapter);
 
-        for(Long eventId: removedItem.getEventIds()){
-            if(!(products.stream().filter(p -> p.getEventIds().contains(eventId)).count() != 0
-                    || services.stream().filter(s -> s.getEventIds().contains(eventId)).count() != 0)){
+        for(Long eventId: removedItem.getEventTypeIds()){
+            if(!(products.stream().filter(p -> p.getEventTypeIds().contains(eventId)).count() != 0
+                    || services.stream().filter(s -> s.getEventTypeIds().contains(eventId)).count() != 0)){
                 packageEvents.removeIf(p -> p.getId().equals(eventId));
                 eventIds.remove(eventId);
                 eventListAdapter = new EventListAdapter(CreatePackageActivity.this, R.layout.event_card_package, packageEvents);
