@@ -8,6 +8,9 @@ import android.graphics.Paint;
 import android.graphics.pdf.PdfDocument;
 import android.os.Bundle;
 import android.os.Environment;
+import android.text.Layout;
+import android.text.StaticLayout;
+import android.text.TextPaint;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
@@ -227,7 +230,7 @@ public class ShowOneEventActivity extends AppCompatActivity {
         binding.generateAgendaPdf.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                    //generateAgendaPdfReport(agendaActivities);
+                generateAgendaPdfReport(agendaActivities);
 
             }
         });
@@ -241,6 +244,115 @@ public class ShowOneEventActivity extends AppCompatActivity {
 
 
 
+    }
+
+    private void generateAgendaPdfReport(ArrayList<AgendaActivity> agendaActivities) {
+        if (agendaActivities.isEmpty()) {
+            Toast.makeText(this, "Agenda event is empty!", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        PdfDocument pdfDocument = new PdfDocument();
+
+        PdfDocument.PageInfo pageInfo = new PdfDocument.PageInfo.Builder(595, 842, 1).create();
+
+        PdfDocument.Page page = pdfDocument.startPage(pageInfo);
+
+        Canvas canvas = page.getCanvas();
+
+        Paint backgroundPaint = new Paint();
+        backgroundPaint.setColor(Color.rgb(144, 95, 234));
+        canvas.drawRect(0, 0, pageInfo.getPageWidth(), pageInfo.getPageHeight(), backgroundPaint);
+
+        Paint titlePaint = new Paint();
+        titlePaint.setColor(Color.rgb(43, 23, 99));
+        titlePaint.setTextSize(24);
+        titlePaint.setTextAlign(Paint.Align.CENTER);
+        canvas.drawText("Event Agenda", pageInfo.getPageWidth() / 2, 40, titlePaint);
+
+        Paint eventPaint = new Paint();
+        eventPaint.setColor(Color.rgb(43, 23, 99));
+        eventPaint.setTextSize(18);
+        eventPaint.setTextAlign(Paint.Align.CENTER);
+        canvas.drawText("Name event: " + eventName, pageInfo.getPageWidth() / 2, 70, eventPaint);
+
+        int startX = 10;
+        int startY = 100;
+        int lineHeight = 20;
+        int boxPadding = 10;
+        int boxMargin = 20;
+
+        Paint tablePaint = new Paint();
+        tablePaint.setColor(Color.rgb(249, 173, 76)); // Yellow color
+        tablePaint.setTextSize(12);
+        tablePaint.setTextAlign(Paint.Align.LEFT);
+
+        Paint linePaint = new Paint();
+        linePaint.setColor(Color.rgb(249, 173, 76)); // Yellow color
+        linePaint.setStrokeWidth(1);
+
+        int activityNumber = 1;
+        canvas.drawLine(startX, startY - 20, pageInfo.getPageWidth() - startX, startY-20, linePaint);
+        for (AgendaActivity activity : agendaActivities) {
+            int rectTop = startY;
+
+            // Prepare description text layout for dynamic height calculation
+            TextPaint descriptionPaint = new TextPaint();
+            descriptionPaint.setColor(Color.rgb(249, 173, 76)); // Yellow color
+            descriptionPaint.setTextSize(12);
+
+            String descriptionText = "Description: " + activity.getDescription();
+            int maxWidth = pageInfo.getPageWidth() - 2 * startX - 2 * boxPadding;
+            StaticLayout descriptionLayout = StaticLayout.Builder.obtain(descriptionText, 0, descriptionText.length(), descriptionPaint, maxWidth)
+                    .setAlignment(Layout.Alignment.ALIGN_NORMAL)
+                    .setLineSpacing(1.0f, 1.0f)
+                    .setIncludePad(false)
+                    .build();
+
+            int descriptionHeight = descriptionLayout.getHeight();
+
+            // Calculate total height dynamically
+            int totalHeight = 4 * lineHeight + descriptionHeight + boxPadding * 2;
+            int rectBottom = startY + totalHeight;
+
+            canvas.drawText(String.valueOf(activityNumber) + ".", startX, startY, tablePaint);
+            startY += lineHeight;
+
+            canvas.drawText("Name: " + activity.getName(), startX, startY, tablePaint);
+            startY += lineHeight;
+            canvas.drawText("Address: " + activity.getAddress(), startX, startY, tablePaint);
+            startY += lineHeight;
+
+            canvas.drawText("Time: " + activity.getDurationFrom() + " - " + activity.getDurationTo(), startX, startY, tablePaint);
+            startY += lineHeight;
+
+            // Draw description text with StaticLayout
+            canvas.save();
+            canvas.translate(startX, startY); // Position the description
+            descriptionLayout.draw(canvas);
+            canvas.restore();
+            startY += descriptionHeight;
+
+            // Draw line below the activity
+            startY += boxPadding;
+            canvas.drawLine(startX, startY, pageInfo.getPageWidth() - startX, startY, linePaint);
+            startY += boxMargin;
+
+            activityNumber++;
+        }
+
+        pdfDocument.finishPage(page);
+
+        String directoryPath = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).toString();
+        File file = new File(directoryPath, eventName + "_" + eventId + "_agenda.pdf");
+
+        try {
+            pdfDocument.writeTo(new FileOutputStream(file));
+            Toast.makeText(this, "PDF generated successfully!", Toast.LENGTH_SHORT).show();
+        } catch (IOException e) {
+            e.printStackTrace();
+            Toast.makeText(this, "Error generating PDF: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+        }
+        pdfDocument.close();
     }
 
     private void generateGuestEventPdfReport(ArrayList<GuestEvent> guestsEvent) {
