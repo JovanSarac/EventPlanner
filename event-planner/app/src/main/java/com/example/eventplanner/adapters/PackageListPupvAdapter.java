@@ -100,7 +100,7 @@ public class PackageListPupvAdapter extends ArrayAdapter<Package> {
                 intent.putExtra("Discount", pckage.getDiscount());
                 intent.putExtra("Products", pckage.getProductIds());
                 intent.putExtra("Services", pckage.getServiceIds());
-                intent.putExtra("Events", pckage.getEventIds());
+                intent.putExtra("Events", pckage.getEventTypeIds());
                 intent.putExtra("ImageTypes", pckage.getImages());
                 intent.putExtra("ReservationDue", pckage.getReservationDue());
                 intent.putExtra("CancelationDue", pckage.getCancelationDue());

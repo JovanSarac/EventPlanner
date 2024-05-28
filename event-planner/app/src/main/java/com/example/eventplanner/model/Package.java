@@ -6,6 +6,7 @@ import java.util.ArrayList;
 
 public class Package {
     private Long id;
+    private Long pupvId;
     private String name;
     private String description;
     private Double discount;
@@ -15,7 +16,7 @@ public class Package {
     private ArrayList<Long> subCategoryId;
     private ArrayList<Long> productIds;
     private ArrayList<Long> serviceIds;
-    private ArrayList<Long> eventIds;
+    private ArrayList<Long> eventTypeIds;
     private Double price;
     private ArrayList<Uri> images;
     private String reservationDue;
@@ -25,8 +26,9 @@ public class Package {
     public Package() {
     }
 
-    public Package(Long id, String name, String description, Double discount, Boolean available, Boolean visible, Long categoryId, ArrayList<Long> subCategoryId, ArrayList<Long> productIds, ArrayList<Long> serviceIds, ArrayList<Long> eventIds, Double price, ArrayList<Uri> images, String reservationDue, String cancelationDue, Boolean automaticAffirmation) {
+    public Package(Long id, Long pupvId, String name, String description, Double discount, Boolean available, Boolean visible, Long categoryId, ArrayList<Long> subCategoryId, ArrayList<Long> productIds, ArrayList<Long> serviceIds, ArrayList<Long> eventTypeIds, Double price, ArrayList<Uri> images, String reservationDue, String cancelationDue, Boolean automaticAffirmation) {
         this.id = id;
+        this.pupvId = pupvId;
         this.name = name;
         this.description = description;
         this.discount = discount;
@@ -36,7 +38,7 @@ public class Package {
         this.subCategoryId = subCategoryId;
         this.productIds = productIds;
         this.serviceIds = serviceIds;
-        this.eventIds = eventIds;
+        this.eventTypeIds = eventTypeIds;
         this.price = price;
         this.images = images;
         this.reservationDue = reservationDue;
@@ -50,6 +52,14 @@ public class Package {
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public Long getPupvId() {
+        return pupvId;
+    }
+
+    public void setPupvId(Long pupvId) {
+        this.pupvId = pupvId;
     }
 
     public String getName() {
@@ -124,12 +134,12 @@ public class Package {
         this.serviceIds = serviceIds;
     }
 
-    public ArrayList<Long> getEventIds() {
-        return eventIds;
+    public ArrayList<Long> getEventTypeIds() {
+        return eventTypeIds;
     }
 
-    public void setEventIds(ArrayList<Long> eventIds) {
-        this.eventIds = eventIds;
+    public void setEventTypeIds(ArrayList<Long> eventTypeIds) {
+        this.eventTypeIds = eventTypeIds;
     }
 
     public Double getPrice() {

@@ -331,7 +331,7 @@ public class EditProductActivity extends AppCompatActivity {
                 .addOnSuccessListener(documentSnapshot ->  {
                         System.out.println("nesto");
                         if(documentSnapshot.exists()){
-                            product = new Product(id,
+                            product = new Product(/*id,
                                     documentSnapshot.getLong("categoryId"),
                                     documentSnapshot.getLong("subcategoryId"),
                                     documentSnapshot.getString("name"),
@@ -343,11 +343,11 @@ public class EditProductActivity extends AppCompatActivity {
                                     documentSnapshot.getBoolean("available"),
                                     documentSnapshot.getBoolean("visible"),
                                     documentSnapshot.getBoolean("pending"),
-                                    documentSnapshot.getBoolean("deleted"));
+                                    documentSnapshot.getBoolean("deleted")*/);
 
                             imagesFromDb = (ArrayList<String>) documentSnapshot.get("imageUrls");
                             final int numImages = imagesFromDb.size();
-                            final int numEvents = product.getEventIds().size();
+                            final int numEvents = product.getEventTypeIds().size();
 
                             for (String imageUrl : imagesFromDb) {
                                 StorageReference imageRef = storage.getReference().child(imageUrl);
@@ -374,7 +374,7 @@ public class EditProductActivity extends AppCompatActivity {
     }
 
     private void getEvents(int numImages, int numEvents){
-        ArrayList<Long> eventIds = product.getEventIds();
+        ArrayList<Long> eventIds = product.getEventTypeIds();
         for(Long id: eventIds){
             db.collection("Events")
                     .document(id.toString())

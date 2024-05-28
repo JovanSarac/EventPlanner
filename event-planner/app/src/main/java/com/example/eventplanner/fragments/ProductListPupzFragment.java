@@ -72,7 +72,7 @@ public class ProductListPupzFragment extends Fragment {
                             final int[] productsProcessed = {0};
 
                             for (DocumentSnapshot doc : productDocs) {
-                                Product product = new Product(
+                                Product product = new Product(/*
                                         Long.parseLong(doc.getId()),
                                         doc.getLong("categoryId"),
                                         doc.getLong("subcategoryId"),
@@ -85,7 +85,7 @@ public class ProductListPupzFragment extends Fragment {
                                         doc.getBoolean("available"),
                                         doc.getBoolean("visible"),
                                         doc.getBoolean("pending"),
-                                        doc.getBoolean("deleted"));
+                                        doc.getBoolean("deleted")*/);
 
                                 ArrayList<String> imageUrls = (ArrayList<String>) doc.get("imageUrls");
                                 final int numImages = imageUrls.size();

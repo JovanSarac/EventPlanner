@@ -181,7 +181,7 @@ public class EditServiceActivity extends AppCompatActivity {
         EventListAdapter eventListAdapter = new EventListAdapter(this, R.layout.event_card ,events);
         binding.eventList.setAdapter(eventListAdapter);
 
-        ProviderListAdapter providerListAdapter = new ProviderListAdapter(this, service.getProviders());
+        ProviderListAdapter providerListAdapter = new ProviderListAdapter(this, new ArrayList<String>());
         binding.providers.setAdapter(providerListAdapter);
 
         CheckBox available = findViewById(R.id.availability);
@@ -373,7 +373,7 @@ public class EditServiceActivity extends AppCompatActivity {
                 .get()
                 .addOnSuccessListener(documentSnapshot ->  {
                     if(documentSnapshot.exists()){
-                        service = new Service(id,
+                        service = new Service(/*id,
                                 documentSnapshot.getLong("categoryId"),
                                 documentSnapshot.getLong("subcategoryId"),
                                 documentSnapshot.getString("name"),
@@ -395,11 +395,11 @@ public class EditServiceActivity extends AppCompatActivity {
                                 documentSnapshot.getBoolean("available"),
                                 documentSnapshot.getBoolean("visible"),
                                 documentSnapshot.getBoolean("pending"),
-                                documentSnapshot.getBoolean("deleted"));
+                                documentSnapshot.getBoolean("deleted")*/);
 
                         imagesFromDb = (ArrayList<String>) documentSnapshot.get("imageUrls");
                         final int numImages = imagesFromDb.size();
-                        final int numEvents = service.getEventIds().size();
+                        final int numEvents = service.getEventTypeIds().size();
 
                         for (String imageUrl : imagesFromDb) {
                             StorageReference imageRef = storage.getReference().child(imageUrl);
@@ -426,7 +426,7 @@ public class EditServiceActivity extends AppCompatActivity {
     }
 
     private void getEvents(int numImages, int numEvents){
-        ArrayList<Long> eventIds = service.getEventIds();
+        ArrayList<Long> eventIds = service.getEventTypeIds();
         for(Long id: eventIds){
             db.collection("Events")
                     .document(id.toString())
