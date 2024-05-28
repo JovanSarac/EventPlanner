@@ -58,7 +58,6 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="2dp"
-                        android:text="product 1, product 2"
                         />
                 </LinearLayout>
 
@@ -79,7 +78,6 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="2dp"
-                        android:text="service 1, service 2"
                         />
                 </LinearLayout>
 

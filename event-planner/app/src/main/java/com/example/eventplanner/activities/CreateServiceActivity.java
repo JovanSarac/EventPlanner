@@ -100,7 +100,7 @@ public class CreateServiceActivity extends AppCompatActivity {
         addSubcategory = findViewById(R.id.add_subcategory);
         addSubcategory.setEnabled(false);
 
-        String[] providers = {"Provider 1", "Provider 2", "Provider 3", "Provider 4", "Provider 5"};
+        String[] providers = {"marko marko", "nananan nanananan", "Marko marko", "asdasd asdasd", "z z"};
 
         TextInputLayout textInputLayout = findViewById(R.id.categories);
         AutoCompleteTextView autoCompleteTextView = (AutoCompleteTextView) textInputLayout.getEditText();
@@ -331,7 +331,7 @@ public class CreateServiceActivity extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
         if(resultCode == RESULT_OK && data != null && data.getData() != null){
             images.add(data.getData());
-            imageAdapter = new ImageAdapter(CreateServiceActivity.this, images);
+            imageAdapter = new ImageAdapter(CreateServiceActivity.this, R.layout.image_carousel_card, images);
             recyclerView.setAdapter(imageAdapter);
         }
     }

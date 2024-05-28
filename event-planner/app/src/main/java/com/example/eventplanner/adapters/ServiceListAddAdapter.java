@@ -12,6 +12,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import com.bumptech.glide.Glide;
 import com.example.eventplanner.R;
 
 import java.util.ArrayList;
@@ -46,8 +47,9 @@ public class ServiceListAddAdapter extends ArrayAdapter<Service> {
         Button addButton = convertView.findViewById(R.id.add_service);
 
         if(service != null){
-            productImage.setImageURI(service.getImages().get(0));
-            productName.setText(service.getName());
+            Glide.with(getContext())
+                    .load(service.getImages().get(0))
+                    .into(productImage);            productName.setText(service.getName());
             productDescription.setText(service.getDescription());
             productFullPrice.setText(service.getFullPrice().toString() + "$");
             productPricePerHour.setText(service.getPricePerHour().toString() + "$/h");

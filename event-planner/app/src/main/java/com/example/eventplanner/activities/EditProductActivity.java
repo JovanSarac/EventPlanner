@@ -147,7 +147,7 @@ public class EditProductActivity extends AppCompatActivity {
         discountAutoComplete.setText(product.getDiscount().toString());
 
         recyclerView = findViewById(R.id.recycler);
-        imageAdapter = new ImageAdapter(EditProductActivity.this, product.getImages());
+        imageAdapter = new ImageAdapter(EditProductActivity.this, R.layout.image_carousel_card, product.getImages());
         recyclerView.setAdapter(imageAdapter);
 
         EventListAdapter eventListAdapter = new EventListAdapter(this, R.layout.event_card ,events);
@@ -329,7 +329,6 @@ public class EditProductActivity extends AppCompatActivity {
                 .document(id.toString())
                 .get()
                 .addOnSuccessListener(documentSnapshot ->  {
-                        System.out.println("nesto");
                         if(documentSnapshot.exists()){
                             product = new Product(/*id,
                                     documentSnapshot.getLong("categoryId"),
@@ -447,7 +446,7 @@ public class EditProductActivity extends AppCompatActivity {
         if(resultCode == RESULT_OK && data != null){
             product.getImages().add(data.getData());
             Uri selectedImage = data.getData();
-            imageAdapter = new ImageAdapter(EditProductActivity.this, product.getImages());
+            imageAdapter = new ImageAdapter(EditProductActivity.this, R.layout.image_carousel_card, product.getImages());
             recyclerView.setAdapter(imageAdapter);
         }
     }

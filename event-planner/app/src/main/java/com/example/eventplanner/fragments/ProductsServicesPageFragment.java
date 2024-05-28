@@ -328,11 +328,11 @@ public class ProductsServicesPageFragment extends Fragment {
 
         }
 
-        ProductListAdapter productListAdapter = new ProductListAdapter(requireContext(), products);
+        ProductListAdapter productListAdapter = new ProductListAdapter(requireContext(), R.layout.product_card, products);
         binding.productList.setAdapter(productListAdapter);
         binding.productList.setClickable(true);
 
-        ServiceListAdapter serviceListAdapter = new ServiceListAdapter(requireContext(), services);
+        ServiceListAdapter serviceListAdapter = new ServiceListAdapter(requireContext(), R.layout.service_card, services);
         binding.serviceList.setAdapter(serviceListAdapter);
         binding.serviceList.setClickable(true);
 
@@ -415,7 +415,7 @@ public class ProductsServicesPageFragment extends Fragment {
                                                         productsProcessed[0]++;
 
                                                         if (productsProcessed[0] == numProducts) {
-                                                            ProductListAdapter productListAdapter = new ProductListAdapter(requireContext(), products);
+                                                            ProductListAdapter productListAdapter = new ProductListAdapter(requireContext(), R.layout.product_card, products);
                                                             binding.productList.setAdapter(productListAdapter);
                                                             binding.productList.setClickable(true);
                                                         }
@@ -501,7 +501,7 @@ public class ProductsServicesPageFragment extends Fragment {
                                                         servicesProccessed[0]++;
 
                                                         if (servicesProccessed[0] == numServices) {
-                                                            ServiceListAdapter productListAdapter = new ServiceListAdapter(requireContext(), services);
+                                                            ServiceListAdapter productListAdapter = new ServiceListAdapter(requireContext(), R.layout.service_card, services);
                                                             binding.serviceList.setAdapter(productListAdapter);
                                                             binding.serviceList.setClickable(true);
                                                         }

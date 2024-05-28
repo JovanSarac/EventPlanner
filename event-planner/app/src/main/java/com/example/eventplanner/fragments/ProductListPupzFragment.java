@@ -102,7 +102,7 @@ public class ProductListPupzFragment extends Fragment {
                                                         productsProcessed[0]++;
 
                                                         if (productsProcessed[0] == numProducts) {
-                                                            ProductListAdapter productListAdapter = new ProductListAdapter(requireContext(), products);
+                                                            ProductListAdapter productListAdapter = new ProductListAdapter(requireContext(), R.layout.product_card, products);
                                                             binding.productsListPupz.setAdapter(productListAdapter);
                                                             binding.productsListPupz.setClickable(true);
                                                         }

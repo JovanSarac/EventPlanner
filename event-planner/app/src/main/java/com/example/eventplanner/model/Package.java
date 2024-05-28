@@ -22,6 +22,7 @@ public class Package {
     private String reservationDue;
     private String cancelationDue;
     private Boolean automaticAffirmation;
+    private Boolean deleted;
 
     public Package() {
     }
@@ -44,6 +45,7 @@ public class Package {
         this.reservationDue = reservationDue;
         this.cancelationDue = cancelationDue;
         this.automaticAffirmation = automaticAffirmation;
+        this.deleted = deleted;
     }
 
     public Long getId() {
@@ -180,5 +182,13 @@ public class Package {
 
     public void setAutomaticAffirmation(Boolean automaticAffirmation) {
         this.automaticAffirmation = automaticAffirmation;
+    }
+
+    public Boolean getDeleted() {
+        return deleted;
+    }
+
+    public void setDeleted(Boolean deleted) {
+        this.deleted = deleted;
     }
 }
