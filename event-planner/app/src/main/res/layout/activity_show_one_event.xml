@@ -401,15 +401,30 @@
                 android:textColor="@color/white"
                 android:textSize="20sp"
                 android:gravity="center"/>
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/addAgendaActivity"
-                android:layout_width="wrap_content"
+            <LinearLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_gravity="end"
-                app:icon="@drawable/ic_add"
-                android:text="@string/create_agenda_activity"
+                android:orientation="horizontal">
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/generateAgendaPdf"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="0.5"
+                    app:icon="@drawable/ic_pdf"
+                    android:text="@string/generate_pdf"
 
-                />
+                    />
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/addAgendaActivity"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="0.5"
+                    app:icon="@drawable/ic_add"
+                    android:text="@string/create_agenda_activity"
+
+                    />
+
+            </LinearLayout>
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/agendaActivityView"
@@ -438,15 +453,30 @@
                 android:textSize="20sp"
                 android:gravity="center"/>
 
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/addGuest"
-                android:layout_width="wrap_content"
+            <LinearLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_gravity="end"
-                app:icon="@drawable/ic_add"
-                android:text="@string/add_guest"
+                android:orientation="horizontal">
 
-                />
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/generateGuestsPdf"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="0.5"
+                    app:icon="@drawable/ic_pdf"
+                    android:text="@string/generate_pdf"
+                    />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/addGuest"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="0.5"
+                    app:icon="@drawable/ic_add"
+                    android:text="@string/add_guest"
+                    />
+
+            </LinearLayout>
 
             <TableLayout
                 android:layout_width="match_parent"

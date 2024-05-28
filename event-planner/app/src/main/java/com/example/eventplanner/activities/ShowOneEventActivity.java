@@ -1,9 +1,13 @@
 package com.example.eventplanner.activities;
 
-import static android.app.PendingIntent.getActivity;
 import static android.content.ContentValues.TAG;
 
+import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Paint;
+import android.graphics.pdf.PdfDocument;
 import android.os.Bundle;
+import android.os.Environment;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
@@ -19,43 +23,34 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.eventplanner.R;
 import com.example.eventplanner.adapters.AgendaListAdapter;
-import com.example.eventplanner.adapters.EventRecyclerViewAdapter;
 import com.example.eventplanner.adapters.GuestEventListAdapter;
-import com.example.eventplanner.adapters.SubcategoryListAdapter;
+import com.example.eventplanner.adapters.SubAndCategoryTableRowAdapter;
 import com.example.eventplanner.databinding.FragmentAddGuestBinding;
 import com.example.eventplanner.databinding.FragmentAddSubcategoryOnBudgetPlannerBinding;
 import com.example.eventplanner.databinding.FragmentCreateAgendaBinding;
-import com.example.eventplanner.databinding.FragmentSearchPspBinding;
-import com.example.eventplanner.fragments.AddSubcategoryOnBudgetPlannerFragment;
 import com.example.eventplanner.model.AgendaActivity;
-import com.example.eventplanner.model.Event;
 import com.example.eventplanner.model.EventType;
 import com.example.eventplanner.model.GuestEvent;
 import com.example.eventplanner.model.Subcategory;
+import com.example.eventplanner.model.SubcategoryPlanner;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.tabs.TabLayout;
+import com.google.android.material.textfield.TextInputEditText;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QuerySnapshot;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Random;
-import java.util.stream.Collectors;
-
-import com.example.eventplanner.adapters.SubAndCategoryTableRowAdapter;
-
-import com.example.eventplanner.model.SubcategoryPlanner;
-import com.google.android.material.textfield.TextInputEditText;
-import com.google.firebase.firestore.DocumentReference;
-import com.google.firebase.firestore.DocumentSnapshot;
-import com.google.firebase.firestore.FieldPath;
-import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.Query;
-import com.google.firebase.firestore.QuerySnapshot;
 
 public class ShowOneEventActivity extends AppCompatActivity {
 
@@ -74,20 +69,20 @@ public class ShowOneEventActivity extends AppCompatActivity {
 
     RecyclerView recyclerViewGuest;
     Long eventId;
-
+    ArrayList<AgendaActivity> agendaActivities = new ArrayList<>();
+    ArrayList<GuestEvent> guestEvents = new ArrayList<>();
     private List<EventType> itemList=new ArrayList<>();
-
+    String eventName;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
 
         binding = com.example.eventplanner.databinding.ActivityShowOneEventBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
         String idEvent = getIntent().getStringExtra("eventId");
         eventId = Long.parseLong(idEvent);
-        String eventName = getIntent().getStringExtra("eventName");
+        eventName = getIntent().getStringExtra("eventName");
         String eventDescription = getIntent().getStringExtra("eventDescription");
         String eventLocation = getIntent().getStringExtra("eventLocation");
         String eventDistanceLocation = getIntent().getStringExtra("eventDistanceLocation");
@@ -100,10 +95,6 @@ public class ShowOneEventActivity extends AppCompatActivity {
         binding.locationDistanceEvent.setText(eventDistanceLocation);
         binding.typeEvent.setText(eventType);
         binding.dateEvent.setText(eventDate);
-
-
-
-
 
         binding.tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
@@ -233,13 +224,111 @@ public class ShowOneEventActivity extends AppCompatActivity {
             bottomSheetDialog.setContentView(dialogView);
             bottomSheetDialog.show();
         });
+        binding.generateAgendaPdf.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                    //generateAgendaPdfReport(agendaActivities);
+
+            }
+        });
+
+        binding.generateGuestsPdf.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                generateGuestEventPdfReport(guestEvents);
+            }
+        });
 
 
 
     }
 
+    private void generateGuestEventPdfReport(ArrayList<GuestEvent> guestsEvent) {
+        if(guestsEvent.isEmpty()){
+            Toast.makeText(this,"List of guest is empty!", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        PdfDocument pdfDocument = new PdfDocument();
+
+        PdfDocument.PageInfo pageInfo = new PdfDocument.PageInfo.Builder(595, 842, 1).create();
+
+        PdfDocument.Page page = pdfDocument.startPage(pageInfo);
+
+        Canvas canvas = page.getCanvas();
+
+        Paint backgroundPaint = new Paint();
+        backgroundPaint.setColor(Color.rgb(144,95,234));
+        canvas.drawRect(0, 0, pageInfo.getPageWidth(), pageInfo.getPageHeight(), backgroundPaint);
+
+        Paint titlePaint = new Paint();
+        titlePaint.setColor(Color.rgb(43,23,99));
+        titlePaint.setTextSize(24);
+        titlePaint.setTextAlign(Paint.Align.CENTER);
+        canvas.drawText("Event guests", pageInfo.getPageWidth() / 2, 40, titlePaint);
+
+        Paint eventPaint = new Paint();
+        eventPaint.setColor(Color.rgb(43,23,99));
+        eventPaint.setTextSize(18);
+        eventPaint.setTextAlign(Paint.Align.CENTER);
+        canvas.drawText("Name event: " + eventName, pageInfo.getPageWidth() / 2, 70, eventPaint);
+
+        int startX = 10;
+        int startY = 100;
+        int lineHeight = 20;
+        int columnWidth = 80;
+
+        Paint tablePaint = new Paint();
+        tablePaint.setColor(Color.rgb(249,173,76));
+        tablePaint.setTextSize(12);
+        tablePaint.setTextAlign(Paint.Align.LEFT);
+
+        canvas.drawText("No", startX, startY, tablePaint);
+        canvas.drawText("Fullname", startX + columnWidth - 30, startY, tablePaint);
+        canvas.drawText("Age", startX + 2 * columnWidth + 30, startY, tablePaint);
+        canvas.drawText("Invited", startX + 3 * columnWidth + 30, startY, tablePaint);
+        canvas.drawText("Accept invite", startX + 4 * columnWidth + 30, startY, tablePaint);
+        canvas.drawText("Special request", startX + 5 * columnWidth + 50, startY, tablePaint);
+
+        startY += lineHeight;
+
+        int activityNumber = 1;
+        for (GuestEvent guest : guestsEvent) {
+            canvas.drawText(String.valueOf(activityNumber), startX, startY, tablePaint);
+            canvas.drawText(guest.getFullname(), startX + columnWidth - 30, startY, tablePaint);
+            canvas.drawText(guest.getAge(), startX + 2 * columnWidth + 30, startY, tablePaint);
+            canvas.drawText(guest.getInvite(), startX + 3 * columnWidth + 30, startY, tablePaint);
+            canvas.drawText(guest.getAcceptInvite(), startX + 4 * columnWidth + 30, startY, tablePaint);
+            canvas.drawText(guest.getSpecialRequests(), startX + 5 * columnWidth + 50, startY, tablePaint);
+
+
+            startY += lineHeight - 10;
+            canvas.drawLine(startX, startY, pageInfo.getPageWidth() - startX, startY, tablePaint);
+            startY += 15;
+
+            activityNumber++;
+        }
+
+        tablePaint.setTextSize(18);
+        canvas.drawText("Total guests: " + --activityNumber,  startX + 5 * columnWidth + 40, startY + 2 * lineHeight, tablePaint);
+
+        pdfDocument.finishPage(page);
+
+        String directoryPath = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).toString();
+        File file = new File(directoryPath, eventName + "_" + eventId + "_guests.pdf");
+
+        try {
+            pdfDocument.writeTo(new FileOutputStream(file));
+            Toast.makeText(this, "PDF generated successfully!", Toast.LENGTH_SHORT).show();
+        } catch (IOException e) {
+            e.printStackTrace();
+            Toast.makeText(this, "Error generating PDF: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+        }
+
+        pdfDocument.close();
+    }
+
     public void getEventGuests(Long eventId) {
-        ArrayList<GuestEvent> guestEvents = new ArrayList<>();
+        guestEvents.clear();
         db.collection("GuestsEvent")
                 .whereEqualTo("eventId", eventId)
                 .get()
@@ -394,7 +483,7 @@ public class ShowOneEventActivity extends AppCompatActivity {
     }
 
     private void getAgendaActivities(long eventId) {
-        ArrayList<AgendaActivity> agendaActivities = new ArrayList<>();
+        agendaActivities.clear();
         db.collection("AgendaActivities")
                 .whereEqualTo("eventId", eventId)
                 .get()

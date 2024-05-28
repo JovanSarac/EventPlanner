@@ -125,4 +125,5 @@
     <string name="specialGuest">Special reust for guest</string>
     <string name="invited">Invited</string>
     <string name="accpted">Accepted</string>
+    <string name="generate_pdf">Generate PDF</string>
 </resources>
