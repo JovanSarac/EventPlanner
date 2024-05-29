@@ -9,7 +9,7 @@ import java.util.ArrayList;
 public class Service implements Parcelable {
 
     private Long id;
-    private Long pupvId;
+    private String pupvId;
     private Long categoryId;
     private Long subcategoryId;
     private String name;
@@ -36,7 +36,7 @@ public class Service implements Parcelable {
     public Service() {
     }
 
-    public Service(Long id, Long pupvId, Long categoryId, Long subcategoryId, String name, String description, ArrayList<Uri> images, String specific, Double pricePerHour, Double fullPrice, Double duration, Double durationMin, Double durationMax, String location, Double discount, ArrayList<Long> pupIds, ArrayList<Long> eventTypeIds, String reservationDue, String cancelationDue, Boolean automaticAffirmation, Boolean available, Boolean visible, Boolean pending, Boolean deleted) {
+    public Service(Long id, String pupvId, Long categoryId, Long subcategoryId, String name, String description, ArrayList<Uri> images, String specific, Double pricePerHour, Double fullPrice, Double duration, Double durationMin, Double durationMax, String location, Double discount, ArrayList<Long> pupIds, ArrayList<Long> eventTypeIds, String reservationDue, String cancelationDue, Boolean automaticAffirmation, Boolean available, Boolean visible, Boolean pending, Boolean deleted) {
         this.id = id;
         this.pupvId = pupvId;
         this.categoryId = categoryId;
@@ -69,11 +69,7 @@ public class Service implements Parcelable {
         } else {
             id = in.readLong();
         }
-        if (in.readByte() == 0) {
-            pupvId = null;
-        } else {
-            pupvId = in.readLong();
-        }
+        pupvId = in.readString();
         if (in.readByte() == 0) {
             categoryId = null;
         } else {
@@ -163,12 +159,7 @@ public class Service implements Parcelable {
             dest.writeByte((byte) 1);
             dest.writeLong(id);
         }
-        if (pupvId == null) {
-            dest.writeByte((byte) 0);
-        } else {
-            dest.writeByte((byte) 1);
-            dest.writeLong(pupvId);
-        }
+        dest.writeString(pupvId);
         if (categoryId == null) {
             dest.writeByte((byte) 0);
         } else {
@@ -241,11 +232,11 @@ public class Service implements Parcelable {
         this.id = id;
     }
 
-    public Long getPupvId() {
+    public String getPupvId() {
         return pupvId;
     }
 
-    public void setPupvId(Long pupvId) {
+    public void setPupvId(String pupvId) {
         this.pupvId = pupvId;
     }
 
