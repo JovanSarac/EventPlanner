@@ -23,7 +23,7 @@ public class Service implements Parcelable {
     private Double durationMax;
     private String location;
     private Double discount;
-    private ArrayList<Long> pupIds;
+    private ArrayList<String> pupIds;
     private ArrayList<Long> eventTypeIds;
     private String reservationDue;
     private String cancelationDue;
@@ -36,7 +36,7 @@ public class Service implements Parcelable {
     public Service() {
     }
 
-    public Service(Long id, String pupvId, Long categoryId, Long subcategoryId, String name, String description, ArrayList<Uri> images, String specific, Double pricePerHour, Double fullPrice, Double duration, Double durationMin, Double durationMax, String location, Double discount, ArrayList<Long> pupIds, ArrayList<Long> eventTypeIds, String reservationDue, String cancelationDue, Boolean automaticAffirmation, Boolean available, Boolean visible, Boolean pending, Boolean deleted) {
+    public Service(Long id, String pupvId, Long categoryId, Long subcategoryId, String name, String description, ArrayList<Uri> images, String specific, Double pricePerHour, Double fullPrice, Double duration, Double durationMin, Double durationMax, String location, Double discount, ArrayList<String> pupIds, ArrayList<Long> eventTypeIds, String reservationDue, String cancelationDue, Boolean automaticAffirmation, Boolean available, Boolean visible, Boolean pending, Boolean deleted) {
         this.id = id;
         this.pupvId = pupvId;
         this.categoryId = categoryId;
@@ -117,7 +117,7 @@ public class Service implements Parcelable {
             discount = in.readDouble();
         }
         pupIds = new ArrayList<>();
-        in.readList(pupIds, Long.class.getClassLoader());
+        in.readList(pupIds, String.class.getClassLoader());
         eventTypeIds = new ArrayList<>();
         in.readList(eventTypeIds, Long.class.getClassLoader());
         reservationDue = in.readString();
@@ -344,11 +344,11 @@ public class Service implements Parcelable {
         this.discount = discount;
     }
 
-    public ArrayList<Long> getPupIds() {
+    public ArrayList<String> getPupIds() {
         return pupIds;
     }
 
-    public void setPupIds(ArrayList<Long> pupIds) {
+    public void setPupIds(ArrayList<String> pupIds) {
         this.pupIds = pupIds;
     }
 
