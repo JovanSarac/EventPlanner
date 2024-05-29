@@ -6,7 +6,7 @@ import java.util.ArrayList;
 
 public class Package {
     private Long id;
-    private Long pupvId;
+    private String pupvId;
     private String name;
     private String description;
     private Double discount;
@@ -27,7 +27,7 @@ public class Package {
     public Package() {
     }
 
-    public Package(Long id, Long pupvId, String name, String description, Double discount, Boolean available, Boolean visible, Long categoryId, ArrayList<Long> subCategoryId, ArrayList<Long> productIds, ArrayList<Long> serviceIds, ArrayList<Long> eventTypeIds, Double price, ArrayList<Uri> images, String reservationDue, String cancelationDue, Boolean automaticAffirmation) {
+    public Package(Long id, String pupvId, String name, String description, Double discount, Boolean available, Boolean visible, Long categoryId, ArrayList<Long> subCategoryId, ArrayList<Long> productIds, ArrayList<Long> serviceIds, ArrayList<Long> eventTypeIds, Double price, ArrayList<Uri> images, String reservationDue, String cancelationDue, Boolean automaticAffirmation) {
         this.id = id;
         this.pupvId = pupvId;
         this.name = name;
@@ -56,11 +56,11 @@ public class Package {
         this.id = id;
     }
 
-    public Long getPupvId() {
+    public String getPupvId() {
         return pupvId;
     }
 
-    public void setPupvId(Long pupvId) {
+    public void setPupvId(String pupvId) {
         this.pupvId = pupvId;
     }
 
