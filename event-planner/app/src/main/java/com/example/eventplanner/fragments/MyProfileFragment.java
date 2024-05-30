@@ -27,6 +27,8 @@ import com.example.eventplanner.activities.HomeTwoActivity;
 import com.example.eventplanner.databinding.ActivityHomeTwoBinding;
 import com.example.eventplanner.databinding.FragmentMyProfileBinding;
 import com.example.eventplanner.model.UserOD;
+import com.example.eventplanner.model.UserPUPV;
+import com.example.eventplanner.model.UserPUPZ;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -58,8 +60,11 @@ public class MyProfileFragment extends Fragment {
     FirebaseFirestore db = FirebaseFirestore.getInstance();
 
     private UserOD userOd;
+    private UserPUPZ userPupz;
+    private UserPUPV userPupv;
 
     private boolean checkUpdate = false;
+    private boolean checkUpdateCompany = false;
 
     Uri selectedImage;
 
@@ -98,6 +103,108 @@ public class MyProfileFragment extends Fragment {
                 binding.phoneInput.setText(this.userOd.getPhone());
 
             });
+        }else if(user!= null && user.getDisplayName().equals("PUPZ")){
+            getUserPupz(user.getUid()).thenAccept(userPUPZ -> {
+                this.userPupz = userPUPZ;
+
+                this.pass = this.userPupz.getPassword();
+
+                binding.firstNameInput.setText(this.userPupz.getFirstName());
+                binding.lastNameInput.setText(this.userPupz.getLastName());
+                binding.emailInput.setText(this.userPupz.getEmail());
+                binding.addressInput.setText(this.userPupz.getAddress());
+                binding.phoneInput.setText(this.userPupz.getPhone());
+
+            });
+        }else if(user!= null && user.getDisplayName().equals("PUPV")){
+            getUserPupv(user.getUid()).thenAccept(userPUPV -> {
+                this.userPupv = userPUPV;
+
+                this.pass = this.userPupv.getPassword();
+
+                binding.firstNameInput.setText(this.userPupv.getFirstName());
+                binding.lastNameInput.setText(this.userPupv.getLastName());
+                binding.emailInput.setText(this.userPupv.getEmail());
+                binding.addressInput.setText(this.userPupv.getAddress());
+                binding.phoneInput.setText(this.userPupv.getPhone());
+
+                binding.companyInfo.setVisibility(View.VISIBLE);
+
+                binding.companyName.setText(this.userPupv.getCompanyName());
+                binding.companyDescription.setText(this.userPupv.getCompanyDescription());
+                binding.companyAddress.setText(this.userPupv.getCompanyAddress());
+                binding.companyPhone.setText(this.userPupv.getCompanyPhone());
+                binding.companyEmail.setText(this.userPupv.getCompanyemail());
+
+                /*binding.worktimeCompany.titleWorkTime.setText("Work time company:");
+                binding.worktimeCompany.titleWorkTime.setTextColor(Color.WHITE);
+                binding.worktimeCompany.mondayText.setTextColor(Color.WHITE);
+                binding.worktimeCompany.tuesdayText.setTextColor(Color.WHITE);
+                binding.worktimeCompany.wednesdayText.setTextColor(Color.WHITE);
+                binding.worktimeCompany.thursdayText.setTextColor(Color.WHITE);
+                binding.worktimeCompany.fridayText.setTextColor(Color.WHITE);
+                binding.worktimeCompany.saturdayText.setTextColor(Color.WHITE);
+                binding.worktimeCompany.sundayText.setTextColor(Color.WHITE);
+                String[] workTimeArray = this.userPupv.getWorkTime().split("\\?");
+
+                if(workTimeArray[0].equals("free")){
+                    binding.worktimeCompany.mondayCheckbox.isChecked();
+                }else{
+                    String[] time = workTimeArray[0].split("-");
+                    binding.worktimeCompany.startMonday.setText(time[0]);
+                    binding.worktimeCompany.endMonday.setText(time[1]);
+                }
+
+                if(workTimeArray[1].equals("free")){
+                    binding.worktimeCompany.tuesdayCheckbox.isChecked();
+                }else{
+                    String[] time = workTimeArray[1].split("-");
+                    binding.worktimeCompany.startTuesday.setText(time[0]);
+                    binding.worktimeCompany.endTuesday.setText(time[1]);
+                }
+
+                if(workTimeArray[2].equals("free")){
+                    binding.worktimeCompany.wednesdayCheckbox.isChecked();
+                }else{
+                    String[] time = workTimeArray[2].split("-");
+                    binding.worktimeCompany.startWednesday.setText(time[0]);
+                    binding.worktimeCompany.endWednesday.setText(time[1]);
+                }
+
+                if(workTimeArray[3].equals("free")){
+                    binding.worktimeCompany.thursdayCheckbox.isChecked();
+                }else{
+                    String[] time = workTimeArray[3].split("-");
+                    binding.worktimeCompany.startThursday.setText(time[0]);
+                    binding.worktimeCompany.endThursday.setText(time[1]);
+                }
+
+                if(workTimeArray[4].equals("free")){
+                    binding.worktimeCompany.fridayCheckbox.isChecked();
+                }else{
+                    String[] time = workTimeArray[4].split("-");
+                    binding.worktimeCompany.startFriday.setText(time[0]);
+                    binding.worktimeCompany.endFriday.setText(time[1]);
+                }
+
+                if(workTimeArray[5].equals("free")){
+                    binding.worktimeCompany.saturdayCheckbox.isChecked();
+                }else{
+                    String[] time = workTimeArray[5].split("-");
+                    binding.worktimeCompany.startSaturday.setText(time[0]);
+                    binding.worktimeCompany.endSaturday.setText(time[1]);
+                }
+
+                if(workTimeArray[6].equals("free")){
+                    binding.worktimeCompany.sundayCheckbox.isChecked();
+                }else{
+                    String[] time = workTimeArray[6].split("-");
+                    binding.worktimeCompany.startSunday.setText(time[0]);
+                    binding.worktimeCompany.endSunday.setText(time[1]);
+                }*/
+
+
+            });
         }
 
         binding.firstNameInput.setEnabled(false);
@@ -105,11 +212,50 @@ public class MyProfileFragment extends Fragment {
         binding.emailInput.setEnabled(false);
         binding.phoneInput.setEnabled(false);
         binding.addressInput.setEnabled(false);
+        binding.companyName.setEnabled(false);
+        binding.companyDescription.setEnabled(false);
+        binding.companyAddress.setEnabled(false);
+        binding.companyPhone.setEnabled(false);
+        binding.companyEmail.setEnabled(false);
+        /*binding.worktimeCompany.startMonday.setEnabled(false);
+        binding.worktimeCompany.endMonday.setEnabled(false);
+        binding.worktimeCompany.startTuesday.setEnabled(false);
+        binding.worktimeCompany.endTuesday.setEnabled(false);
+        binding.worktimeCompany.startWednesday.setEnabled(false);
+        binding.worktimeCompany.endWednesday.setEnabled(false);
+        binding.worktimeCompany.startThursday.setEnabled(false);
+        binding.worktimeCompany.endThursday.setEnabled(false);
+        binding.worktimeCompany.startFriday.setEnabled(false);
+        binding.worktimeCompany.endFriday.setEnabled(false);
+        binding.worktimeCompany.startSunday.setEnabled(false);
+        binding.worktimeCompany.endSunday.setEnabled(false);
+        binding.worktimeCompany.startSaturday.setEnabled(false);
+        binding.worktimeCompany.endSaturday.setEnabled(false);*/
         binding.firstNameInput.setTextColor(ContextCompat.getColor(requireContext(), R.color.grey));
         binding.lastNameInput.setTextColor(ContextCompat.getColor(requireContext(), R.color.grey));
         binding.emailInput.setTextColor(ContextCompat.getColor(requireContext(), R.color.grey));
         binding.phoneInput.setTextColor(ContextCompat.getColor(requireContext(), R.color.grey));
         binding.addressInput.setTextColor(ContextCompat.getColor(requireContext(), R.color.grey));
+        binding.companyName.setTextColor(ContextCompat.getColor(requireContext(), R.color.grey));
+        binding.companyDescription.setTextColor(ContextCompat.getColor(requireContext(), R.color.grey));
+        binding.companyAddress.setTextColor(ContextCompat.getColor(requireContext(), R.color.grey));
+        binding.companyPhone.setTextColor(ContextCompat.getColor(requireContext(), R.color.grey));
+        binding.companyEmail.setTextColor(ContextCompat.getColor(requireContext(), R.color.grey));
+
+        /*binding.worktimeCompany.startMonday.setTextColor(ContextCompat.getColor(requireContext(), R.color.grey));
+        binding.worktimeCompany.endMonday.setTextColor(ContextCompat.getColor(requireContext(), R.color.grey));
+        binding.worktimeCompany.startTuesday.setTextColor(ContextCompat.getColor(requireContext(), R.color.grey));
+        binding.worktimeCompany.endTuesday.setTextColor(ContextCompat.getColor(requireContext(), R.color.grey));
+        binding.worktimeCompany.startWednesday.setTextColor(ContextCompat.getColor(requireContext(), R.color.grey));
+        binding.worktimeCompany.endWednesday.setTextColor(ContextCompat.getColor(requireContext(), R.color.grey));
+        binding.worktimeCompany.startThursday.setTextColor(ContextCompat.getColor(requireContext(), R.color.grey));
+        binding.worktimeCompany.endThursday.setTextColor(ContextCompat.getColor(requireContext(), R.color.grey));
+        binding.worktimeCompany.startFriday.setTextColor(ContextCompat.getColor(requireContext(), R.color.grey));
+        binding.worktimeCompany.endFriday.setTextColor(ContextCompat.getColor(requireContext(), R.color.grey));
+        binding.worktimeCompany.startSunday.setTextColor(ContextCompat.getColor(requireContext(), R.color.grey));
+        binding.worktimeCompany.endSunday.setTextColor(ContextCompat.getColor(requireContext(), R.color.grey));
+        binding.worktimeCompany.startSaturday.setTextColor(ContextCompat.getColor(requireContext(), R.color.grey));
+        binding.worktimeCompany.endSaturday.setTextColor(ContextCompat.getColor(requireContext(), R.color.grey));*/
 
         binding.editMyProfile.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -143,10 +289,102 @@ public class MyProfileFragment extends Fragment {
 
                     binding.editMyProfile.setText("Edit");
 
-                    if(user.getDisplayName().equals("OD")){
-                        updateUserOd();
+                    updateUser();
 
-                    }
+                }
+
+            }
+        });
+
+        binding.editCompany.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(!checkUpdateCompany){
+                    binding.companyDescription.setEnabled(true);
+                    binding.companyAddress.setEnabled(true);
+                    binding.companyPhone.setEnabled(true);
+                    /*binding.worktimeCompany.startMonday.setEnabled(true);
+                    binding.worktimeCompany.endMonday.setEnabled(true);
+                    binding.worktimeCompany.startTuesday.setEnabled(true);
+                    binding.worktimeCompany.endTuesday.setEnabled(true);
+                    binding.worktimeCompany.startWednesday.setEnabled(true);
+                    binding.worktimeCompany.endWednesday.setEnabled(true);
+                    binding.worktimeCompany.startThursday.setEnabled(true);
+                    binding.worktimeCompany.endThursday.setEnabled(true);
+                    binding.worktimeCompany.startFriday.setEnabled(true);
+                    binding.worktimeCompany.endFriday.setEnabled(true);
+                    binding.worktimeCompany.startSunday.setEnabled(true);
+                    binding.worktimeCompany.endSunday.setEnabled(true);
+                    binding.worktimeCompany.startSaturday.setEnabled(true);
+                    binding.worktimeCompany.endSaturday.setEnabled(true);*/
+
+                    binding.companyDescription.setTextColor(ContextCompat.getColor(requireContext(), R.color.white));
+                    binding.companyAddress.setTextColor(ContextCompat.getColor(requireContext(), R.color.white));
+                    binding.companyPhone.setTextColor(ContextCompat.getColor(requireContext(), R.color.white));
+
+                    /*binding.worktimeCompany.startMonday.setTextColor(ContextCompat.getColor(requireContext(), R.color.white));
+                    binding.worktimeCompany.endMonday.setTextColor(ContextCompat.getColor(requireContext(), R.color.white));
+                    binding.worktimeCompany.startTuesday.setTextColor(ContextCompat.getColor(requireContext(), R.color.white));
+                    binding.worktimeCompany.endTuesday.setTextColor(ContextCompat.getColor(requireContext(), R.color.white));
+                    binding.worktimeCompany.startWednesday.setTextColor(ContextCompat.getColor(requireContext(), R.color.white));
+                    binding.worktimeCompany.endWednesday.setTextColor(ContextCompat.getColor(requireContext(), R.color.white));
+                    binding.worktimeCompany.startThursday.setTextColor(ContextCompat.getColor(requireContext(), R.color.white));
+                    binding.worktimeCompany.endThursday.setTextColor(ContextCompat.getColor(requireContext(), R.color.white));
+                    binding.worktimeCompany.startFriday.setTextColor(ContextCompat.getColor(requireContext(), R.color.white));
+                    binding.worktimeCompany.endFriday.setTextColor(ContextCompat.getColor(requireContext(), R.color.white));
+                    binding.worktimeCompany.startSunday.setTextColor(ContextCompat.getColor(requireContext(), R.color.white));
+                    binding.worktimeCompany.endSunday.setTextColor(ContextCompat.getColor(requireContext(), R.color.white));
+                    binding.worktimeCompany.startSaturday.setTextColor(ContextCompat.getColor(requireContext(), R.color.white));
+                    binding.worktimeCompany.endSaturday.setTextColor(ContextCompat.getColor(requireContext(), R.color.white));*/
+
+                    binding.editCompany.setText("Update company");
+                    checkUpdateCompany = true;
+                }else{
+                    checkUpdateCompany = false;
+
+                    binding.companyDescription.setEnabled(false);
+                    binding.companyAddress.setEnabled(false);
+                    binding.companyPhone.setEnabled(false);
+
+                    /*binding.worktimeCompany.startMonday.setEnabled(false);
+                    binding.worktimeCompany.endMonday.setEnabled(false);
+                    binding.worktimeCompany.startTuesday.setEnabled(false);
+                    binding.worktimeCompany.endTuesday.setEnabled(false);
+                    binding.worktimeCompany.startWednesday.setEnabled(false);
+                    binding.worktimeCompany.endWednesday.setEnabled(false);
+                    binding.worktimeCompany.startThursday.setEnabled(false);
+                    binding.worktimeCompany.endThursday.setEnabled(false);
+                    binding.worktimeCompany.startFriday.setEnabled(false);
+                    binding.worktimeCompany.endFriday.setEnabled(false);
+                    binding.worktimeCompany.startSunday.setEnabled(false);
+                    binding.worktimeCompany.endSunday.setEnabled(false);
+                    binding.worktimeCompany.startSaturday.setEnabled(false);
+                    binding.worktimeCompany.endSaturday.setEnabled(false);*/
+
+                    binding.companyDescription.setTextColor(ContextCompat.getColor(requireContext(), R.color.grey));
+                    binding.companyAddress.setTextColor(ContextCompat.getColor(requireContext(), R.color.grey));
+                    binding.companyPhone.setTextColor(ContextCompat.getColor(requireContext(), R.color.grey));
+
+                    /*binding.worktimeCompany.startMonday.setTextColor(ContextCompat.getColor(requireContext(), R.color.grey));
+                    binding.worktimeCompany.endMonday.setTextColor(ContextCompat.getColor(requireContext(), R.color.grey));
+                    binding.worktimeCompany.startTuesday.setTextColor(ContextCompat.getColor(requireContext(), R.color.grey));
+                    binding.worktimeCompany.endTuesday.setTextColor(ContextCompat.getColor(requireContext(), R.color.grey));
+                    binding.worktimeCompany.startWednesday.setTextColor(ContextCompat.getColor(requireContext(), R.color.grey));
+                    binding.worktimeCompany.endWednesday.setTextColor(ContextCompat.getColor(requireContext(), R.color.grey));
+                    binding.worktimeCompany.startThursday.setTextColor(ContextCompat.getColor(requireContext(), R.color.grey));
+                    binding.worktimeCompany.endThursday.setTextColor(ContextCompat.getColor(requireContext(), R.color.grey));
+                    binding.worktimeCompany.startFriday.setTextColor(ContextCompat.getColor(requireContext(), R.color.grey));
+                    binding.worktimeCompany.endFriday.setTextColor(ContextCompat.getColor(requireContext(), R.color.grey));
+                    binding.worktimeCompany.startSunday.setTextColor(ContextCompat.getColor(requireContext(), R.color.grey));
+                    binding.worktimeCompany.endSunday.setTextColor(ContextCompat.getColor(requireContext(), R.color.grey));
+                    binding.worktimeCompany.startSaturday.setTextColor(ContextCompat.getColor(requireContext(), R.color.grey));
+                    binding.worktimeCompany.endSaturday.setTextColor(ContextCompat.getColor(requireContext(), R.color.grey));*/
+
+
+
+                    binding.editCompany.setText("Edit company");
+
+                    updateCompany();
                 }
 
             }
@@ -168,6 +406,34 @@ public class MyProfileFragment extends Fragment {
         });
 
         return root;
+    }
+
+    private void updateCompany() {
+        Map<String, Object> companyUpdate = new HashMap<>();
+        companyUpdate.put("CompanyDescription", binding.companyDescription.getText().toString());
+        companyUpdate.put("CompanyAddress", binding.companyAddress.getText().toString());
+        companyUpdate.put("CompanyPhone", binding.companyPhone.getText().toString());
+
+        db.collection("User").document(user.getUid())
+                .update(companyUpdate)
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                        Toast.makeText(requireContext(), "Your profile is updated", Toast.LENGTH_LONG).show();
+                        if(user.getDisplayName().equals("PUPV")){
+                            getUserPupv(user.getUid());
+                        }
+
+
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Toast.makeText(requireContext(), "Error while updated profile.", Toast.LENGTH_LONG).show();
+
+                    }
+                });
     }
 
     private AlertDialog changePasswordDialog;
@@ -232,7 +498,15 @@ public class MyProfileFragment extends Fragment {
                     @Override
                     public void onSuccess(Void aVoid) {
                         Toast.makeText(getContext(), "Password changed successfully", Toast.LENGTH_SHORT).show();
-                        getUserOd(user.getUid());
+
+                        if(user.getDisplayName().equals("OD")){
+                            getUserOd(user.getUid());
+                        }else if(user.getDisplayName().equals("PUPZ")){
+                            getUserPupz(user.getUid());
+                        }else if(user.getDisplayName().equals("PUPV")){
+                            getUserPupv(user.getUid());
+                        }
+
 
                     }
                 })
@@ -294,7 +568,7 @@ public class MyProfileFragment extends Fragment {
         });
     }
 
-    private void updateUserOd() {
+    private void updateUser() {
         Map<String, Object> userUpdates = new HashMap<>();
         userUpdates.put("Address", binding.addressInput.getText().toString());
         userUpdates.put("E-mail", binding.emailInput.getText().toString());
@@ -309,7 +583,14 @@ public class MyProfileFragment extends Fragment {
                     @Override
                     public void onSuccess(Void aVoid) {
                         Toast.makeText(requireContext(), "Your profile is updated", Toast.LENGTH_LONG).show();
-                        getUserOd(user.getUid());
+                        if(user.getDisplayName().equals("OD")){
+                            getUserOd(user.getUid());
+                        }else if(user.getDisplayName().equals("PUPZ")){
+                            getUserPupz(user.getUid());
+                        }else if(user.getDisplayName().equals("PUPV")){
+                            getUserPupv(user.getUid());
+                        }
+
 
                     }
                 })
@@ -369,14 +650,113 @@ public class MyProfileFragment extends Fragment {
         return future;
     }
 
+    private CompletableFuture<UserPUPZ> getUserPupz(String uid) {
+        CompletableFuture<UserPUPZ> future = new CompletableFuture<>();
+
+        db.collection("User").document(uid)
+                .get()
+                .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                        if (task.isSuccessful()) {
+                            DocumentSnapshot document = task.getResult();
+                            if (document.exists()) {
+                                Log.d("HomeTwoActivity", "DocumentSnapshot data: " + document.getData());
+                                UserPUPZ userPupzz = new UserPUPZ();
+                                userPupzz.setFirstName((String) document.get("firstName"));
+                                userPupzz.setLastName((String) document.get("lastName"));
+                                userPupzz.setEmail((String) document.get("email"));
+                                userPupzz.setPassword((String) document.get("password"));
+                                userPupzz.setPhone((String) document.get("phone"));
+                                userPupzz.setAddress((String) document.get("address"));
+                                userPupzz.setValid((Boolean) document.get("valid"));
+                                userPupzz.setOwnerId((String) document.get("ownerId"));
+
+                                userPupz = userPupzz;
+
+                                pass = userPupzz.getPassword();
+
+                                future.complete(userPupzz);
+                            } else {
+                                Log.e("HomeTwoActivity", "No such document");
+                                future.completeExceptionally(new Exception("No such document"));
+                            }
+                        } else {
+                            Log.e("HomeTwoActivity", "Error getting document", task.getException());
+                            future.completeExceptionally(task.getException());
+                        }
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Log.e("HomeTwoActivity", "Error getting document", e);
+                        future.completeExceptionally(e);
+                    }
+                });
+
+        return future;
+    }
+
+    private CompletableFuture<UserPUPV> getUserPupv(String uid) {
+        CompletableFuture<UserPUPV> future = new CompletableFuture<>();
+
+        db.collection("User").document(uid)
+                .get()
+                .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                        if (task.isSuccessful()) {
+                            DocumentSnapshot document = task.getResult();
+                            if (document.exists()) {
+                                Log.d("HomeTwoActivity", "DocumentSnapshot data: " + document.getData());
+                                UserPUPV userPupvv = new UserPUPV();
+                                userPupvv.setFirstName((String) document.get("FirstName"));
+                                userPupvv.setLastName((String) document.get("LastName"));
+                                userPupvv.setEmail((String) document.get("E-mail"));
+                                userPupvv.setPassword((String) document.get("Password"));
+                                userPupvv.setPhone((String) document.get("Phone"));
+                                userPupvv.setAddress((String) document.get("Address"));
+                                userPupvv.setValid((Boolean) document.get("IsValid"));
+                                userPupvv.setCompanyName((String) document.get("CompanyName"));
+                                userPupvv.setCompanyDescription((String) document.get("CompanyDescription"));
+                                userPupvv.setCompanyAddress((String) document.get("CompanyAddress"));
+                                userPupvv.setCompanyemail((String) document.get("CompanyEmail"));
+                                userPupvv.setCompanyPhone((String) document.get("CompanyPhone"));
+                                userPupvv.setWorkTime((String) document.get("WorkTime"));
+
+                                userPupv = userPupvv;
+
+                                pass = userPupvv.getPassword();
+
+                                future.complete(userPupvv);
+                            } else {
+                                Log.e("HomeTwoActivity", "No such document");
+                                future.completeExceptionally(new Exception("No such document"));
+                            }
+                        } else {
+                            Log.e("HomeTwoActivity", "Error getting document", task.getException());
+                            future.completeExceptionally(task.getException());
+                        }
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Log.e("HomeTwoActivity", "Error getting document", e);
+                        future.completeExceptionally(e);
+                    }
+                });
+
+        return future;
+    }
+
     private void loadImage(String userId, ImageView imageView) {
         FirebaseStorage storage = FirebaseStorage.getInstance();
         StorageReference storageRef = storage.getReference();
 
-        // Referenca na sliku u Firebase Storage
         StorageReference imageRef = storageRef.child("images/" + userId);
 
-        // Korišćenje Glide za učitavanje slike i postavljanje u ImageView
         imageRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
             @Override
             public void onSuccess(Uri uri) {
@@ -389,10 +769,8 @@ public class MyProfileFragment extends Fragment {
         }).addOnFailureListener(new OnFailureListener() {
             @Override
             public void onFailure(@NonNull Exception exception) {
-                // Rukovanje greškom prilikom učitavanja slike
                 Log.e("HomeTwoActivity", "Error loading image", exception);
-                // Možete postaviti default sliku ili prikazati poruku o grešci
-                imageView.setImageResource(R.drawable.defaultprofilepicture); // Pretpostavljamo da imate default_image u drawable resursima
+                imageView.setImageResource(R.drawable.defaultprofilepicture);
             }
         });
     }

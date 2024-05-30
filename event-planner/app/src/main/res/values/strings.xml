@@ -132,4 +132,12 @@
     <string name="enter_old_password">Enter old password</string>
     <string name="enter_new_password">Enter new password</string>
     <string name="confirm_new_password">Confirm new password</string>
+    <string name="company_info">Company Info</string>
+    <string name="company_name">Company name</string>
+    <string name="company_description">Company description</string>
+    <string name="company_address">Company address</string>
+    <string name="company_email">Company email</string>
+    <string name="company_phone">Company phone</string>
+    <string name="work_time">Work time</string>
+    <string name="edit_company">Edit company</string>
 </resources>
