@@ -127,4 +127,9 @@
     <string name="accpted">Accepted</string>
     <string name="generate_pdf">Generate PDF</string>
     <string name="my_profile">My profile</string>
+    <string name="change_iamge_profile">Edit image profile</string>
+    <string name="change_password">Change password</string>
+    <string name="enter_old_password">Enter old password</string>
+    <string name="enter_new_password">Enter new password</string>
+    <string name="confirm_new_password">Confirm new password</string>
 </resources>

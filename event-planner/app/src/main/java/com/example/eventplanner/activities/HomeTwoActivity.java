@@ -56,6 +56,8 @@ public class HomeTwoActivity extends AppCompatActivity {
     FirebaseFirestore db = FirebaseFirestore.getInstance();
     FirebaseAuth mAuth=FirebaseAuth.getInstance();
 
+    TextView userName;
+    ImageView userImage;
     private UserOD userOd;
     @SuppressLint("NonConstantResourceId")
     @Override
@@ -74,8 +76,8 @@ public class HomeTwoActivity extends AppCompatActivity {
         View headerView = navigationView.getHeaderView(0);
 
         // Pronađite elemente unutar zaglavlja
-        ImageView userImage = headerView.findViewById(R.id.user_image);
-        TextView userName = headerView.findViewById(R.id.user_name);
+        userImage = headerView.findViewById(R.id.user_image);
+        userName = headerView.findViewById(R.id.user_name);
         userImage.setVisibility(View.GONE);
         userName.setVisibility(View.GONE);
 
@@ -215,6 +217,8 @@ public class HomeTwoActivity extends AppCompatActivity {
                                 userOd.setAddress((String) document.get("Address"));
                                 userOd.setValid((Boolean) document.get("IsValid"));
 
+                                userName.setText(userOd.getFirstName() + " " + userOd.getLastName());
+
                                 future.complete(userOd);
                             } else {
                                 Log.e("HomeTwoActivity", "No such document");
@@ -237,7 +241,7 @@ public class HomeTwoActivity extends AppCompatActivity {
         return future;
     }
 
-    private void loadImage(String userId, ImageView imageView) {
+    public void loadImage(String userId, ImageView imageView) {
         FirebaseStorage storage = FirebaseStorage.getInstance();
         StorageReference storageRef = storage.getReference();
 
