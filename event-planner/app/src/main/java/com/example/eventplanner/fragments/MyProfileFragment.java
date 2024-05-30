@@ -12,6 +12,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
@@ -62,6 +63,8 @@ public class MyProfileFragment extends Fragment {
 
     Uri selectedImage;
 
+    private String pass;
+
 
     public static MyProfileFragment newInstance() {
         return new MyProfileFragment();
@@ -85,6 +88,8 @@ public class MyProfileFragment extends Fragment {
         if(user!= null && user.getDisplayName().equals("OD")){
             getUserOd(user.getUid()).thenAccept(userOD -> {
                 this.userOd = userOD;
+
+                this.pass = this.userOd.getPassword();
 
                 binding.firstNameInput.setText(this.userOd.getFirstName());
                 binding.lastNameInput.setText(this.userOd.getLastName());
@@ -165,51 +170,83 @@ public class MyProfileFragment extends Fragment {
         return root;
     }
 
+    private AlertDialog changePasswordDialog;
+
     private void showChangePasswordDialog() {
-        LayoutInflater inflater = LayoutInflater.from(getContext());
-        View dialogView = inflater.inflate(R.layout.dialog_change_password, null);
-
-        // Inicijalizujte polja za unos
-        final EditText oldPasswordInput = dialogView.findViewById(R.id.oldPasswordInput);
-        final EditText newPasswordInput = dialogView.findViewById(R.id.newPasswordInput);
-        final EditText confirmNewPasswordInput = dialogView.findViewById(R.id.confirmNewPasswordInput);
-
-        // Kreirajte AlertDialog
         AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
-        builder.setTitle("Change password");
-        builder.setView(dialogView);
-        builder.setPositiveButton("Confirm", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                // Uzmite unete vrednosti
-                String oldPassword = oldPasswordInput.getText().toString();
-                String newPassword = newPasswordInput.getText().toString();
-                String confirmNewPassword = confirmNewPasswordInput.getText().toString();
+        LayoutInflater inflater = requireActivity().getLayoutInflater();
+        View dialogView = inflater.inflate(R.layout.dialog_change_password, null);
+        builder.setView(dialogView)
+                .setTitle("Change password")
+                .setPositiveButton("Confirm", null) // Null omogućava da se dijalog ne zatvara automatski
+                .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                });
 
-                // Validirajte unete podatke (primer)
-                if (newPassword.equals(confirmNewPassword)) {
-                    // Izvršite akciju promene lozinke
-                    changePassword(oldPassword, newPassword);
-                } else {
-                    Toast.makeText(getContext(), "New passwords do not match", Toast.LENGTH_SHORT).show();
-                }
+        changePasswordDialog = builder.create();
+
+        changePasswordDialog.setOnShowListener(new DialogInterface.OnShowListener() {
+            @Override
+            public void onShow(DialogInterface dialog) {
+                Button positiveButton = changePasswordDialog.getButton(AlertDialog.BUTTON_POSITIVE);
+                positiveButton.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        String oldPassword = ((EditText) dialogView.findViewById(R.id.oldPasswordInput)).getText().toString();
+                        String newPassword = ((EditText) dialogView.findViewById(R.id.newPasswordInput)).getText().toString();
+                        String confirmNewPassword = ((EditText) dialogView.findViewById(R.id.confirmNewPasswordInput)).getText().toString();
+
+                        if (oldPassword.equals(pass)) {
+                            if(newPassword.equals("") || confirmNewPassword.equals("")){
+                                Toast.makeText(getContext(), "New password dont be empty.", Toast.LENGTH_SHORT).show();
+                            }else{
+                                if (newPassword.equals(confirmNewPassword)) {
+                                    changePassword(oldPassword, newPassword);
+                                    changePasswordDialog.dismiss();
+                                } else {
+                                    Toast.makeText(getContext(), "New passwords do not match", Toast.LENGTH_SHORT).show();
+                                }
+
+                            }
+
+                        } else {
+                            Toast.makeText(getContext(), "Old password is not correct!", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                });
             }
         });
-        builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                dialog.dismiss();
-            }
-        });
 
-        // Prikazivanje dijaloga
-        builder.create().show();
+        changePasswordDialog.show();
     }
 
     private void changePassword(String oldPassword, String newPassword) {
-        // Implementirajte logiku promene lozinke
-        Toast.makeText(getContext(), "Password changed successfully", Toast.LENGTH_SHORT).show();
+        Map<String, Object> passwordUpdate = new HashMap<>();
+        passwordUpdate.put("Password", newPassword);
+        db.collection("User").document(user.getUid())
+                .update(passwordUpdate)
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                        Toast.makeText(getContext(), "Password changed successfully", Toast.LENGTH_SHORT).show();
+                        getUserOd(user.getUid());
+
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Toast.makeText(requireContext(), "Error while changing password.", Toast.LENGTH_LONG).show();
+
+                    }
+                });
     }
+
+
+
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -272,6 +309,7 @@ public class MyProfileFragment extends Fragment {
                     @Override
                     public void onSuccess(Void aVoid) {
                         Toast.makeText(requireContext(), "Your profile is updated", Toast.LENGTH_LONG).show();
+                        getUserOd(user.getUid());
 
                     }
                 })
@@ -296,16 +334,20 @@ public class MyProfileFragment extends Fragment {
                             DocumentSnapshot document = task.getResult();
                             if (document.exists()) {
                                 Log.d("HomeTwoActivity", "DocumentSnapshot data: " + document.getData());
-                                UserOD userOd = new UserOD();
-                                userOd.setFirstName((String) document.get("FirstName"));
-                                userOd.setLastName((String) document.get("LastName"));
-                                userOd.setEmail((String) document.get("E-mail"));
-                                userOd.setPassword((String) document.get("Password"));
-                                userOd.setPhone((String) document.get("Phone"));
-                                userOd.setAddress((String) document.get("Address"));
-                                userOd.setValid((Boolean) document.get("IsValid"));
+                                UserOD userOdd = new UserOD();
+                                userOdd.setFirstName((String) document.get("FirstName"));
+                                userOdd.setLastName((String) document.get("LastName"));
+                                userOdd.setEmail((String) document.get("E-mail"));
+                                userOdd.setPassword((String) document.get("Password"));
+                                userOdd.setPhone((String) document.get("Phone"));
+                                userOdd.setAddress((String) document.get("Address"));
+                                userOdd.setValid((Boolean) document.get("IsValid"));
 
-                                future.complete(userOd);
+                                userOd = userOdd;
+
+                                pass = userOd.getPassword();
+
+                                future.complete(userOdd);
                             } else {
                                 Log.e("HomeTwoActivity", "No such document");
                                 future.completeExceptionally(new Exception("No such document"));
