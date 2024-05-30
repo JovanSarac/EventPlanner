@@ -23,6 +23,7 @@
 
             <!-- Address -->
             <TextView
+
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Address"
@@ -31,6 +32,7 @@
                 android:paddingTop="8dp" />
 
             <TextView
+                android:id="@+id/address"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="yyytt"
@@ -54,6 +56,7 @@
                 android:paddingTop="8dp" />
 
             <TextView
+                android:id="@+id/categories"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="-7246479445669047305, 579527786105708896"
@@ -77,6 +80,7 @@
                 android:paddingTop="8dp" />
 
             <TextView
+                android:id="@+id/companyAddress"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="yshs"
@@ -100,6 +104,7 @@
                 android:paddingTop="8dp" />
 
             <TextView
+                android:id="@+id/description"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="sss"
@@ -123,6 +128,7 @@
                 android:paddingTop="8dp" />
 
             <TextView
+                android:id="@+id/companyEmail"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="ds@gmail.com"
@@ -146,6 +152,7 @@
                 android:paddingTop="8dp" />
 
             <TextView
+                android:id="@+id/companyName"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="udu"
@@ -169,6 +176,7 @@
                 android:paddingTop="8dp" />
 
             <TextView
+                android:id="@+id/companyPhone"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="8"
@@ -192,6 +200,7 @@
                 android:paddingTop="8dp" />
 
             <TextView
+                android:id="@+id/email"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="jovan.katanic204@gmail.com"
@@ -215,6 +224,7 @@
                 android:paddingTop="8dp" />
 
             <TextView
+                android:id="@+id/eventTypes"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="-764083515263202305"
@@ -238,6 +248,7 @@
                 android:paddingTop="8dp" />
 
             <TextView
+                android:id="@+id/firstName"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="joo"
@@ -251,28 +262,6 @@
                 android:layout_height="1dp"
                 android:background="#e0e0e0" />
 
-            <!-- Is Valid -->
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Is Valid"
-                android:textSize="14sp"
-                android:textColor="#616161"
-                android:paddingTop="8dp" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="false"
-                android:textSize="16sp"
-                android:textColor="#212121"
-                android:paddingBottom="8dp" />
-
-            <!-- Divider -->
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:background="#e0e0e0" />
 
             <!-- Last Name -->
             <TextView
@@ -284,6 +273,7 @@
                 android:paddingTop="8dp" />
 
             <TextView
+                android:id="@+id/lastName"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="a"
@@ -297,28 +287,7 @@
                 android:layout_height="1dp"
                 android:background="#e0e0e0" />
 
-            <!-- Password -->
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Password"
-                android:textSize="14sp"
-                android:textColor="#616161"
-                android:paddingTop="8dp" />
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="sifra123"
-                android:textSize="16sp"
-                android:textColor="#212121"
-                android:paddingBottom="8dp" />
-
-            <!-- Divider -->
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:background="#e0e0e0" />
 
             <!-- Phone -->
             <TextView
@@ -330,6 +299,7 @@
                 android:paddingTop="8dp" />
 
             <TextView
+                android:id="@+id/phone"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="1444"
@@ -337,51 +307,11 @@
                 android:textColor="#212121"
                 android:paddingBottom="8dp" />
 
-            <!-- Divider -->
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:background="#e0e0e0" />
 
-            <!-- User Type -->
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="User Type"
-                android:textSize="14sp"
-                android:textColor="#616161"
-                android:paddingTop="8dp" />
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="PUPV"
-                android:textSize="16sp"
-                android:textColor="#212121"
-                android:paddingBottom="8dp" />
 
-            <!-- Divider -->
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:background="#e0e0e0" />
 
-            <!-- Work Time -->
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Work Time"
-                android:textSize="14sp"
-                android:textColor="#616161"
-                android:paddingTop="8dp" />
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="8:00-17:00?8:00-17:00?8:00-17:00?8:00-17:00?8:00-17:00?8:00-17:00?8:00-17:00"
-                android:textSize="16sp"
-                android:textColor="#212121"
-                android:paddingBottom="8dp" />
 
         </LinearLayout>
     </ScrollView>

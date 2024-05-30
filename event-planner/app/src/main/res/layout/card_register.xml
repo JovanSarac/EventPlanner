@@ -145,7 +145,7 @@
                 android:id="@+id/detailsIconSub"
                 android:layout_width="20sp"
                 android:layout_height="20sp"
-                android:src="@drawable/ic_delete"
+                android:src="@drawable/ic_info"
                 android:layout_alignParentStart="true"
                 android:clickable="true"
                 android:layout_gravity="center"

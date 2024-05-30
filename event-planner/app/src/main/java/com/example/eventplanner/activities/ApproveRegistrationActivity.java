@@ -53,12 +53,9 @@ public class ApproveRegistrationActivity extends AppCompatActivity {
     String selectedCategory;
     String selectedEvent;
     @Override
-    protected void onResume() {
-
+    public void onResume() {
         super.onResume();
         getUsers();
-
-
     }
 
     @Override
@@ -80,9 +77,9 @@ public class ApproveRegistrationActivity extends AppCompatActivity {
 
         findViewById(R.id.searchButton).setOnClickListener(v->{
             String s=searchEditText.getText().toString();
+            //getUsers();
             filter(s);
 
-            filterByCategoryAndEventType();
 
             adapter.notifyDataSetChanged();
         });
@@ -90,20 +87,6 @@ public class ApproveRegistrationActivity extends AppCompatActivity {
 
         getAllCategories();
         getAllEventTypes();
-
-    }
-
-    private void filterByCategoryAndEventType() {
-        List<UserPUPV> temp=new ArrayList<>();
-        for (UserPUPV item : filteredList) {
-            if (item.getCategories().stream().anyMatch(category -> category.getName().equals(selectedCategory)) ||
-                    item.getEventTypes().stream().anyMatch(category -> category.getTypeName().equals(selectedEvent))) {
-
-                temp.add(item);
-            }
-        }
-        filteredList.clear();
-        filteredList.addAll(temp);
 
     }
 
@@ -116,6 +99,12 @@ public class ApproveRegistrationActivity extends AppCompatActivity {
             for (UserPUPV item : dataList) {
                 if (item.getFirstName().toLowerCase().contains(text) || item.getLastName().toLowerCase().contains(text) || item.getCompanyemail().toLowerCase().contains(text) || item.getEmail().toLowerCase().contains(text)) {
                     filteredList.add(item);
+                }else{
+                    if (item.getCategories().stream().anyMatch(category -> category.getName().equals(selectedCategory)) ||
+                            item.getEventTypes().stream().anyMatch(category -> category.getTypeName().equals(selectedEvent))) {
+
+                        filteredList.add(item);
+                    }
                 }
             }
 
@@ -123,7 +112,8 @@ public class ApproveRegistrationActivity extends AppCompatActivity {
     }
 
     public void getUsers() {
-        dataList = new ArrayList<>();
+        dataList.clear();
+        filteredList.clear();
         db.collection("User")
                 .whereEqualTo("IsValid", false)
                 .whereEqualTo("UserType", "PUPV")
