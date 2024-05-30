@@ -1,28 +1,44 @@
 package com.example.eventplanner.activities;
 
 import android.annotation.SuppressLint;
+import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.ImageView;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
-
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 
+import com.bumptech.glide.Glide;
 import com.example.eventplanner.R;
-
 import com.example.eventplanner.databinding.ActivityHomeTwoBinding;
+import com.example.eventplanner.model.UserOD;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.navigation.NavigationView;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 
 import java.util.HashSet;
 import java.util.Set;
+import java.util.concurrent.CompletableFuture;
 
 public class HomeTwoActivity extends AppCompatActivity {
 
@@ -36,6 +52,11 @@ public class HomeTwoActivity extends AppCompatActivity {
     private Set<Integer> topLevelDestinations = new HashSet<>();
     private AppBarConfiguration mAppBarConfiguration;
     private NavController navController;
+
+    FirebaseFirestore db = FirebaseFirestore.getInstance();
+    FirebaseAuth mAuth=FirebaseAuth.getInstance();
+
+    private UserOD userOd;
     @SuppressLint("NonConstantResourceId")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,9 +65,39 @@ public class HomeTwoActivity extends AppCompatActivity {
         binding = ActivityHomeTwoBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
+        FirebaseUser user= mAuth.getCurrentUser();
+
         drawer = binding.drawerLayout;
         navigationView = binding.navView;
         toolbar = binding.activityHomeBase.toolbar;
+
+        View headerView = navigationView.getHeaderView(0);
+
+        // Pronađite elemente unutar zaglavlja
+        ImageView userImage = headerView.findViewById(R.id.user_image);
+        TextView userName = headerView.findViewById(R.id.user_name);
+        userImage.setVisibility(View.GONE);
+        userName.setVisibility(View.GONE);
+
+
+
+        if(user!= null){
+            navigationView.getMenu().findItem(R.id.my_profile).setVisible(true);
+            userImage.setVisibility(View.VISIBLE);
+            userName.setVisibility(View.VISIBLE);
+            loadImage(user.getUid(),userImage);
+
+        }
+        if(user != null && user.getDisplayName().equals("OD")){
+            navigationView.getMenu().findItem(R.id.nav_events).setVisible(true);
+            getUserOd(user.getUid()).thenAccept(userOD -> {
+                this.userOd = userOD;
+
+                userName.setText(this.userOd.getFirstName() + " " + this.userOd.getLastName());
+
+            });
+
+        }
 
         setSupportActionBar(toolbar);
 
@@ -114,6 +165,21 @@ public class HomeTwoActivity extends AppCompatActivity {
         return true;
     }*/
 
+    /*@Override
+    protected void onResume() {
+
+        super.onResume();
+        FirebaseUser user= mAuth.getCurrentUser();
+        if(user==null){
+
+        }else{
+            if(user.getDisplayName().equals("OD")){
+                navigationView.getMenu().findItem(R.id.nav_events).setVisible(true);
+            }
+        }
+
+
+    }*/
 
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
@@ -127,4 +193,75 @@ public class HomeTwoActivity extends AppCompatActivity {
         navController = Navigation.findNavController(this, R.id.fragment_nav_content_main);
         return NavigationUI.navigateUp(navController, mAppBarConfiguration) || super.onSupportNavigateUp();
     }
+
+    private CompletableFuture<UserOD> getUserOd(String uid) {
+        CompletableFuture<UserOD> future = new CompletableFuture<>();
+
+        db.collection("User").document(uid)
+                .get()
+                .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                        if (task.isSuccessful()) {
+                            DocumentSnapshot document = task.getResult();
+                            if (document.exists()) {
+                                Log.d("HomeTwoActivity", "DocumentSnapshot data: " + document.getData());
+                                UserOD userOd = new UserOD();
+                                userOd.setFirstName((String) document.get("FirstName"));
+                                userOd.setLastName((String) document.get("LastName"));
+                                userOd.setEmail((String) document.get("E-mail"));
+                                userOd.setPassword((String) document.get("Password"));
+                                userOd.setPhone((String) document.get("Phone"));
+                                userOd.setAddress((String) document.get("Address"));
+                                userOd.setValid((Boolean) document.get("IsValid"));
+
+                                future.complete(userOd);
+                            } else {
+                                Log.e("HomeTwoActivity", "No such document");
+                                future.completeExceptionally(new Exception("No such document"));
+                            }
+                        } else {
+                            Log.e("HomeTwoActivity", "Error getting document", task.getException());
+                            future.completeExceptionally(task.getException());
+                        }
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Log.e("HomeTwoActivity", "Error getting document", e);
+                        future.completeExceptionally(e);
+                    }
+                });
+
+        return future;
+    }
+
+    private void loadImage(String userId, ImageView imageView) {
+        FirebaseStorage storage = FirebaseStorage.getInstance();
+        StorageReference storageRef = storage.getReference();
+
+        // Referenca na sliku u Firebase Storage
+        StorageReference imageRef = storageRef.child("images/" + userId);
+
+        // Korišćenje Glide za učitavanje slike i postavljanje u ImageView
+        imageRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+            @Override
+            public void onSuccess(Uri uri) {
+                // Koristimo Glide za učitavanje slike
+                Glide.with(imageView.getContext())
+                        .load(uri)
+                        .into(imageView);
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception exception) {
+                // Rukovanje greškom prilikom učitavanja slike
+                Log.e("HomeTwoActivity", "Error loading image", exception);
+                // Možete postaviti default sliku ili prikazati poruku o grešci
+                imageView.setImageResource(R.drawable.defaultprofilepicture); // Pretpostavljamo da imate default_image u drawable resursima
+            }
+        });
+    }
+
 }

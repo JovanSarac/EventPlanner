@@ -126,4 +126,5 @@
     <string name="invited">Invited</string>
     <string name="accpted">Accepted</string>
     <string name="generate_pdf">Generate PDF</string>
+    <string name="my_profile">My profile</string>
 </resources>

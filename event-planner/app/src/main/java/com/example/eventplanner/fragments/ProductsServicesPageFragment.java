@@ -2,12 +2,6 @@ package com.example.eventplanner.fragments;
 
 import android.net.Uri;
 import android.os.Bundle;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.core.util.Pair;
-import androidx.fragment.app.Fragment;
-
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,12 +13,19 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.core.util.Pair;
+import androidx.fragment.app.Fragment;
+
 import com.example.eventplanner.R;
+import com.example.eventplanner.adapters.ProductListAdapter;
+import com.example.eventplanner.adapters.ServiceListAdapter;
 import com.example.eventplanner.databinding.FragmentProductsServicesPageBinding;
 import com.example.eventplanner.databinding.FragmentSearchPspBinding;
-import com.example.eventplanner.model.Category;
-import com.example.eventplanner.model.Event;
 import com.example.eventplanner.model.EventType;
+import com.example.eventplanner.model.Product;
+import com.example.eventplanner.model.Service;
 import com.example.eventplanner.model.Subcategory;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -35,22 +36,17 @@ import com.google.android.material.datepicker.MaterialDatePicker;
 import com.google.android.material.slider.RangeSlider;
 import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.textfield.TextInputEditText;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QuerySnapshot;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
-
-import com.example.eventplanner.adapters.ProductListAdapter;
-import com.example.eventplanner.adapters.ServiceListAdapter;
-import com.example.eventplanner.model.Product;
-import com.example.eventplanner.model.Service;
-import com.google.firebase.firestore.DocumentSnapshot;
-import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.QuerySnapshot;
-import com.google.firebase.storage.FirebaseStorage;
-import com.google.firebase.storage.StorageReference;
 
 
 public class ProductsServicesPageFragment extends Fragment {
@@ -203,8 +199,8 @@ public class ProductsServicesPageFragment extends Fragment {
         db = FirebaseFirestore.getInstance();
         storage = FirebaseStorage.getInstance();
 
-        getProducts();
-        getServices();
+        //getProducts();
+        //getServices();
 
 
         /*ArrayList<Package> packages = getPackages();
