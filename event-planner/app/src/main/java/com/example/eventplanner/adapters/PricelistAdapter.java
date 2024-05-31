@@ -8,17 +8,25 @@ import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.example.eventplanner.R;
+import com.example.eventplanner.activities.EditProductActivity;
 import com.example.eventplanner.model.Product;
 import com.example.eventplanner.model.Service;
 import com.example.eventplanner.model.Package;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QuerySnapshot;
+import com.google.firebase.firestore.WriteBatch;
 
 import java.util.ArrayList;
 
@@ -27,6 +35,7 @@ public class PricelistAdapter<T> extends ArrayAdapter<T> {
     private FirebaseFirestore db;
     private Context context;
     private int resource;
+    private double priceDifference;
     public PricelistAdapter(Context context, int resource, ArrayList<T> items) {
         super(context, resource, items);
         this.context = context;
@@ -82,6 +91,7 @@ public class PricelistAdapter<T> extends ArrayAdapter<T> {
             price.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+                    priceDifference = Double.parseDouble(price.getText().toString());
                     editPriceLayout.getEditText().setText(price.getText());
                     editPriceLayout.setVisibility(View.VISIBLE);
                     price.setVisibility(View.GONE);
@@ -97,9 +107,17 @@ public class PricelistAdapter<T> extends ArrayAdapter<T> {
                     String updatedPriceText = editPriceLayout.getEditText().getText().toString();
                     double updatedPrice = Double.parseDouble(updatedPriceText);
 
+                    priceDifference -= updatedPrice;
+
+                    String discountString = discount.getText().toString().split("-")[1].split("%")[0];
+                    double discountNumber = Double.parseDouble(discountString);
+
                     price.setText(updatedPriceText);
                     price.setVisibility(View.VISIBLE);
                     editPriceLayout.setVisibility(View.GONE);
+
+                    priceWithDiscount.setText(String.format("%.2f", updatedPrice *
+                            (1 - discountNumber * 0.01)));
 
                     T item = items.get(position);
                     if (item instanceof Product) {
@@ -111,7 +129,7 @@ public class PricelistAdapter<T> extends ArrayAdapter<T> {
                     }
 
                     notifyDataSetChanged();
-
+                    updateItem(item);
                     return true;
                 }
                 return false;
@@ -142,6 +160,9 @@ public class PricelistAdapter<T> extends ArrayAdapter<T> {
                     discount.setVisibility(View.VISIBLE);
                     editDiscountLayout.setVisibility(View.GONE);
 
+                    priceWithDiscount.setText(String.format("%.2f", Double.parseDouble(price.getText().toString()) *
+                            (1 - updatedDiscount * 0.01)));
+
                     if (item instanceof Product) {
                         ((Product) item).setDiscount(updatedDiscount);
                         priceWithDiscount.setText("= " + String.format("%.2f", ((Product) item).getPrice() * (1 - updatedDiscount * 0.01)));
@@ -153,6 +174,7 @@ public class PricelistAdapter<T> extends ArrayAdapter<T> {
                         priceWithDiscount.setText("= " + String.format("%.2f", ((Package) item).getPrice() * (1 - updatedDiscount * 0.01)));
                     }
 
+                    updateItem(item);
                     notifyDataSetChanged();
                     return true;
                 }
@@ -161,5 +183,104 @@ public class PricelistAdapter<T> extends ArrayAdapter<T> {
         });
 
         return convertView;
+    }
+
+    private void updateItem(Object item){
+        if (item instanceof Product) {
+            db.collection("Products")
+                    .document(((Product) item).getId().toString())
+                    .update("price", ((Product) item).getPrice(),
+                            "discount", ((Product) item).getDiscount())
+                    .addOnSuccessListener(new OnSuccessListener<Void>() {
+                        @Override
+                        public void onSuccess(Void unused) {
+                            updateInAllPackages(item);
+                            Toast.makeText(context, "Product updated", Toast.LENGTH_LONG).show();
+                        }
+                    })
+                    .addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            Toast.makeText(context, e.getMessage(), Toast.LENGTH_LONG).show();
+                        }
+                    });
+        } else if (item instanceof Service) {
+            db.collection("Services")
+                    .document(((Service) item).getId().toString())
+                    .update("fullPrice", ((Service) item).getFullPrice(),
+                            "discount", ((Service) item).getDiscount())
+                    .addOnSuccessListener(new OnSuccessListener<Void>() {
+                        @Override
+                        public void onSuccess(Void unused) {
+                            updateInAllPackages(item);
+                            Toast.makeText(context, "Service updated", Toast.LENGTH_LONG).show();
+                        }
+                    })
+                    .addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            Toast.makeText(context, e.getMessage(), Toast.LENGTH_LONG).show();
+                        }
+                    });
+        } else if (item instanceof Package) {
+            db.collection("Packages")
+                    .document(((Package) item).getId().toString())
+                    .update("price", ((Package) item).getPrice())
+                    .addOnSuccessListener(new OnSuccessListener<Void>() {
+                        @Override
+                        public void onSuccess(Void unused) {
+                            Toast.makeText(context, "Package updated", Toast.LENGTH_LONG).show();
+                        }
+                    })
+                    .addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            Toast.makeText(context, e.getMessage(), Toast.LENGTH_LONG).show();
+                        }
+                    });
+        }
+    }
+
+    private void updateInAllPackages(Object item){
+        Long itemId = (item instanceof Product) ? ((Product) item).getId() : ((Service) item).getId();
+        String itemField = (item instanceof Product) ? "productIds" : "serviceIds";
+
+        db.collection("Packages")
+                .whereArrayContains(itemField, itemId)
+                .get()
+                .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+                    @Override
+                    public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                        WriteBatch batch = db.batch();
+
+                        for (DocumentSnapshot document : queryDocumentSnapshots.getDocuments()) {
+                            DocumentReference packageRef = document.getReference();
+                            double currentPrice = document.getDouble("price");
+                            double newPrice = currentPrice - priceDifference;
+
+                            batch.update(packageRef, "price", newPrice);
+                        }
+
+                        batch.commit()
+                                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                    @Override
+                                    public void onSuccess(Void aVoid) {
+                                        Toast.makeText(context, "Package prices updated", Toast.LENGTH_LONG).show();
+                                    }
+                                })
+                                .addOnFailureListener(new OnFailureListener() {
+                                    @Override
+                                    public void onFailure(@NonNull Exception e) {
+                                        Toast.makeText(context, e.getMessage(), Toast.LENGTH_LONG).show();
+                                    }
+                                });
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Toast.makeText(context, e.getMessage(), Toast.LENGTH_LONG).show();
+                    }
+                });
     }
 }

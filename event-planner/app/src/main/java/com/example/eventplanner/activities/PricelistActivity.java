@@ -1,12 +1,22 @@
 package com.example.eventplanner.activities;
 
+import android.Manifest;
+import android.content.pm.PackageManager;
+import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Paint;
+import android.graphics.pdf.PdfDocument;
+import android.os.Build;
 import android.os.Bundle;
+import android.os.Environment;
 import android.view.View;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
@@ -17,13 +27,23 @@ import com.example.eventplanner.databinding.ActivityPricelistBinding;
 import com.example.eventplanner.model.Product;
 import com.example.eventplanner.model.Service;
 import com.example.eventplanner.model.Package;
+import com.example.eventplanner.model.UserPUPV;
+import com.example.eventplanner.model.UserPUPZ;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QuerySnapshot;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.time.LocalDate;
 import java.util.ArrayList;
 
 public class PricelistActivity extends AppCompatActivity {
@@ -34,6 +54,12 @@ public class PricelistActivity extends AppCompatActivity {
     ArrayList<Service> services;
     ArrayList<Package> packages;
     FirebaseFirestore db;
+    FirebaseAuth mAuth;
+    FirebaseUser user;
+    Object userFromDb;
+    String pupvId;
+
+    private static final int PERMISSION_REQUEST_CODE = 1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,22 +72,108 @@ public class PricelistActivity extends AppCompatActivity {
         packages = new ArrayList<>();
 
         db = FirebaseFirestore.getInstance();
-
-        getProducts();
+        mAuth = FirebaseAuth.getInstance();
+        user = mAuth.getCurrentUser();
+        getUser();
     }
 
     private void components(){
         binding.download.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                createPdf();
             }
         });
     }
 
+    private void createPdf(){
+        PdfDocument document = new PdfDocument();
+        PdfDocument.PageInfo pageInfo = new PdfDocument.PageInfo.Builder(1080, 1920, 1).create();
+        PdfDocument.Page page = document.startPage(pageInfo);
+
+        Canvas canvas = page.getCanvas();
+
+        Paint paint = new Paint();
+        paint.setColor(Color.RED);
+        paint.setTextSize(42);
+
+        String text = "Pricelist";
+        float x = 500;
+        float y = 900;
+
+        canvas.drawText(text, x, y, paint);
+        document.finishPage(page);
+
+        String directoryPath = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).toString();
+        File file = new File(directoryPath, "pricelist - " + LocalDate.now() + ".pdf");
+
+        try {
+            document.writeTo(new FileOutputStream(file));
+            document.close();
+            Toast.makeText(this, "PDF file downloaded successfully", Toast.LENGTH_SHORT).show();
+        } catch (FileNotFoundException e) {
+            System.out.println("Error while writing " + e.toString());
+            throw new RuntimeException(e);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private void getUser(){
+        db.collection("User")
+                .document(user.getUid())
+                .get()
+                .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                    @Override
+                    public void onSuccess(DocumentSnapshot documentSnapshot) {
+                        if(user.getDisplayName().equals("PUPZ")){
+                            userFromDb = new UserPUPZ(
+                                    documentSnapshot.getLong("id"),
+                                    documentSnapshot.getString("ownerId"),
+                                    documentSnapshot.getString("firstName"),
+                                    documentSnapshot.getString("lastName"),
+                                    documentSnapshot.getString("email"),
+                                    documentSnapshot.getString("password"),
+                                    documentSnapshot.getString("phone"),
+                                    documentSnapshot.getString("address"),
+                                    documentSnapshot.getBoolean("valid"),
+                                    documentSnapshot.getString("userType"));
+
+                            pupvId = documentSnapshot.getString("ownerId");
+                        }
+                        else{
+                            userFromDb = new UserPUPV(
+                                    documentSnapshot.getString("FirstName"),
+                                    documentSnapshot.getString("LastName"),
+                                    documentSnapshot.getString("Email"),
+                                    documentSnapshot.getString("Password"),
+                                    documentSnapshot.getString("Phone"),
+                                    documentSnapshot.getString("Address"),
+                                    documentSnapshot.getBoolean("IsValid"),
+                                    documentSnapshot.getString("CompanyName"),
+                                    documentSnapshot.getString("CompanyDescription"),
+                                    documentSnapshot.getString("CompanyAddress"),
+                                    documentSnapshot.getString("CompanyEmail"),
+                                    documentSnapshot.getString("CompanyPhone"),
+                                    documentSnapshot.getString("WorkTime"));
+
+                                    pupvId = documentSnapshot.getId();
+                        }
+
+                        getProducts();
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+
+                    }
+                });
+    }
+
     private void getProducts(){
         db.collection("Products")
-                //.whereEqualTo("pupvId", 1)
+                .whereEqualTo("pupvId", pupvId)
                 .whereEqualTo("pending", false)
                 .whereEqualTo("deleted", false)
                 .get()
@@ -71,15 +183,15 @@ public class PricelistActivity extends AppCompatActivity {
                         for(DocumentSnapshot doc: task.getResult()){
                             Product product = new Product(
                                     Long.parseLong(doc.getId()),
-                                    1l,
-                                    doc.getLong("categoryId"),
-                                    doc.getLong("subcategoryId"),
+                                    pupvId,
+                                    Long.parseLong(doc.getString("categoryId")),
+                                    Long.parseLong(doc.getString("subcategoryId")),
                                     doc.getString("name"),
                                     doc.getString("description"),
                                     doc.getDouble("price"),
                                     doc.getDouble("discount"),
                                     new ArrayList<>(),
-                                    (ArrayList<Long>) doc.get("eventTypeIds"),
+                                    new ArrayList<>(), //convertStringArrayToLong((ArrayList<String>) doc.get("eventTypeIds")),
                                     doc.getBoolean("available"),
                                     doc.getBoolean("visible"),
                                     doc.getBoolean("pending"),
@@ -103,9 +215,19 @@ public class PricelistActivity extends AppCompatActivity {
                 });
     }
 
+    private ArrayList<Long> convertStringArrayToLong(ArrayList<String> list){
+        ArrayList<Long> ids = new ArrayList<>();
+
+        for(String item: list){
+            ids.add(Long.parseLong(item));
+        }
+
+        return ids;
+    }
+
     private void getServices(){
         db.collection("Services")
-                //.whereEqualTo("pupvId", 1)
+                .whereEqualTo("pupvId", pupvId)
                 .whereEqualTo("pending", false)
                 .whereEqualTo("deleted", false)
                 .get()
@@ -115,22 +237,22 @@ public class PricelistActivity extends AppCompatActivity {
                         for(DocumentSnapshot doc: task.getResult()){
                             Service service = new Service(
                                         Long.parseLong(doc.getId()),
-                                        1l,
-                                        doc.getLong("categoryId"),
-                                        doc.getLong("subcategoryId"),
+                                        pupvId,
+                                        Long.parseLong(doc.getString("categoryId")),
+                                        Long.parseLong(doc.getString("subcategoryId")),
                                         doc.getString("name"),
                                         doc.getString("description"),
                                         new ArrayList<>(), //images
                                         doc.getString("specific"),
                                         ((Number) doc.get("pricePerHour")).doubleValue(),
                                         ((Number) doc.get("fullPrice")).doubleValue(),
-                                        ((Number) doc.get("duration")).doubleValue(),
-                                        ((Number) doc.get("durationMin")).doubleValue(),
-                                        ((Number) doc.get("durationMax")).doubleValue(),
+                                        doc.get("duration") != null ? ((Number) doc.get("duration")).doubleValue() : null,
+                                        doc.get("durationMin") != null ? ((Number) doc.get("durationMin")).doubleValue() : null,
+                                        doc.get("durationMax") != null ? ((Number) doc.get("durationMax")).doubleValue() : null,
                                         doc.getString("location"),
                                         ((Number) doc.get("discount")).doubleValue(),
-                                        (ArrayList<Long>) doc.get("pupIds"),
-                                        (ArrayList<Long>) doc.get("eventTypeIds"),
+                                        (ArrayList<String>) doc.get("pupIds"),
+                                        convertStringArrayToLong((ArrayList<String>) doc.get("eventTypeIds")),
                                         doc.getString("reservationDue"),
                                         doc.getString("cancelationDue"),
                                         doc.getBoolean("automaticAffirmation"),
@@ -158,8 +280,7 @@ public class PricelistActivity extends AppCompatActivity {
 
     private void getPackages(){
         db.collection("Packages")
-                //.whereEqualTo("pupvId", 1)
-                .whereEqualTo("pending", false)
+                .whereEqualTo("pupvId", pupvId)
                 .whereEqualTo("deleted", false)
                 .get()
                 .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
@@ -168,17 +289,17 @@ public class PricelistActivity extends AppCompatActivity {
                         for(DocumentSnapshot doc: task.getResult()){
                             Package packagee = new Package(
                                         Long.parseLong(doc.getId()),
-                                        1l,
+                                        pupvId,
                                         doc.getString("name"),
                                         doc.getString("description"),
                                         ((Number) doc.get("discount")).doubleValue(),
                                         doc.getBoolean("available"),
                                         doc.getBoolean("visible"),
-                                        doc.getLong("categoryId"),
-                                        (ArrayList<Long>) doc.get("subcategoryIds"),
-                                        (ArrayList<Long>) doc.get("productIds"),
-                                        (ArrayList<Long>) doc.get("serviceIds"),
-                                        (ArrayList<Long>) doc.get("eventTypeIds"),
+                                        Long.parseLong(doc.getString("categoryId")),
+                                        convertStringArrayToLong((ArrayList<String>) doc.get("subcategoryIds")),
+                                        convertStringArrayToLong((ArrayList<String>)doc.get("productIds")),
+                                        convertStringArrayToLong((ArrayList<String>)doc.get("serviceIds")),
+                                        convertStringArrayToLong((ArrayList<String>) doc.get("eventTypeIds")),
                                         ((Number) doc.get("price")).doubleValue(),
                                         new ArrayList<>(), //images
                                         doc.getString("reservationDue"),

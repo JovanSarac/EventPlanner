@@ -162,10 +162,12 @@ public class HomeActivity extends AppCompatActivity {
         FirebaseUser user= mAuth.getCurrentUser();
         if(user==null){
             binding.signOut.setVisibility(View.GONE);
+            binding.pricelist.setVisibility(View.GONE);
 
             binding.registerButton.setVisibility(View.VISIBLE);
             binding.loginButton.setVisibility(View.VISIBLE);
             binding.homeact.setVisibility(View.INVISIBLE);
+
         }else{
             binding.signOut.setVisibility(View.VISIBLE);
 
@@ -173,10 +175,12 @@ public class HomeActivity extends AppCompatActivity {
             binding.loginButton.setVisibility(View.GONE);
             if(user.getDisplayName().equals("OD")){
                 binding.homeact.setVisibility(View.VISIBLE);
+                binding.pricelist.setVisibility(View.GONE);
             }
             if(!user.getDisplayName().equals("ADMIN")){
                 binding.categoriesButton.setVisibility(View.GONE);
                 binding.typesOfEventsButton.setVisibility(View.GONE);
+                binding.pricelist.setVisibility(View.VISIBLE);
             }
             else{
                 binding.categoriesButton.setVisibility(View.VISIBLE);
