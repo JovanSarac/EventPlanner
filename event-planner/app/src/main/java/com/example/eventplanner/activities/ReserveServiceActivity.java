@@ -35,6 +35,7 @@ import com.google.android.gms.tasks.Task;
 import com.google.android.gms.tasks.Tasks;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
+import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QuerySnapshot;
@@ -50,6 +51,8 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.UUID;
+import java.util.concurrent.CompletableFuture;
 
 public class ReserveServiceActivity extends AppCompatActivity {
     FirebaseFirestore db = FirebaseFirestore.getInstance();
@@ -63,6 +66,10 @@ public class ReserveServiceActivity extends AppCompatActivity {
     Event selectedEvent;
     SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
     HashMap<String, List<EventPUPZ>> busyDates=new HashMap<>();
+    TextInputEditText from;
+    TextInputEditText to;
+
+    String dayOfWeek="";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -77,8 +84,8 @@ public class ReserveServiceActivity extends AppCompatActivity {
         getService();
         getPupz();
 
-        TextInputEditText from=findViewById(R.id.fromTime);
-        TextInputEditText to=findViewById(R.id.toTime);
+        from=findViewById(R.id.fromTime);
+        to=findViewById(R.id.toTime);
         from.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
@@ -86,15 +93,22 @@ public class ReserveServiceActivity extends AppCompatActivity {
                     String timeString=from.getText().toString();
                     DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm");
                     LocalTime time = LocalTime.parse(timeString, formatter);
-                    //time.plusMinutes((int)(service.getDuration()*60));
-                    time=time.plusMinutes((int)(1.6*60));
-                    to.setText(time.toString());
+                    if(service.getDuration()!=null){
+                        time=time.plusMinutes((int)(1.6*60));//time.plusMinutes((int)(service.getDuration()*60));
+                    }
+
+                    LocalTime endTime=LocalTime.parse(dateScheule.getSchedule().get(dayOfWeek).getEndTime(), formatter);
+                    if(time.isBefore(endTime)){
+                        to.setText(time.toString());
+                        return;
+                    }
+                    to.setText(endTime.toString());
                 }
             }
         });
 
         findViewById(R.id.reserveService).setOnClickListener(v->{
-
+            createReservation();
         });
 
     }
@@ -259,7 +273,7 @@ public class ReserveServiceActivity extends AppCompatActivity {
 
     void displayTable(){
         SimpleDateFormat sdf = new SimpleDateFormat("EEEE", Locale.getDefault());
-        String dayOfWeek = sdf.format(selectedEvent.getDateEvent());
+        dayOfWeek = sdf.format(selectedEvent.getDateEvent());
         TableLayout tableLayout = findViewById(R.id.tableLayout);
         dayOfWeek="Friday";
 
@@ -294,6 +308,47 @@ public class ReserveServiceActivity extends AppCompatActivity {
         };
     }
     void createReservation(){
+        //validacija za max i min trajanje
+        getNumberOfItemsInUsersCollection().thenAccept(numberOfItems-> {
+                    EventPUPZ event = new EventPUPZ(
+                            numberOfItems + 1,
+                            from.getText().toString(),
+                            to.getText().toString(),
+                            selectedEvent.getDateEvent().toString(),
+                            dateScheule.getId(),
+                            dayOfWeek,
+                            "RESERVED",
+                            selectedPupz.getId()
+                    );
+                    db.collection("Event").add(event)
+                            .addOnCompleteListener(task -> {
+                                if (task.isSuccessful()) {
+                                    Toast.makeText(ReserveServiceActivity.this, "Data added successfully", Toast.LENGTH_SHORT).show();
+                                } else {
+                                    Toast.makeText(ReserveServiceActivity.this, "Failed to add data", Toast.LENGTH_SHORT).show();
+                                }
+                            });
+                }
+            );
+    }
+    private CompletableFuture<Long> getNumberOfItemsInUsersCollection() {
+        CollectionReference usersCollection = db.collection("Event");
 
+        CompletableFuture<Long> future = new CompletableFuture<>();
+
+        usersCollection.get().addOnSuccessListener(queryDocumentSnapshots -> {
+            long numberOfItems;
+            if (queryDocumentSnapshots.isEmpty()) {
+                numberOfItems = 1L;
+            } else {
+                numberOfItems = (long) queryDocumentSnapshots.size();
+            }
+            future.complete(numberOfItems);
+        }).addOnFailureListener(e -> {
+            Log.e("Firestore", "Error getting documents: ", e);
+            future.completeExceptionally(e);
+        });
+
+        return future;
     }
 }
