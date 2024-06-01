@@ -22,6 +22,8 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -36,12 +38,17 @@ public class PricelistAdapter<T> extends ArrayAdapter<T> {
     private Context context;
     private int resource;
     private double priceDifference;
+    FirebaseAuth mAuth;
+    FirebaseUser user;
     public PricelistAdapter(Context context, int resource, ArrayList<T> items) {
         super(context, resource, items);
         this.context = context;
         this.resource = resource;
         this.items = items;
         this.db = FirebaseFirestore.getInstance();
+
+        mAuth = FirebaseAuth.getInstance();
+        user = mAuth.getCurrentUser();
     }
 
     @NonNull
@@ -99,88 +106,91 @@ public class PricelistAdapter<T> extends ArrayAdapter<T> {
             });
         }
 
-        priceEditText.setOnEditorActionListener(new TextView.OnEditorActionListener() {
-            @Override
-            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
-                if (actionId == EditorInfo.IME_ACTION_DONE ||
-                        (event != null && event.getKeyCode() == KeyEvent.KEYCODE_ENTER && event.getAction() == KeyEvent.ACTION_DOWN)) {
-                    String updatedPriceText = editPriceLayout.getEditText().getText().toString();
-                    double updatedPrice = Double.parseDouble(updatedPriceText);
 
-                    priceDifference -= updatedPrice;
+        if(user.getDisplayName().equals("PUPV")){
+            priceEditText.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+                @Override
+                public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                    if (actionId == EditorInfo.IME_ACTION_DONE ||
+                            (event != null && event.getKeyCode() == KeyEvent.KEYCODE_ENTER && event.getAction() == KeyEvent.ACTION_DOWN)) {
+                        String updatedPriceText = editPriceLayout.getEditText().getText().toString();
+                        double updatedPrice = Double.parseDouble(updatedPriceText);
 
-                    String discountString = discount.getText().toString().split("-")[1].split("%")[0];
-                    double discountNumber = Double.parseDouble(discountString);
+                        priceDifference -= updatedPrice;
 
-                    price.setText(updatedPriceText);
-                    price.setVisibility(View.VISIBLE);
-                    editPriceLayout.setVisibility(View.GONE);
+                        String discountString = discount.getText().toString().split("-")[1].split("%")[0];
+                        double discountNumber = Double.parseDouble(discountString);
 
-                    priceWithDiscount.setText(String.format("%.2f", updatedPrice *
-                            (1 - discountNumber * 0.01)));
+                        price.setText(updatedPriceText);
+                        price.setVisibility(View.VISIBLE);
+                        editPriceLayout.setVisibility(View.GONE);
 
-                    T item = items.get(position);
-                    if (item instanceof Product) {
-                        ((Product) item).setPrice(updatedPrice);
-                    } else if (item instanceof Service) {
-                        ((Service) item).setFullPrice(updatedPrice);
-                    } else if (item instanceof Package) {
-                        ((Package) item).setPrice(updatedPrice);
+                        priceWithDiscount.setText(String.format("%.2f", updatedPrice *
+                                (1 - discountNumber * 0.01)));
+
+                        T item = items.get(position);
+                        if (item instanceof Product) {
+                            ((Product) item).setPrice(updatedPrice);
+                        } else if (item instanceof Service) {
+                            ((Service) item).setFullPrice(updatedPrice);
+                        } else if (item instanceof Package) {
+                            ((Package) item).setPrice(updatedPrice);
+                        }
+
+                        notifyDataSetChanged();
+                        updateItem(item);
+                        return true;
                     }
-
-                    notifyDataSetChanged();
-                    updateItem(item);
-                    return true;
+                    return false;
                 }
-                return false;
-            }
-        });
+            });
 
-        TextInputLayout editDiscountLayout = convertView.findViewById(R.id.edit_discount);
-        TextInputEditText discountEditText = convertView.findViewById(R.id.discountEditText);
+            TextInputLayout editDiscountLayout = convertView.findViewById(R.id.edit_discount);
+            TextInputEditText discountEditText = convertView.findViewById(R.id.discountEditText);
 
-        discount.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                editDiscountLayout.getEditText().setText(discount.getText());
-                editDiscountLayout.setVisibility(View.VISIBLE);
-                discount.setVisibility(View.GONE);
-            }
-        });
+            discount.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    editDiscountLayout.getEditText().setText(discount.getText());
+                    editDiscountLayout.setVisibility(View.VISIBLE);
+                    discount.setVisibility(View.GONE);
+                }
+            });
 
-        discountEditText.setOnEditorActionListener(new TextView.OnEditorActionListener() {
-            @Override
-            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
-                if (actionId == EditorInfo.IME_ACTION_DONE ||
-                        (event != null && event.getKeyCode() == KeyEvent.KEYCODE_ENTER && event.getAction() == KeyEvent.ACTION_DOWN)) {
-                    String updatedDiscountText = editDiscountLayout.getEditText().getText().toString();
-                    double updatedDiscount = Double.parseDouble(updatedDiscountText.replace("-", "").replace("%", ""));
+            discountEditText.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+                @Override
+                public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                    if (actionId == EditorInfo.IME_ACTION_DONE ||
+                            (event != null && event.getKeyCode() == KeyEvent.KEYCODE_ENTER && event.getAction() == KeyEvent.ACTION_DOWN)) {
+                        String updatedDiscountText = editDiscountLayout.getEditText().getText().toString();
+                        double updatedDiscount = Double.parseDouble(updatedDiscountText.replace("-", "").replace("%", ""));
 
-                    discount.setText("-" + updatedDiscountText + "%");
-                    discount.setVisibility(View.VISIBLE);
-                    editDiscountLayout.setVisibility(View.GONE);
+                        discount.setText("-" + updatedDiscountText + "%");
+                        discount.setVisibility(View.VISIBLE);
+                        editDiscountLayout.setVisibility(View.GONE);
 
-                    priceWithDiscount.setText(String.format("%.2f", Double.parseDouble(price.getText().toString()) *
-                            (1 - updatedDiscount * 0.01)));
+                        priceWithDiscount.setText(String.format("%.2f", Double.parseDouble(price.getText().toString()) *
+                                (1 - updatedDiscount * 0.01)));
 
-                    if (item instanceof Product) {
-                        ((Product) item).setDiscount(updatedDiscount);
-                        priceWithDiscount.setText("= " + String.format("%.2f", ((Product) item).getPrice() * (1 - updatedDiscount * 0.01)));
-                    } else if (item instanceof Service) {
-                        ((Service) item).setDiscount(updatedDiscount);
-                        priceWithDiscount.setText("= " + String.format("%.2f", ((Service) item).getFullPrice() * (1 - updatedDiscount * 0.01)));
-                    } else if (item instanceof Package) {
-                        ((Package) item).setDiscount(updatedDiscount);
-                        priceWithDiscount.setText("= " + String.format("%.2f", ((Package) item).getPrice() * (1 - updatedDiscount * 0.01)));
+                        if (item instanceof Product) {
+                            ((Product) item).setDiscount(updatedDiscount);
+                            priceWithDiscount.setText("= " + String.format("%.2f", ((Product) item).getPrice() * (1 - updatedDiscount * 0.01)));
+                        } else if (item instanceof Service) {
+                            ((Service) item).setDiscount(updatedDiscount);
+                            priceWithDiscount.setText("= " + String.format("%.2f", ((Service) item).getFullPrice() * (1 - updatedDiscount * 0.01)));
+                        } else if (item instanceof Package) {
+                            ((Package) item).setDiscount(updatedDiscount);
+                            priceWithDiscount.setText("= " + String.format("%.2f", ((Package) item).getPrice() * (1 - updatedDiscount * 0.01)));
+                        }
+
+                        updateItem(item);
+                        notifyDataSetChanged();
+                        return true;
                     }
-
-                    updateItem(item);
-                    notifyDataSetChanged();
-                    return true;
+                    return false;
                 }
-                return false;
-            }
-        });
+            });
+        }
 
         return convertView;
     }

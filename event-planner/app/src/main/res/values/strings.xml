@@ -103,4 +103,9 @@
     <string name="enter_the_price">Enter the expected price for the selected category and subcategory:</string>
     <string name="enter_price">Enter the price:</string>
     <string name="pricelist">Pricelist</string>
+    <string name="company_info">Company info</string>
+    <string name="work_time">Work time</string>
+    <string name="report">Report</string>
+    <string name="reason_of_report">Reason of report</string>
+    <string name="send">Send</string>
 </resources>

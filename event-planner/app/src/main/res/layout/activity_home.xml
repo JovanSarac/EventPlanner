@@ -67,6 +67,12 @@
         android:layout_height="wrap_content"
         android:text="@string/pricelist"
         android:textSize="20sp"/>
+    <Button
+        android:id="@+id/companyInfo"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/company_info"
+        android:textSize="20sp"/>
  
     <Button
         android:id="@+id/registerButton"

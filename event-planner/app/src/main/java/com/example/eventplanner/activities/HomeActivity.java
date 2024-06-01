@@ -117,6 +117,11 @@ public class HomeActivity extends AppCompatActivity {
             startActivity(intent);
         });
 
+        binding.companyInfo.setOnClickListener(v ->{
+            Intent intent = new Intent(HomeActivity.this, CompanyViewActivity.class);
+            startActivity(intent);
+        });
+
         binding.registerButton.setOnClickListener(v->{
             Intent intent = new Intent(HomeActivity.this, OD_RegisterActivity.class);
             startActivity(intent);
@@ -151,7 +156,6 @@ public class HomeActivity extends AppCompatActivity {
             Toast.makeText(this, "SingedOut", Toast.LENGTH_SHORT).show();
             this.onResume();
         });
-
 
     }
 
