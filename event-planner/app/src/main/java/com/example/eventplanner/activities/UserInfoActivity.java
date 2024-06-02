@@ -29,6 +29,8 @@ import com.example.eventplanner.databinding.ActivityUserInfoBinding;
 import com.example.eventplanner.model.UserOD;
 import com.example.eventplanner.model.UserPUPV;
 import com.example.eventplanner.model.UserPUPZ;
+import com.example.eventplanner.services.FCMHttpClient;
+import com.example.eventplanner.services.NotificationService;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -38,9 +40,11 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.messaging.RemoteMessage;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
+import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
@@ -68,12 +72,6 @@ public class UserInfoActivity extends AppCompatActivity {
 
         getOD();
 
-        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O){
-            NotificationChannel channel = new NotificationChannel("AdminChannel", "AdminChannel", NotificationManager.IMPORTANCE_DEFAULT);
-            NotificationManager manager = getSystemService(NotificationManager.class);
-            manager.createNotificationChannel(channel);
-        }
-
         binding.reportOD.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -99,6 +97,8 @@ public class UserInfoActivity extends AppCompatActivity {
                         doc.put("pupvId", user.getUid());
                         doc.put("reasonOfReport", report.getEditText().getText().toString());
                         doc.put("ODId", userODId);
+                        doc.put("dateOfReport", LocalDate.now().toString());
+                        doc.put("status", "reported");
 
                         db.collection("UserODReports")
                                 .document(id.toString())
@@ -107,7 +107,7 @@ public class UserInfoActivity extends AppCompatActivity {
                                     @Override
                                     public void onComplete(@NonNull Task<Void> task) {
                                         popupWindow.dismiss();
-                                        sendNotificationToAdmin();
+                                        sendNotification();
                                         Toast.makeText(UserInfoActivity.this, "Report sent successfully", Toast.LENGTH_SHORT).show();
                                     }
                                 })
@@ -123,15 +123,14 @@ public class UserInfoActivity extends AppCompatActivity {
         });
     }
 
-    private void sendNotificationToAdmin(){
-        NotificationCompat.Builder builder = new NotificationCompat.Builder(UserInfoActivity.this, "AdminChannel");
-        builder.setContentTitle("New userOD report");
-        builder.setContentText("UserOD" + userOD.getFirstName() + " " + userOD.getLastName() + " has been reported");
-        builder.setSmallIcon(R.drawable.ic_approve);
-        builder.setAutoCancel(true);
+    private void sendNotification(){
+        String serverKey="AAAA8GYmoZ8:APA91bHsjyzOSa2JtO_cQWFO-X1p9nMuHRO8DTfD1zhcY4mnqZ-2EZmIn8tMf1ISmnM31WB68Mzn2soeUgEISXlSc9WjRvcRhyYbmBgi7whJuYXX-24wkODByasquofLaMZydpg78esK";
+        String jsonPayload = "{\"data\":{\"title\":\"New userOD report\",\"body\":\"UserOD "
+                + userOD.getFirstName() + " " + userOD.getLastName() +
+                " has been reported\"},\"to\":\"/topics/" + "AdminTopic" + "\"}";
 
-        NotificationManagerCompat managerCompat = NotificationManagerCompat.from(UserInfoActivity.this);
-        //managerCompat.notify(1, builder.build());
+        FCMHttpClient httpClient = new FCMHttpClient();
+        httpClient.sendMessageToTopic(serverKey, "AdminTopic", jsonPayload);
     }
 
     private void getOD(){

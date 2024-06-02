@@ -18,6 +18,7 @@ import com.example.eventplanner.R;
 import com.example.eventplanner.databinding.ActivityCompanyViewBinding;
 import com.example.eventplanner.model.CompanyReport;
 import com.example.eventplanner.model.UserPUPV;
+import com.example.eventplanner.services.FCMHttpClient;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -29,7 +30,9 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
+import java.time.LocalDate;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Random;
 
@@ -77,6 +80,8 @@ public class CompanyViewActivity extends AppCompatActivity {
                         doc.put("pupvId", "R5H7ey40UKVS1XFsuMpY5uISwnc2");
                         doc.put("reasonOfReport", report.getEditText().getText().toString());
                         doc.put("ODId", user.getUid());
+                        doc.put("dateOfReport", LocalDate.now().toString());
+                        doc.put("status", "reported");
 
                         db.collection("CompanyReports")
                                 .document(id.toString())
@@ -85,6 +90,7 @@ public class CompanyViewActivity extends AppCompatActivity {
                                     @Override
                                     public void onComplete(@NonNull Task<Void> task) {
                                         popupWindow.dismiss();
+                                        sendNotification();
                                         Toast.makeText(CompanyViewActivity.this, "Report sent successfully", Toast.LENGTH_SHORT).show();
                                     }
                                 })
@@ -98,6 +104,16 @@ public class CompanyViewActivity extends AppCompatActivity {
                 });
             }
         });
+    }
+
+    private void sendNotification(){
+        String serverKey="AAAA8GYmoZ8:APA91bHsjyzOSa2JtO_cQWFO-X1p9nMuHRO8DTfD1zhcY4mnqZ-2EZmIn8tMf1ISmnM31WB68Mzn2soeUgEISXlSc9WjRvcRhyYbmBgi7whJuYXX-24wkODByasquofLaMZydpg78esK";
+        String jsonPayload = "{\"data\":{\"title\":\"New company report\",\"body\":\"Company "
+                + company.getCompanyName() +
+                " has been reported\"},\"to\":\"/topics/" + "AdminTopic" + "\"}";
+
+        FCMHttpClient httpClient = new FCMHttpClient();
+        httpClient.sendMessageToTopic(serverKey, "AdminTopic", jsonPayload);
     }
 
     private void getCompany(){
