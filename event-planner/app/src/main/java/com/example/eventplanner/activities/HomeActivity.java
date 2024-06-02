@@ -27,6 +27,7 @@ import com.example.eventplanner.databinding.ActivityHomeBinding;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.auth.User;
 import com.google.firebase.messaging.FirebaseMessaging;
 import com.google.android.gms.tasks.OnCompleteListener;
 public class HomeActivity extends AppCompatActivity {
@@ -122,6 +123,11 @@ public class HomeActivity extends AppCompatActivity {
             startActivity(intent);
         });
 
+        binding.userInfo.setOnClickListener(v ->{
+            Intent intent = new Intent(HomeActivity.this, UserInfoActivity.class);
+            startActivity(intent);
+        });
+
         binding.registerButton.setOnClickListener(v->{
             Intent intent = new Intent(HomeActivity.this, OD_RegisterActivity.class);
             startActivity(intent);
@@ -167,6 +173,9 @@ public class HomeActivity extends AppCompatActivity {
         if(user==null){
             binding.signOut.setVisibility(View.GONE);
             binding.pricelist.setVisibility(View.GONE);
+            binding.userInfo.setVisibility(View.GONE);
+            binding.companyInfo.setVisibility(View.GONE);
+
 
             binding.registerButton.setVisibility(View.VISIBLE);
             binding.loginButton.setVisibility(View.VISIBLE);
@@ -177,15 +186,23 @@ public class HomeActivity extends AppCompatActivity {
 
             binding.registerButton.setVisibility(View.GONE);
             binding.loginButton.setVisibility(View.GONE);
+            binding.pricelist.setVisibility(View.GONE);
+            binding.companyInfo.setVisibility(View.GONE);
+            binding.userInfo.setVisibility(View.GONE);
             if(user.getDisplayName().equals("OD")){
                 binding.homeact.setVisibility(View.VISIBLE);
-                binding.pricelist.setVisibility(View.GONE);
+                binding.companyInfo.setVisibility(View.VISIBLE);
             }
-            if(!user.getDisplayName().equals("ADMIN")){
+            else if(user.getDisplayName().equals("PUPV")){
+                binding.userInfo.setVisibility(View.VISIBLE);
+            }
+            //pupv i pupz
+            else if(!user.getDisplayName().equals("ADMIN")){
                 binding.categoriesButton.setVisibility(View.GONE);
                 binding.typesOfEventsButton.setVisibility(View.GONE);
                 binding.pricelist.setVisibility(View.VISIBLE);
             }
+            //admin
             else{
                 binding.categoriesButton.setVisibility(View.VISIBLE);
                 binding.typesOfEventsButton.setVisibility(View.VISIBLE);

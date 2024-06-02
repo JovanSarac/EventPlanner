@@ -101,12 +101,10 @@ public class AddWorkerScheduleActivity extends AppCompatActivity {
                 mAuth.createUserWithEmailAndPassword(worker.getEmail(), worker.getPassword())
                         .addOnCompleteListener(task -> {
                             if (task.isSuccessful()) {
-                                FirebaseUser newUser = task.getResult().getUser();
-                                sendVerificationEmail(newUser);
+                                updateUserType();
 
-                                UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder()
-                                        .setDisplayName("PUPZ").build();
-                                task.getResult().getUser().updateProfile(profileUpdates);
+                                sendVerificationEmail(mAuth.getCurrentUser());
+
                             } else {
                                 Log.e("FirebaseAuth", "Failed to create user: " + task.getException());
                             }
@@ -144,6 +142,14 @@ public class AddWorkerScheduleActivity extends AppCompatActivity {
             Intent intent = new Intent(this, RegisterWorkerActivity.class);
             startActivity(intent);
         });
+    }
+
+    private void updateUserType(){
+        FirebaseUser user = mAuth.getCurrentUser();
+        UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder()
+                .setDisplayName("PUPZ").build();
+
+        user.updateProfile(profileUpdates);
     }
 
     private CompletableFuture<Long> getNumberOfItemsInUsersCollection() {
