@@ -24,9 +24,11 @@ import com.example.eventplanner.utils.DateRange;
 import com.example.eventplanner.utils.Days;
 import com.example.eventplanner.utils.WorkingHours;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.auth.UserProfileChangeRequest;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -99,8 +101,10 @@ public class AddWorkerScheduleActivity extends AppCompatActivity {
                 mAuth.createUserWithEmailAndPassword(worker.getEmail(), worker.getPassword())
                         .addOnCompleteListener(task -> {
                             if (task.isSuccessful()) {
-                                FirebaseUser newUser = task.getResult().getUser();
-                                sendVerificationEmail(newUser);
+                                updateUserType();
+
+                                sendVerificationEmail(mAuth.getCurrentUser());
+
                             } else {
                                 Log.e("FirebaseAuth", "Failed to create user: " + task.getException());
                             }
@@ -138,6 +142,14 @@ public class AddWorkerScheduleActivity extends AppCompatActivity {
             Intent intent = new Intent(this, RegisterWorkerActivity.class);
             startActivity(intent);
         });
+    }
+
+    private void updateUserType(){
+        FirebaseUser user = mAuth.getCurrentUser();
+        UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder()
+                .setDisplayName("PUPZ").build();
+
+        user.updateProfile(profileUpdates);
     }
 
     private CompletableFuture<Long> getNumberOfItemsInUsersCollection() {

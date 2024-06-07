@@ -93,7 +93,7 @@ public class ServiceListPupvFragment extends Fragment {
                             final int[] servicesProccessed = {0};
 
                             for (DocumentSnapshot doc : serviceDocs) {
-                                Service service = new Service(
+                                Service service = new Service(/*
                                         Long.parseLong(doc.getId()),
                                         doc.getLong("categoryId"),
                                         doc.getLong("subcategoryId"),
@@ -116,7 +116,7 @@ public class ServiceListPupvFragment extends Fragment {
                                         doc.getBoolean("available"),
                                         doc.getBoolean("visible"),
                                         doc.getBoolean("pending"),
-                                        doc.getBoolean("deleted"));
+                                        doc.getBoolean("deleted")*/);
 
                                 ArrayList<String> imageUrls = (ArrayList<String>) doc.get("imageUrls");
                                 final int numImages = imageUrls.size();

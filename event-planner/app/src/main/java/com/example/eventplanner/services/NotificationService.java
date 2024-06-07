@@ -22,6 +22,7 @@ import androidx.core.app.NotificationManagerCompat;
 
 import com.example.eventplanner.R;
 import com.example.eventplanner.activities.HomeActivity;
+import com.example.eventplanner.activities.UserInfoActivity;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.messaging.FirebaseMessaging;
@@ -52,45 +53,72 @@ public class NotificationService extends FirebaseMessagingService {
             }
         }
         Log.d(TAG, "Message Notification Body: " + body);
+        String notificationTitle = title;
         String notificationBody = body;
 
-        sendNotification(notificationBody);
+        sendNotification(notificationTitle, notificationBody);
         Log.d(TAG, "Usao u if");
 
 
     }
-    private void sendNotification(String messageBody) {
+    private void sendNotification(String messageTitle, String messageBody) {
         FirebaseAuth mAuth=FirebaseAuth.getInstance();
         FirebaseUser user=mAuth.getCurrentUser();
-        if (user != null && user.getDisplayName().equals("PUPV")) {
-            Intent intent = new Intent(this, HomeActivity.class);
-            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-            PendingIntent pendingIntent = PendingIntent.getActivity(this, 0 /* Request code */, intent,
-                    PendingIntent.FLAG_IMMUTABLE);
-            String channelId = user.getUid();
-            Uri defaultSoundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
-            NotificationCompat.Builder notificationBuilder =
-                    new NotificationCompat.Builder(this, channelId)
-                            .setSmallIcon(R.drawable.ic_add)
-                            .setContentTitle("New category!")
-                            .setContentText(messageBody)
-                            .setAutoCancel(true)
-                            .setSound(defaultSoundUri)
-                            .setContentIntent(pendingIntent);
 
-            NotificationManager notificationManager =
-                    (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+        if (user != null) {
 
-            // Since android Oreo notification channel is needed.
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                NotificationChannel channel = new NotificationChannel(channelId,
-                        "Channel human readable title",
-                        NotificationManager.IMPORTANCE_DEFAULT);
-                notificationManager.createNotificationChannel(channel);
+            if(user.getDisplayName().equals("PUPV")){
+                Intent intent = new Intent(this, HomeActivity.class);
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                PendingIntent pendingIntent = PendingIntent.getActivity(this, 0 /* Request code */, intent,
+                        PendingIntent.FLAG_IMMUTABLE);
+                String channelId = user.getUid();
+                Uri defaultSoundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
+                NotificationCompat.Builder notificationBuilder =
+                        new NotificationCompat.Builder(this, channelId)
+                                .setSmallIcon(R.drawable.ic_add)
+                                .setContentTitle("New category!")
+                                .setContentText(messageBody)
+                                .setAutoCancel(true)
+                                .setSound(defaultSoundUri)
+                                .setContentIntent(pendingIntent);
+
+                NotificationManager notificationManager =
+                        (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+
+                // Since android Oreo notification channel is needed.
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                    NotificationChannel channel = new NotificationChannel(channelId,
+                            "Channel human readable title",
+                            NotificationManager.IMPORTANCE_DEFAULT);
+                    notificationManager.createNotificationChannel(channel);
+                }
+
+                notificationManager.notify(0 /* ID of notification */, notificationBuilder.build());
             }
+            else if(user.getDisplayName().equals("ADMIN")){
+                String channelId = "AdminChannel";
+                Uri defaultSoundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
 
-            notificationManager.notify(0 /* ID of notification */, notificationBuilder.build());
+                NotificationCompat.Builder builder = new NotificationCompat.Builder(this, channelId);
+                builder.setContentTitle(messageTitle);
+                builder.setContentText(messageBody);
+                builder.setSmallIcon(R.drawable.ic_android);
+                builder.setAutoCancel(true);
+                builder.setSound(defaultSoundUri);
 
+                NotificationManagerCompat managerCompat = NotificationManagerCompat.from(this);
+
+                NotificationManager notificationManager =
+                        (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                    NotificationChannel channel = new NotificationChannel("AdminChannel", "AdminChannel", NotificationManager.IMPORTANCE_DEFAULT);
+                    notificationManager.createNotificationChannel(channel);
+                }
+
+                notificationManager.notify(0, builder.build());
+            }
         }
 
     }

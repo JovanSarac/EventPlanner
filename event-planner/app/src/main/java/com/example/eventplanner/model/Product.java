@@ -8,6 +8,7 @@ import java.util.ArrayList;
 
 public class Product implements Parcelable {
     private Long id;
+    private String pupvId;
     private Long categoryId;
     private Long subcategoryId;
     private String name;
@@ -15,7 +16,7 @@ public class Product implements Parcelable {
     private Double price;
     private Double discount;
     private ArrayList<Uri> images;
-    private ArrayList<Long> eventIds;
+    private ArrayList<Long> eventTypeIds;
     private Boolean available;
     private Boolean visible;
     private Boolean pending;
@@ -24,8 +25,9 @@ public class Product implements Parcelable {
     public Product() {
     }
 
-    public Product(Long id, Long categoryId, Long subcategoryId, String name, String description, Double price, Double discount, ArrayList<Uri> images, ArrayList<Long> eventIds, Boolean available, Boolean visible, Boolean pending, Boolean deleted) {
+    public Product(Long id, String pupvId, Long categoryId, Long subcategoryId, String name, String description, Double price, Double discount, ArrayList<Uri> images, ArrayList<Long> eventTypeIds, Boolean available, Boolean visible, Boolean pending, Boolean deleted) {
         this.id = id;
+        this.pupvId = pupvId;
         this.categoryId = categoryId;
         this.subcategoryId = subcategoryId;
         this.name = name;
@@ -33,7 +35,7 @@ public class Product implements Parcelable {
         this.price = price;
         this.discount = discount;
         this.images = images;
-        this.eventIds = eventIds;
+        this.eventTypeIds = eventTypeIds;
         this.available = available;
         this.visible = visible;
         this.pending = pending;
@@ -46,6 +48,7 @@ public class Product implements Parcelable {
         } else {
             id = in.readLong();
         }
+        pupvId = in.readString();
         if (in.readByte() == 0) {
             categoryId = null;
         } else {
@@ -70,8 +73,8 @@ public class Product implements Parcelable {
         }
         images = new ArrayList<>();
         in.readList(images, Uri.class.getClassLoader());
-        eventIds = new ArrayList<>();
-        in.readList(eventIds, Long.class.getClassLoader());
+        eventTypeIds = new ArrayList<>();
+        in.readList(eventTypeIds, Long.class.getClassLoader());
         byte tmpAvailable = in.readByte();
         available = tmpAvailable == 0 ? null : tmpAvailable == 1;
         byte tmpVisible = in.readByte();
@@ -107,6 +110,7 @@ public class Product implements Parcelable {
             dest.writeByte((byte) 1);
             dest.writeLong(id);
         }
+        dest.writeString(pupvId);
         if (categoryId == null) {
             dest.writeByte((byte) 0);
         } else {
@@ -134,7 +138,7 @@ public class Product implements Parcelable {
             dest.writeDouble(discount);
         }
         dest.writeList(images);
-        dest.writeList(eventIds);
+        dest.writeList(eventTypeIds);
         dest.writeByte((byte) (available == null ? 0 : available ? 1 : 2));
         dest.writeByte((byte) (visible == null ? 0 : visible ? 1 : 2));
         dest.writeByte((byte) (pending == null ? 0 : pending ? 1 : 2));
@@ -147,6 +151,14 @@ public class Product implements Parcelable {
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public String getPupvId() {
+        return pupvId;
+    }
+
+    public void setPupvId(String pupvId) {
+        this.pupvId = pupvId;
     }
 
     public Long getCategoryId() {
@@ -205,12 +217,12 @@ public class Product implements Parcelable {
         this.images = images;
     }
 
-    public ArrayList<Long> getEventIds() {
-        return eventIds;
+    public ArrayList<Long> getEventTypeIds() {
+        return eventTypeIds;
     }
 
-    public void setEventIds(ArrayList<Long> eventIds) {
-        this.eventIds = eventIds;
+    public void setEventTypeIds(ArrayList<Long> eventTypeIds) {
+        this.eventTypeIds = eventTypeIds;
     }
 
     public Boolean getAvailable() {

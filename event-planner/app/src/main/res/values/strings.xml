@@ -25,7 +25,7 @@
     <string name="type">Type:</string>
     <string name="products">Products</string>
     <string name="services">Services</string>
-    <string name="packages">Package</string>
+    <string name="packages">Packages</string>
     <string name="filters">Filters</string>
     <string name="sort">Sort</string>
     <string name="searchbyname_hint">Search by name</string>
@@ -140,4 +140,9 @@
     <string name="company_phone">Company phone</string>
     <string name="work_time">Work time</string>
     <string name="edit_company">Edit company</string>
+    <string name="pricelist">Pricelist</string>
+    <string name="report">Report</string>
+    <string name="reason_of_report">Reason of report</string>
+    <string name="send">Send</string>
+    <string name="user_info">User info</string>
 </resources>
