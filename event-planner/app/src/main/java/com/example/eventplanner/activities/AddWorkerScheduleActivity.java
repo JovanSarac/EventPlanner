@@ -24,9 +24,12 @@ import com.example.eventplanner.utils.DateRange;
 import com.example.eventplanner.utils.Days;
 import com.example.eventplanner.utils.WorkingHours;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.auth.UserProfileChangeRequest;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -75,40 +78,7 @@ public class AddWorkerScheduleActivity extends AppCompatActivity {
 
         binding.finishBtn.setOnClickListener(v->{
 
-            getNumberOfItemsInUsersCollection().thenAccept(numberOfItems -> {
-
-                DateRange dateRange = new DateRange(LocalDate.now().toString(), LocalDate.now().plusDays(7).toString());
-                dateSchedule.setDateRange(dateRange);
-                dateSchedule.setWorkerId(workerId);
-                dateSchedule.setId(1L);
-
-                for (Map.Entry<String, WorkingHours> entry : dateSchedule.getSchedule().entrySet()) {
-                    if (entry.getValue() == null) {
-                        entry.setValue(new WorkingHours("9:00 AM", "17:00 PM"));
-                    }
-                }
-                db.collection("DateSchedule")
-                        .add(dateSchedule)
-                        .addOnSuccessListener(documentReference -> {
-                            Log.d("Firestore", "Document added with ID: " + documentReference.getId());
-                        })
-                        .addOnFailureListener(e -> {
-                            Log.e("Firestore", "Error adding document", e);
-                        });
-
-                mAuth.createUserWithEmailAndPassword(worker.getEmail(), worker.getPassword())
-                        .addOnCompleteListener(task -> {
-                            if (task.isSuccessful()) {
-                                FirebaseUser newUser = task.getResult().getUser();
-                                sendVerificationEmail(newUser);
-                            } else {
-                                Log.e("FirebaseAuth", "Failed to create user: " + task.getException());
-                            }
-                        });
-
-                Intent intent = new Intent(this, OwnerDashboard.class);
-                startActivity(intent);
-            });
+            addWorkerAndSchedule(worker);
         });
 
         binding.enterHoursBtn.setOnClickListener(v -> {
@@ -117,10 +87,6 @@ public class AddWorkerScheduleActivity extends AppCompatActivity {
 
             String timePattern = "(0?[1-9]|(1[012])):[0-5][0-9] [APap][Mm]";
 
-            /*if (!fromTime.matches(timePattern) || !toTime.matches(timePattern)) {
-                Toast.makeText(this, "Invalid time format! Please enter time in HH:MM AM/PM format.", Toast.LENGTH_SHORT).show();
-                return;
-            }*/
 
             int position = binding.daysSpinner.getSelectedItemPosition();
             Days day = Days.values()[position];
@@ -130,14 +96,67 @@ public class AddWorkerScheduleActivity extends AppCompatActivity {
         });
 
         binding.skipBtn.setOnClickListener(v->{
-            Intent intent = new Intent(this, OwnerDashboard.class);
-            startActivity(intent);
+            addWorkerAndSchedule(worker);
         });
 
         binding.backBtn.setOnClickListener(v->{
             Intent intent = new Intent(this, RegisterWorkerActivity.class);
             startActivity(intent);
         });
+    }
+
+    private void addWorkerAndSchedule(UserPUPZ worker) {
+        getNumberOfItemsInUsersCollection().thenAccept(numberOfItems -> {
+
+            DateRange dateRange = new DateRange(LocalDate.now().toString(), LocalDate.now().plusDays(7).toString());
+            dateSchedule.setDateRange(dateRange);
+            dateSchedule.setWorkerId(workerId);
+            dateSchedule.setId(1L);
+
+            for (Map.Entry<String, WorkingHours> entry : dateSchedule.getSchedule().entrySet()) {
+                if (entry.getValue() == null) {
+                    entry.setValue(new WorkingHours("9:00 AM", "17:00 PM"));
+                }
+            }
+            db.collection("DateSchedule")
+                    .add(dateSchedule)
+                    .addOnSuccessListener(documentReference -> {
+                        Log.d("Firestore", "Document added with ID: " + documentReference.getId());
+                    })
+                    .addOnFailureListener(e -> {
+                        Log.e("Firestore", "Error adding document", e);
+                    });
+
+            mAuth.createUserWithEmailAndPassword(worker.getEmail(), worker.getPassword())
+                    .addOnCompleteListener(task -> {
+                        if (task.isSuccessful()) {
+                            updateUserType();
+
+                            db.collection("User").document(mAuth.getCurrentUser().getUid()).set(worker)
+                                    .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                                              @Override
+                                                              public void onSuccess(Void unused) {
+                                                                  sendVerificationEmail(mAuth.getCurrentUser());
+                                                              }
+                                                          }
+                                    );
+
+                        } else {
+                            Log.e("FirebaseAuth", "Failed to create user: " + task.getException());
+                        }
+                    });
+
+            Intent intent = new Intent(this, OwnerDashboard.class);
+            startActivity(intent);
+        });
+    }
+
+    private void updateUserType(){
+        FirebaseUser user = mAuth.getCurrentUser();
+        UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder()
+                .setDisplayName("PUPZ").build();
+
+        user.updateProfile(profileUpdates);
     }
 
     private CompletableFuture<Long> getNumberOfItemsInUsersCollection() {

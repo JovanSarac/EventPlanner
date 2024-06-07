@@ -27,6 +27,8 @@ import com.example.eventplanner.model.DateSchedule;
 import com.example.eventplanner.model.Event;
 import com.example.eventplanner.model.EventPUPZ;
 import com.example.eventplanner.model.Service;
+import com.example.eventplanner.model.ServiceReservationRequest;
+import com.example.eventplanner.model.Subcategory;
 import com.example.eventplanner.model.UserPUPV;
 import com.example.eventplanner.model.UserPUPZ;
 import com.example.eventplanner.utils.WorkingHours;
@@ -82,7 +84,7 @@ public class ReserveServiceActivity extends AppCompatActivity {
             return insets;
         });
         getService();
-        getPupz();
+
 
         from=findViewById(R.id.fromTime);
         to=findViewById(R.id.toTime);
@@ -96,8 +98,8 @@ public class ReserveServiceActivity extends AppCompatActivity {
                     if(service.getDuration()!=null){
                         time=time.plusMinutes((int)(1.6*60));//time.plusMinutes((int)(service.getDuration()*60));
                     }
-
-                    LocalTime endTime=LocalTime.parse(dateScheule.getSchedule().get(dayOfWeek).getEndTime(), formatter);
+                    String endtime=dateScheule.getSchedule().get(dayOfWeek.toUpperCase()).getEndTime().split(" ")[0];
+                    LocalTime endTime=LocalTime.parse(endtime, formatter);
                     if(time.isBefore(endTime)){
                         to.setText(time.toString());
                         return;
@@ -121,11 +123,14 @@ public class ReserveServiceActivity extends AppCompatActivity {
                     @Override
                     public void onComplete(Task<QuerySnapshot> task) {
                         if (task.isSuccessful()) {
-                            for (DocumentSnapshot doc : task.getResult()) {
-                                pupz_list_names.add(doc.getString("firstName") + " " + doc.getString("lastName"));
 
-                                UserPUPZ user = doc.toObject(UserPUPZ.class);
-                                pupz_list.add(user);
+                            for (DocumentSnapshot doc : task.getResult()) {
+                                if(service.getPupIds().contains(doc.getId())){
+                                    pupz_list_names.add(doc.getString("firstName") + " " + doc.getString("lastName"));
+                                    UserPUPZ user = doc.toObject(UserPUPZ.class);
+                                    pupz_list.add(user);
+                                }
+
                             }
                             TextInputLayout textInputLayout = findViewById(R.id.pupz_pick);
                             AutoCompleteTextView autoCompleteTextView = (AutoCompleteTextView) textInputLayout.getEditText();
@@ -145,14 +150,39 @@ public class ReserveServiceActivity extends AppCompatActivity {
     }
     void getService(){
         db.collection("Services")
-                .document("-1760065405153320460")
+                .document("2")
                 .get()
-                .addOnSuccessListener(documentSnapshot -> {
-                    if (documentSnapshot.exists()) {
-                        Service yourObject = documentSnapshot.toObject(Service.class);
+                .addOnSuccessListener(doc -> {
+                    if (doc.exists()) {
+                        Service yourObject = new Service(
+                                Long.parseLong(doc.getId()),
+                                doc.getString("pupvId"),
+                                Long.parseLong(doc.getString("categoryId")),
+                                Long.parseLong(doc.getString("subcategoryId")),
+                                doc.getString("name"),
+                                doc.getString("description"),
+                                new ArrayList<>(), //images
+                                doc.getString("specific"),
+                                ((Number) doc.get("pricePerHour")).doubleValue(),
+                                ((Number) doc.get("fullPrice")).doubleValue(),
+                                doc.get("duration") != null ? ((Number) doc.get("duration")).doubleValue() : null,
+                                doc.get("durationMin") != null ? ((Number) doc.get("durationMin")).doubleValue() : null,
+                                doc.get("durationMax") != null ? ((Number) doc.get("durationMax")).doubleValue() : null,
+                                doc.getString("location"),
+                                ((Number) doc.get("discount")).doubleValue(),
+                                (ArrayList<String>) doc.get("pupIds"),
+                                convertStringArrayToLong((ArrayList<String>) doc.get("eventTypeIds")),
+                                doc.getString("reservationDue"),
+                                doc.getString("cancelationDue"),
+                                doc.getBoolean("automaticAffirmation"),
+                                doc.getBoolean("available"),
+                                doc.getBoolean("visible"),
+                                doc.getBoolean("pending"),
+                                doc.getBoolean("deleted"));
                         if (yourObject != null) {
                             service=yourObject;
                             getEvents();
+                            getPupz();
                         }
                     } else {
                         Log.d("Firestore", "No such document");
@@ -162,20 +192,63 @@ public class ReserveServiceActivity extends AppCompatActivity {
                     Log.w("Firestore", "Error fetching document", e);
                 });
     }
-    void getEvents(){
-        List<Task<DocumentSnapshot>> tasks = new ArrayList<>();
 
-        for (Long id : service.getEventIds()) {
-            tasks.add(db.collection("Events").document(id.toString()).get());
+    private ArrayList<Long> convertStringArrayToLong(ArrayList<String> list){
+        ArrayList<Long> ids = new ArrayList<>();
+
+        for(String item: list){
+            ids.add(Long.parseLong(item));
         }
-        Task<List<DocumentSnapshot>> allTasks = Tasks.whenAllSuccess(tasks);
-        allTasks.addOnCompleteListener(new OnCompleteListener<List<DocumentSnapshot>>() {
-            @Override
-            public void onComplete(Task<List<DocumentSnapshot>> task) {
-                if (task.isSuccessful()) {
-                    List<DocumentSnapshot> snapshots = task.getResult();
 
-                    for (DocumentSnapshot doc : snapshots) {
+        return ids;
+    }
+//    void getEvents(){
+//        List<Task<DocumentSnapshot>> tasks = new ArrayList<>();
+//
+//        for (Long id : service.getEventTypeIds()) {
+//            tasks.add(db.collection("Events").document(id.toString()).get());
+//        }
+//        Task<List<DocumentSnapshot>> allTasks = Tasks.whenAllSuccess(tasks);
+//        allTasks.addOnCompleteListener(new OnCompleteListener<List<DocumentSnapshot>>() {
+//            @Override
+//            public void onComplete(Task<List<DocumentSnapshot>> task) {
+//                if (task.isSuccessful()) {
+//                    List<DocumentSnapshot> snapshots = task.getResult();
+//
+//                    for (DocumentSnapshot doc : snapshots) {
+//                        if (doc.exists()) {
+//                            Event yourObject = new Event(
+//                                    Long.parseLong(doc.getId()),
+//                                    doc.getString("userOdId"),
+//                                    doc.getString("typeEvent"),
+//                                    doc.getString("name"),
+//                                    doc.getString("description"),
+//                                    doc.getLong("maxPeople").intValue(),
+//                                    doc.getString("locationPlace"),
+//                                    doc.getLong("maxDistance").intValue(),
+//                                    doc.getDate("dateEvent"),
+//                                    doc.getBoolean("available")
+//                            );
+//                            events.add(yourObject);
+//                            event_names.add(yourObject.getName());
+//                        }
+//                    }
+//                    TextInputLayout textInputLayout = findViewById(R.id.event_pick);
+//                    AutoCompleteTextView autoCompleteTextView = (AutoCompleteTextView) textInputLayout.getEditText();
+//                    ArrayAdapter<String> eventAdapter = new ArrayAdapter<>(ReserveServiceActivity.this, android.R.layout.simple_dropdown_item_1line, event_names);
+//                    autoCompleteTextView.setAdapter(eventAdapter);
+//
+//                    autoCompleteTextView.setOnItemClickListener((parent, view, position, id) -> {
+//                        selectedEvent = events.get(position);
+//                    });
+//                }
+//            }
+//        });
+//    }
+    void getEvents(){
+        db.collection("Events").get().addOnCompleteListener(task ->  {
+            if (task.isSuccessful()) {
+                    for (DocumentSnapshot doc : task.getResult()) {
                         if (doc.exists()) {
                             Event yourObject = new Event(
                                     Long.parseLong(doc.getId()),
@@ -202,8 +275,10 @@ public class ReserveServiceActivity extends AppCompatActivity {
                         selectedEvent = events.get(position);
                     });
                 }
-            }
-        });
+                })
+                .addOnFailureListener(e -> {
+                    Toast.makeText(ReserveServiceActivity.this, e.getMessage(), Toast.LENGTH_SHORT);
+                });
     }
 
     void getDateSchedules(){
@@ -308,47 +383,25 @@ public class ReserveServiceActivity extends AppCompatActivity {
         };
     }
     void createReservation(){
-        //validacija za max i min trajanje
-        getNumberOfItemsInUsersCollection().thenAccept(numberOfItems-> {
-                    EventPUPZ event = new EventPUPZ(
-                            numberOfItems + 1,
-                            from.getText().toString(),
-                            to.getText().toString(),
-                            selectedEvent.getDateEvent().toString(),
-                            dateScheule.getId(),
-                            dayOfWeek,
-                            "RESERVED",
-                            selectedPupz.getId()
-                    );
-                    db.collection("Event").add(event)
-                            .addOnCompleteListener(task -> {
-                                if (task.isSuccessful()) {
-                                    Toast.makeText(ReserveServiceActivity.this, "Data added successfully", Toast.LENGTH_SHORT).show();
-                                } else {
-                                    Toast.makeText(ReserveServiceActivity.this, "Failed to add data", Toast.LENGTH_SHORT).show();
-                                }
-                            });
-                }
-            );
+        ServiceReservationRequest event = new ServiceReservationRequest(
+                from.getText().toString(),
+                to.getText().toString(),
+                selectedEvent.getDateEvent().toString(),
+                dateScheule.getId().toString(),
+                selectedPupz.getId().toString(),
+                dayOfWeek.toUpperCase(),
+                "RESERVED",
+                "NEW",
+                service.getId().toString()
+        );
+        db.collection("ServiceReservationRequest").add(event)
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        Toast.makeText(ReserveServiceActivity.this, "Data added successfully", Toast.LENGTH_SHORT).show();
+                    } else {
+                        Toast.makeText(ReserveServiceActivity.this, "Failed to add data", Toast.LENGTH_SHORT).show();
+                    }
+                });
     }
-    private CompletableFuture<Long> getNumberOfItemsInUsersCollection() {
-        CollectionReference usersCollection = db.collection("Event");
 
-        CompletableFuture<Long> future = new CompletableFuture<>();
-
-        usersCollection.get().addOnSuccessListener(queryDocumentSnapshots -> {
-            long numberOfItems;
-            if (queryDocumentSnapshots.isEmpty()) {
-                numberOfItems = 1L;
-            } else {
-                numberOfItems = (long) queryDocumentSnapshots.size();
-            }
-            future.complete(numberOfItems);
-        }).addOnFailureListener(e -> {
-            Log.e("Firestore", "Error getting documents: ", e);
-            future.completeExceptionally(e);
-        });
-
-        return future;
-    }
 }

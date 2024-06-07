@@ -27,6 +27,7 @@ import com.example.eventplanner.databinding.ActivityHomeBinding;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.auth.User;
 import com.google.firebase.messaging.FirebaseMessaging;
 import com.google.android.gms.tasks.OnCompleteListener;
 public class HomeActivity extends AppCompatActivity {
@@ -76,7 +77,7 @@ public class HomeActivity extends AppCompatActivity {
         binding= ActivityHomeBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
-        binding.productsManagmentPUPV.setOnClickListener(v ->{
+        /*binding.productsManagmentPUPV.setOnClickListener(v ->{
             Intent intent = new Intent(HomeActivity.this, ProductsManegementActivity.class);
             intent.putExtra("used_fragment", "product_list_pupv");
             startActivity(intent);
@@ -109,6 +110,21 @@ public class HomeActivity extends AppCompatActivity {
         binding.packageManagmentPUPV.setOnClickListener(v -> {
             Intent intent = new Intent(HomeActivity.this, PackagesManagementActivity.class);
             intent.putExtra("used_fragment", "package_list_pupv");
+            startActivity(intent);
+        });*/
+
+        binding.pricelist.setOnClickListener(v ->{
+            Intent intent = new Intent(HomeActivity.this, PricelistActivity.class);
+            startActivity(intent);
+        });
+
+        binding.companyInfo.setOnClickListener(v ->{
+            Intent intent = new Intent(HomeActivity.this, CompanyViewActivity.class);
+            startActivity(intent);
+        });
+
+        binding.userInfo.setOnClickListener(v ->{
+            Intent intent = new Intent(HomeActivity.this, UserInfoActivity.class);
             startActivity(intent);
         });
 
@@ -155,7 +171,6 @@ public class HomeActivity extends AppCompatActivity {
             this.onResume();
         });
 
-
     }
 
     @Override
@@ -165,26 +180,44 @@ public class HomeActivity extends AppCompatActivity {
         FirebaseUser user= mAuth.getCurrentUser();
         if(user==null){
             binding.signOut.setVisibility(View.GONE);
+            binding.pricelist.setVisibility(View.GONE);
+            binding.userInfo.setVisibility(View.GONE);
+            binding.companyInfo.setVisibility(View.GONE);
+
 
             binding.registerButton.setVisibility(View.VISIBLE);
             binding.loginButton.setVisibility(View.VISIBLE);
             binding.homeact.setVisibility(View.INVISIBLE);
+
         }else{
             binding.signOut.setVisibility(View.VISIBLE);
 
             binding.registerButton.setVisibility(View.GONE);
             binding.loginButton.setVisibility(View.GONE);
+            binding.pricelist.setVisibility(View.GONE);
+            binding.companyInfo.setVisibility(View.GONE);
+            binding.userInfo.setVisibility(View.GONE);
             if(user.getDisplayName().equals("OD")){
                 binding.homeact.setVisibility(View.VISIBLE);
+                binding.companyInfo.setVisibility(View.VISIBLE);
+                binding.userInfo.setVisibility(View.VISIBLE);
             }
-            if(!user.getDisplayName().equals("ADMIN")){
+            //pupv i pupz i OD
+            else if(!user.getDisplayName().equals("ADMIN")){
                 binding.categoriesButton.setVisibility(View.GONE);
                 binding.typesOfEventsButton.setVisibility(View.GONE);
+                binding.pricelist.setVisibility(View.VISIBLE);
             }
+            //admin
             else{
                 binding.categoriesButton.setVisibility(View.VISIBLE);
                 binding.typesOfEventsButton.setVisibility(View.VISIBLE);
             }
+
+            if(user.getDisplayName().equals("PUPV")) {
+                binding.userInfo.setVisibility(View.VISIBLE);
+            }
+
         }
 
 

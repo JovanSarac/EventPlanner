@@ -88,6 +88,10 @@ public class LoginActivity extends AppCompatActivity {
                                                 });
                                     }
 
+                                    if(mAuth.getCurrentUser()!=null && mAuth.getCurrentUser().getDisplayName().equals("ADMIN")){
+                                        FirebaseMessaging.getInstance().subscribeToTopic("AdminTopic");
+                                    }
+
                                 } else {
                                     mAuth.signOut();
                                     Toast.makeText(LoginActivity.this, "Please verify your email before logging in", Toast.LENGTH_SHORT).show();
