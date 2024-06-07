@@ -1,5 +1,6 @@
 package com.example.eventplanner.activities;
 
+import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.activity.EdgeToEdge;
@@ -9,8 +10,12 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
 import com.example.eventplanner.R;
+import com.example.eventplanner.databinding.ActivityHomeBinding;
+import com.example.eventplanner.databinding.ActivityReservationViewBinding;
 
 public class ReservationView extends AppCompatActivity {
+
+    ActivityReservationViewBinding binding;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -22,5 +27,14 @@ public class ReservationView extends AppCompatActivity {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
+
+        binding= ActivityReservationViewBinding.inflate(getLayoutInflater());
+        setContentView(binding.getRoot());
+
+        binding.backBtn.setOnClickListener(v -> {
+            Intent intent = new Intent(this, HomeActivity.class);
+            startActivity(intent);
+        });
+
     }
 }

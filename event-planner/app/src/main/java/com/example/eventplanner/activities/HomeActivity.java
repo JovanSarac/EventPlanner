@@ -171,6 +171,11 @@ public class HomeActivity extends AppCompatActivity {
             this.onResume();
         });
 
+        binding.reservationViewId.setOnClickListener(v->{
+            Intent intent = new Intent(HomeActivity.this, ReservationView.class);
+            startActivity(intent);
+        });
+
     }
 
     @Override
@@ -207,6 +212,7 @@ public class HomeActivity extends AppCompatActivity {
                 binding.categoriesButton.setVisibility(View.GONE);
                 binding.typesOfEventsButton.setVisibility(View.GONE);
                 binding.pricelist.setVisibility(View.VISIBLE);
+                binding.reservationViewId.setVisibility(View.VISIBLE);
             }
             //admin
             else{
