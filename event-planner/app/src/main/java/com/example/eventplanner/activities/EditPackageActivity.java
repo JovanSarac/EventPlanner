@@ -188,7 +188,7 @@ public class EditPackageActivity extends AppCompatActivity implements ProductLis
                             imageAdapter = new ImageAdapter(EditPackageActivity.this, R.layout.image_carousel_card_package, pckg.getImages());
                             recyclerView.setAdapter(imageAdapter);
 
-                            for(Long eventId : item.getEventIds()){
+                            for(Long eventId : item.getEventTypeIds()){
                                 getEventById(eventId);
                             }
 
@@ -237,7 +237,7 @@ public class EditPackageActivity extends AppCompatActivity implements ProductLis
                             imageAdapter = new ImageAdapter(EditPackageActivity.this, R.layout.image_carousel_card_package, pckg.getImages());
                             recyclerView.setAdapter(imageAdapter);
 
-                            for(Long eventId : item.getEventIds()){
+                            for(Long eventId : item.getEventTypeIds()){
                                 getEventById(eventId);
                             }
 
@@ -371,9 +371,9 @@ public class EditPackageActivity extends AppCompatActivity implements ProductLis
         imageAdapter = new ImageAdapter(EditPackageActivity.this, R.layout.image_carousel_card_package, pckg.getImages());
         binding.recycler.setAdapter(imageAdapter);
 
-        for(Long eventId: removedItem.getEventIds()){
-            if(!(products.stream().filter(p -> p.getEventIds().contains(eventId)).count() != 0
-                    || services.stream().filter(s -> s.getEventIds().contains(eventId)).count() != 0)){
+        for(Long eventId: removedItem.getEventTypeIds()){
+            if(!(products.stream().filter(p -> p.getEventTypeIds().contains(eventId)).count() != 0
+                    || services.stream().filter(s -> s.getEventTypeIds().contains(eventId)).count() != 0)){
                 packageEvents.removeIf(p -> p.getId().equals(eventId));
                 eventIds.remove(eventId);
                 eventListAdapter = new EventListAdapter(EditPackageActivity.this, R.layout.event_card_package, packageEvents);
@@ -401,9 +401,9 @@ public class EditPackageActivity extends AppCompatActivity implements ProductLis
         imageAdapter = new ImageAdapter(EditPackageActivity.this, R.layout.image_carousel_card_package, pckg.getImages());
         binding.recycler.setAdapter(imageAdapter);
 
-        for(Long eventId: removedItem.getEventIds()){
-            if(!(products.stream().filter(p -> p.getEventIds().contains(eventId)).count() != 0
-                    || services.stream().filter(s -> s.getEventIds().contains(eventId)).count() != 0)){
+        for(Long eventId: removedItem.getEventTypeIds()){
+            if(!(products.stream().filter(p -> p.getEventTypeIds().contains(eventId)).count() != 0
+                    || services.stream().filter(s -> s.getEventTypeIds().contains(eventId)).count() != 0)){
                 packageEvents.removeIf(p -> p.getId().equals(eventId));
                 eventIds.remove(eventId);
                 eventListAdapter = new EventListAdapter(EditPackageActivity.this, R.layout.event_card_package, packageEvents);
@@ -536,7 +536,7 @@ public class EditPackageActivity extends AppCompatActivity implements ProductLis
                     @Override
                     public void onSuccess(DocumentSnapshot documentSnapshot) {
                         if(documentSnapshot.exists()){
-                            pckg = new Package(
+                            pckg = new Package(/*
                                     id,
                                     documentSnapshot.getString("name"),
                                     documentSnapshot.getString("description"),
@@ -553,11 +553,11 @@ public class EditPackageActivity extends AppCompatActivity implements ProductLis
                                     documentSnapshot.getString("reservationDue"),
                                     documentSnapshot.getString("cancelationDue"),
                                     documentSnapshot.getBoolean("automaticAffirmation"),
-                                    documentSnapshot.getBoolean("deleted"));
+                                    documentSnapshot.getBoolean("deleted")*/);
 
                             imagesFromDb = (ArrayList<String>) documentSnapshot.get("imageUrls");
                             final int numImages = imagesFromDb.size();
-                            final int numEvents = pckg.getEventIds().size();
+                            final int numEvents = pckg.getEventTypeIds().size();
 
                             for (String imageUrl : imagesFromDb) {
                                 StorageReference imageRef = storage.getReference().child(imageUrl);
@@ -607,7 +607,7 @@ public class EditPackageActivity extends AppCompatActivity implements ProductLis
                             final int[] productsProcessed = {0};
 
                             for (DocumentSnapshot doc : productDocs) {
-                                Product product = new Product(
+                                Product product = new Product(/*
                                         Long.parseLong(doc.getId()),
                                         doc.getLong("categoryId"),
                                         doc.getLong("subcategoryId"),
@@ -620,7 +620,7 @@ public class EditPackageActivity extends AppCompatActivity implements ProductLis
                                         doc.getBoolean("available"),
                                         doc.getBoolean("visible"),
                                         doc.getBoolean("pending"),
-                                        doc.getBoolean("deleted"));
+                                        doc.getBoolean("deleted")*/);
 
                                 ArrayList<String> imageUrls = (ArrayList<String>) doc.get("imageUrls");
                                 final int numImages = imageUrls.size();
@@ -684,7 +684,7 @@ public class EditPackageActivity extends AppCompatActivity implements ProductLis
                             final int[] servicesProccessed = {0};
 
                             for (DocumentSnapshot doc : serviceDocs) {
-                                Service service = new Service(
+                                Service service = new Service(/*
                                         Long.parseLong(doc.getId()),
                                         doc.getLong("categoryId"),
                                         doc.getLong("subcategoryId"),
@@ -707,7 +707,7 @@ public class EditPackageActivity extends AppCompatActivity implements ProductLis
                                         doc.getBoolean("available"),
                                         doc.getBoolean("visible"),
                                         doc.getBoolean("pending"),
-                                        doc.getBoolean("deleted"));
+                                        doc.getBoolean("deleted")*/);
 
                                 ArrayList<String> imageUrls = (ArrayList<String>) doc.get("imageUrls");
                                 final int numImages = imageUrls.size();
@@ -756,7 +756,7 @@ public class EditPackageActivity extends AppCompatActivity implements ProductLis
     }
 
     private void getEvents(int numImages, int numEvents){
-        ArrayList<Long> eventIds = pckg.getEventIds();
+        ArrayList<Long> eventIds = pckg.getEventTypeIds();
         for(Long id: eventIds){
             db.collection("Events")
                     .document(id.toString())
@@ -826,7 +826,7 @@ public class EditPackageActivity extends AppCompatActivity implements ProductLis
                     .get()
                     .addOnSuccessListener(documentSnapshot ->  {
                         if(documentSnapshot.exists()){
-                            Product product = new Product(id,
+                            Product product = new Product(/*id,
                                     documentSnapshot.getLong("categoryId"),
                                     documentSnapshot.getLong("subcategoryId"),
                                     documentSnapshot.getString("name"),
@@ -838,11 +838,11 @@ public class EditPackageActivity extends AppCompatActivity implements ProductLis
                                     documentSnapshot.getBoolean("available"),
                                     documentSnapshot.getBoolean("visible"),
                                     documentSnapshot.getBoolean("pending"),
-                                    documentSnapshot.getBoolean("deleted"));
+                                    documentSnapshot.getBoolean("deleted")*/);
 
                             imagesFromDbProduct = (ArrayList<String>) documentSnapshot.get("imageUrls");
                             final int numImages = imagesFromDbProduct.size();
-                            final int numEvents = product.getEventIds().size();
+                            final int numEvents = product.getEventTypeIds().size();
 
                             for (String imageUrl : imagesFromDbProduct) {
                                 StorageReference imageRef = storage.getReference().child(imageUrl);
@@ -880,7 +880,7 @@ public class EditPackageActivity extends AppCompatActivity implements ProductLis
                     .get()
                     .addOnSuccessListener(documentSnapshot ->  {
                         if(documentSnapshot.exists()){
-                            Service service = new Service(id,
+                            Service service = new Service(/*id,
                                     documentSnapshot.getLong("categoryId"),
                                     documentSnapshot.getLong("subcategoryId"),
                                     documentSnapshot.getString("name"),
@@ -902,11 +902,11 @@ public class EditPackageActivity extends AppCompatActivity implements ProductLis
                                     documentSnapshot.getBoolean("available"),
                                     documentSnapshot.getBoolean("visible"),
                                     documentSnapshot.getBoolean("pending"),
-                                    documentSnapshot.getBoolean("deleted"));
+                                    documentSnapshot.getBoolean("deleted")*/);
 
                             imagesFromDbService = (ArrayList<String>) documentSnapshot.get("imageUrls");
                             final int numImages = imagesFromDbService.size();
-                            final int numEvents = service.getEventIds().size();
+                            final int numEvents = service.getEventTypeIds().size();
 
                             for (String imageUrl : imagesFromDbService) {
                                 StorageReference imageRef = storage.getReference().child(imageUrl);

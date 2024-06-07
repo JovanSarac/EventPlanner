@@ -78,6 +78,22 @@ public class UserPUPV implements Serializable {
         this.categories = categories;
     }
 
+    public UserPUPV(String firstName, String lastName, String email, String password, String phone, String address, boolean isValid, String companyName, String companyDescription, String companyAddress, String companyemail, String companyPhone, String workTime) {
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.email = email;
+        this.password = password;
+        this.phone = phone;
+        this.address = address;
+        this.isValid = isValid;
+        this.companyName = companyName;
+        this.companyDescription = companyDescription;
+        this.companyAddress = companyAddress;
+        this.companyemail = companyemail;
+        this.companyPhone = companyPhone;
+        this.workTime = workTime;
+    }
+
     public UserPUPV() {
     }
 

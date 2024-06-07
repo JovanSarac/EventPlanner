@@ -3,6 +3,9 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <uses-permission android:name="android.permission.READ_MEDIA_IMAGES" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.MANAGE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
 
     <application
         android:allowBackup="true"
@@ -22,6 +25,19 @@
             android:exported="false" />
         <activity
             android:name=".activities.ApproveRegistrationActivity"
+            android:name=".activities.UserReportsViewActivity"
+            android:exported="false" />
+        <activity
+            android:name=".activities.UserInfoActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ReportCompanyActivity"
+            android:exported="false" />
+        <activity
+            android:name=".activities.CompanyViewActivity"
+            android:exported="false" />
+        <activity
+            android:name=".activities.PricelistActivity"
             android:exported="false" />
 
         <service

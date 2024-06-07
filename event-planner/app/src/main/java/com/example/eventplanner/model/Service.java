@@ -9,6 +9,7 @@ import java.util.ArrayList;
 public class Service implements Parcelable {
 
     private Long id;
+    private String pupvId;
     private Long categoryId;
     private Long subcategoryId;
     private String name;
@@ -22,8 +23,8 @@ public class Service implements Parcelable {
     private Double durationMax;
     private String location;
     private Double discount;
-    private ArrayList<String> providers;
-    private ArrayList<Long> eventIds;
+    private ArrayList<String> pupIds;
+    private ArrayList<Long> eventTypeIds;
     private String reservationDue;
     private String cancelationDue;
     private Boolean automaticAffirmation;
@@ -35,8 +36,9 @@ public class Service implements Parcelable {
     public Service() {
     }
 
-    public Service(Long id, Long categoryId, Long subcategoryId, String name, String description, ArrayList<Uri> images, String specific, Double pricePerHour, Double fullPrice, Double duration, Double durationMin, Double durationMax, String location, Double discount, ArrayList<String> providers, ArrayList<Long> eventIds, String reservationDue, String cancelationDue, Boolean automaticAffirmation, Boolean available, Boolean visible, Boolean pending, Boolean deleted) {
+    public Service(Long id, String pupvId, Long categoryId, Long subcategoryId, String name, String description, ArrayList<Uri> images, String specific, Double pricePerHour, Double fullPrice, Double duration, Double durationMin, Double durationMax, String location, Double discount, ArrayList<String> pupIds, ArrayList<Long> eventTypeIds, String reservationDue, String cancelationDue, Boolean automaticAffirmation, Boolean available, Boolean visible, Boolean pending, Boolean deleted) {
         this.id = id;
+        this.pupvId = pupvId;
         this.categoryId = categoryId;
         this.subcategoryId = subcategoryId;
         this.name = name;
@@ -50,8 +52,8 @@ public class Service implements Parcelable {
         this.durationMax = durationMax;
         this.location = location;
         this.discount = discount;
-        this.providers = providers;
-        this.eventIds = eventIds;
+        this.pupIds = pupIds;
+        this.eventTypeIds = eventTypeIds;
         this.reservationDue = reservationDue;
         this.cancelationDue = cancelationDue;
         this.automaticAffirmation = automaticAffirmation;
@@ -67,6 +69,7 @@ public class Service implements Parcelable {
         } else {
             id = in.readLong();
         }
+        pupvId = in.readString();
         if (in.readByte() == 0) {
             categoryId = null;
         } else {
@@ -113,9 +116,10 @@ public class Service implements Parcelable {
         } else {
             discount = in.readDouble();
         }
-        providers = in.createStringArrayList();
-        eventIds = new ArrayList<>();
-        in.readList(eventIds, Long.class.getClassLoader());
+        pupIds = new ArrayList<>();
+        in.readList(pupIds, String.class.getClassLoader());
+        eventTypeIds = new ArrayList<>();
+        in.readList(eventTypeIds, Long.class.getClassLoader());
         reservationDue = in.readString();
         cancelationDue = in.readString();
         byte tmpAutomaticAffirmation = in.readByte();
@@ -155,6 +159,7 @@ public class Service implements Parcelable {
             dest.writeByte((byte) 1);
             dest.writeLong(id);
         }
+        dest.writeString(pupvId);
         if (categoryId == null) {
             dest.writeByte((byte) 0);
         } else {
@@ -208,8 +213,8 @@ public class Service implements Parcelable {
             dest.writeByte((byte) 1);
             dest.writeDouble(discount);
         }
-        dest.writeStringList(providers);
-        dest.writeList(eventIds);
+        dest.writeList(pupIds);
+        dest.writeList(eventTypeIds);
         dest.writeString(reservationDue);
         dest.writeString(cancelationDue);
         dest.writeByte((byte) (automaticAffirmation == null ? 0 : automaticAffirmation ? 1 : 2));
@@ -225,6 +230,14 @@ public class Service implements Parcelable {
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public String getPupvId() {
+        return pupvId;
+    }
+
+    public void setPupvId(String pupvId) {
+        this.pupvId = pupvId;
     }
 
     public Long getCategoryId() {
@@ -331,20 +344,20 @@ public class Service implements Parcelable {
         this.discount = discount;
     }
 
-    public ArrayList<String> getProviders() {
-        return providers;
+    public ArrayList<String> getPupIds() {
+        return pupIds;
     }
 
-    public void setProviders(ArrayList<String> providers) {
-        this.providers = providers;
+    public void setPupIds(ArrayList<String> pupIds) {
+        this.pupIds = pupIds;
     }
 
-    public ArrayList<Long> getEventIds() {
-        return eventIds;
+    public ArrayList<Long> getEventTypeIds() {
+        return eventTypeIds;
     }
 
-    public void setEventIds(ArrayList<Long> eventIds) {
-        this.eventIds = eventIds;
+    public void setEventTypeIds(ArrayList<Long> eventTypeIds) {
+        this.eventTypeIds = eventTypeIds;
     }
 
     public String getReservationDue() {

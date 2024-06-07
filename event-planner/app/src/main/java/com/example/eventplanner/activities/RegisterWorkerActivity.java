@@ -86,7 +86,6 @@ public class RegisterWorkerActivity extends AppCompatActivity {
                             //@Override
                             //public void onComplete(@NonNull Task<AuthResult> task) {
                                 //if (task.isSuccessful()) {
-                                    db.collection("User").add(user);
 
                                     Intent intent = new Intent(this, AddWorkerScheduleActivity.class);
                                     intent.putExtra("workerId", numberOfItems+1);

@@ -25,7 +25,7 @@
     <string name="type">Type:</string>
     <string name="products">Products</string>
     <string name="services">Services</string>
-    <string name="packages">Package</string>
+    <string name="packages">Packages</string>
     <string name="filters">Filters</string>
     <string name="sort">Sort</string>
     <string name="searchbyname_hint">Search by name</string>
@@ -102,4 +102,14 @@
     <string name="select_subcategory">Select subcategory:</string>
     <string name="enter_the_price">Enter the expected price for the selected category and subcategory:</string>
     <string name="enter_price">Enter the price:</string>
+    <string name="pricelist">Pricelist</string>
+    <string name="company_info">Company info</string>
+    <string name="work_time">Work time</string>
+    <string name="report">Report</string>
+    <string name="reason_of_report">Reason of report</string>
+    <string name="send">Send</string>
+    <string name="user_info">User info</string>
+    <string name="reported">Reported:</string>
+    <string name="reporter">Reporter:</string>
+    <string name="user_reports">User reports</string>
 </resources>
