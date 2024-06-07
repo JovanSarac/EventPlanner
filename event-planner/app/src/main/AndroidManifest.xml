@@ -25,13 +25,12 @@
             android:exported="false" />
         <activity
             android:name=".activities.ApproveRegistrationActivity"
+            android:exported="false" />
+        <activity
             android:name=".activities.UserReportsViewActivity"
             android:exported="false" />
         <activity
             android:name=".activities.UserInfoActivity"
-            android:exported="false" />
-        <activity
-            android:name=".ReportCompanyActivity"
             android:exported="false" />
         <activity
             android:name=".activities.CompanyViewActivity"
