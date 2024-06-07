@@ -1,8 +1,9 @@
 package com.example.eventplanner.model;
 
+import java.io.Serializable;
 import java.util.List;
 
-public class EventType {
+public class EventType implements Serializable {
     private Long id;
     private boolean inUse;
     private String typeName;

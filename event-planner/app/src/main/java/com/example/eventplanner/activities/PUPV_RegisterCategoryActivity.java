@@ -39,6 +39,7 @@ import com.google.firebase.storage.UploadTask;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -171,6 +172,7 @@ public class PUPV_RegisterCategoryActivity extends AppCompatActivity {
         item.put("UserType","PUPV");
     }
     private void addToCollectionPUPV(String id){
+        item.put("DateTimePosted", System.currentTimeMillis());
         db.collection("User")
                 .document(id)
                 .set(item)

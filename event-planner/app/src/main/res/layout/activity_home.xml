@@ -96,6 +96,20 @@
         android:text="SingOut"
         android:layout_gravity="center"
         />
+    <Button
+        android:id="@+id/approveRegistration"
+        android:layout_width="300dp"
+        android:layout_height="50dp"
+        android:text="Registration requests"
+        android:layout_gravity="center"
+        />
+    <Button
+        android:id="@+id/reserveService"
+        android:layout_width="300dp"
+        android:layout_height="50dp"
+        android:text="Reserve Service"
+        android:layout_gravity="center"
+        />
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/owner_dashboard_btn"
