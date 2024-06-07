@@ -56,8 +56,8 @@ public class UserInfoActivity extends AppCompatActivity {
     FirebaseStorage storage;
     FirebaseAuth mAuth;
     FirebaseUser user;
-    UserOD userOD;
-    String userODId;
+    Object reportedUser;
+    String userId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -70,7 +70,7 @@ public class UserInfoActivity extends AppCompatActivity {
         mAuth = FirebaseAuth.getInstance();
         user = mAuth.getCurrentUser();
 
-        getOD();
+        getUser();
 
         binding.reportOD.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -94,13 +94,13 @@ public class UserInfoActivity extends AppCompatActivity {
                         Long id = new Random().nextLong();
                         Map<String, Object> doc = new HashMap<>();
 
-                        doc.put("pupvId", user.getUid());
+                        doc.put("reporter", user.getUid());
                         doc.put("reasonOfReport", report.getEditText().getText().toString());
-                        doc.put("ODId", userODId);
+                        doc.put("reported", userId);
                         doc.put("dateOfReport", LocalDate.now().toString());
                         doc.put("status", "reported");
 
-                        db.collection("UserODReports")
+                        db.collection("UserReports")
                                 .document(id.toString())
                                 .set(doc)
                                 .addOnCompleteListener(new OnCompleteListener<Void>() {
@@ -125,33 +125,55 @@ public class UserInfoActivity extends AppCompatActivity {
 
     private void sendNotification(){
         String serverKey="AAAA8GYmoZ8:APA91bHsjyzOSa2JtO_cQWFO-X1p9nMuHRO8DTfD1zhcY4mnqZ-2EZmIn8tMf1ISmnM31WB68Mzn2soeUgEISXlSc9WjRvcRhyYbmBgi7whJuYXX-24wkODByasquofLaMZydpg78esK";
-        String jsonPayload = "{\"data\":{\"title\":\"New userOD report\",\"body\":\"UserOD "
-                + userOD.getFirstName() + " " + userOD.getLastName() +
+
+        String firstName = (reportedUser instanceof UserOD) ? ((UserOD) reportedUser).getFirstName() : ((UserPUPV) reportedUser).getFirstName();
+        String lastName = (reportedUser instanceof UserOD) ? ((UserOD) reportedUser).getLastName() : ((UserPUPV) reportedUser).getLastName();
+        String jsonPayload = "{\"data\":{\"title\":\"New user report\",\"body\":\"User "
+                + firstName + " " + lastName +
                 " has been reported\"},\"to\":\"/topics/" + "AdminTopic" + "\"}";
 
         FCMHttpClient httpClient = new FCMHttpClient();
         httpClient.sendMessageToTopic(serverKey, "AdminTopic", jsonPayload);
     }
 
-    private void getOD(){
+    private void getUser(){
         db.collection("User")
                 .document("vfzH3r61kWgPI9ehrS25Mdj2j2A2")
                 .get()
                 .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
                     @Override
                     public void onSuccess(DocumentSnapshot documentSnapshot) {
-                        userOD = new UserOD(
-                                0l,
-                                documentSnapshot.getString("FirstName"),
-                                documentSnapshot.getString("LastName"),
-                                documentSnapshot.getString("E-mail"),
-                                documentSnapshot.getString("Password"),
-                                documentSnapshot.getString("Phone"),
-                                documentSnapshot.getString("Address"),
-                                documentSnapshot.getBoolean("IsValid")
-                        );
 
-                        userODId = documentSnapshot.getId();
+                        if(documentSnapshot.getString("UserType").equals("OD")) {
+                            reportedUser = new UserOD(
+                                    0l,
+                                    documentSnapshot.getString("FirstName"),
+                                    documentSnapshot.getString("LastName"),
+                                    documentSnapshot.getString("E-mail"),
+                                    documentSnapshot.getString("Password"),
+                                    documentSnapshot.getString("Phone"),
+                                    documentSnapshot.getString("Address"),
+                                    documentSnapshot.getBoolean("IsValid")
+                            );
+                        }
+                        else{
+                            reportedUser = new UserPUPV(
+                                    documentSnapshot.getString("FirstName"),
+                                    documentSnapshot.getString("LastName"),
+                                    documentSnapshot.getString("Email"),
+                                    documentSnapshot.getString("Password"),
+                                    documentSnapshot.getString("Phone"),
+                                    documentSnapshot.getString("Address"),
+                                    documentSnapshot.getBoolean("IsValid"),
+                                    documentSnapshot.getString("CompanyName"),
+                                    documentSnapshot.getString("CompanyDescription"),
+                                    documentSnapshot.getString("CompanyAddress"),
+                                    documentSnapshot.getString("CompanyEmail"),
+                                    documentSnapshot.getString("CompanyPhone"),
+                                    documentSnapshot.getString("WorkTime"));
+                        }
+
+                        userId = documentSnapshot.getId();
 
                         initializeComponents();
                     }
@@ -165,14 +187,14 @@ public class UserInfoActivity extends AppCompatActivity {
     }
 
     private void initializeComponents(){
-        binding.name.getEditText().setText(userOD.getFirstName());
-        binding.lastname.getEditText().setText(userOD.getLastName());
-        binding.email.getEditText().setText(userOD.getEmail());
-        binding.phone.getEditText().setText(userOD.getPhone());
-        binding.address.getEditText().setText(userOD.getAddress());
+        binding.name.getEditText().setText((reportedUser instanceof UserOD) ? ((UserOD) reportedUser).getFirstName() : ((UserPUPV) reportedUser).getFirstName());
+        binding.lastname.getEditText().setText((reportedUser instanceof UserOD) ? ((UserOD) reportedUser).getLastName() : ((UserPUPV) reportedUser).getLastName());
+        binding.email.getEditText().setText((reportedUser instanceof UserOD) ? ((UserOD) reportedUser).getEmail() : ((UserPUPV) reportedUser).getEmail());
+        binding.phone.getEditText().setText((reportedUser instanceof UserOD) ? ((UserOD) reportedUser).getPhone() : ((UserPUPV) reportedUser).getPhone());
+        binding.address.getEditText().setText((reportedUser instanceof UserOD) ? ((UserOD) reportedUser).getAddress() : ((UserPUPV) reportedUser).getAddress());
 
         //skloniti ovo jpg
-        StorageReference imageRef = storage.getReference().child("images/" + userODId + ".jpg");
+        StorageReference imageRef = storage.getReference().child("images/" + userId + ".jpg");
         imageRef.getDownloadUrl()
                 .addOnSuccessListener(new OnSuccessListener<Uri>() {
                     @Override

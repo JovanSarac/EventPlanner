@@ -5,6 +5,7 @@ import android.content.pm.PackageManager;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.Typeface;
 import android.graphics.pdf.PdfDocument;
 import android.os.Build;
 import android.os.Bundle;
@@ -45,6 +46,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Date;
 
 public class PricelistActivity extends AppCompatActivity {
 
@@ -94,18 +96,83 @@ public class PricelistActivity extends AppCompatActivity {
         Canvas canvas = page.getCanvas();
 
         Paint paint = new Paint();
-        paint.setColor(Color.RED);
+        paint.setColor(Color.BLACK);
         paint.setTextSize(42);
+        paint.setTypeface(Typeface.create(Typeface.DEFAULT, Typeface.BOLD));
 
-        String text = "Pricelist";
-        float x = 500;
-        float y = 900;
+        String title = "Pricelist";
+        float xTitle = 500;
+        float yTitle = 100;
+        canvas.drawText(title, xTitle, yTitle, paint);
 
-        canvas.drawText(text, x, y, paint);
+        paint.setTextSize(36);
+        paint.setTypeface(Typeface.create(Typeface.DEFAULT, Typeface.BOLD));
+
+        String productsTitle = "Products";
+        float xSubTitle = 100;
+        float yProductsTitle = 200;
+        canvas.drawText(productsTitle, xSubTitle, yProductsTitle, paint);
+
+        String servicesTitle = "Services";
+        float yServicesTitle = yProductsTitle + 400;
+        canvas.drawText(servicesTitle, xSubTitle, yServicesTitle, paint);
+
+        String packagesTitle = "Packages";
+        float yPackagesTitle = yServicesTitle + 400;
+        canvas.drawText(packagesTitle, xSubTitle, yPackagesTitle, paint);
+
+        paint.setTextSize(32);
+        paint.setTypeface(Typeface.create(Typeface.DEFAULT, Typeface.NORMAL));
+
+        float yItem = yProductsTitle + 50;
+        int i = 0;
+        for (Product product : products) {
+            Double price = product.getPrice();
+            Double discount = product.getDiscount();
+            Double priceWithDiscount = price * (1 - discount * 0.01);
+
+            canvas.drawText((++i) + ".", xSubTitle, yItem, paint);
+            canvas.drawText(product.getName(), xSubTitle + 10, yItem, paint);
+            canvas.drawText(price.toString(), xSubTitle, yItem + 50, paint);
+            canvas.drawText("-" + discount.toString() + "%", xSubTitle, yItem + 100, paint);
+            canvas.drawText("=" + priceWithDiscount.toString(), xSubTitle, yItem + 150, paint);
+            yItem += 50;
+        }
+
+        yItem = yServicesTitle + 50;
+        i = 0;
+        for (Service service : services) {
+            Double price = service.getFullPrice();
+            Double discount = service.getDiscount();
+            Double priceWithDiscount = price * (1 - discount * 0.01);
+
+            canvas.drawText((++i) + ".", xSubTitle, yItem, paint);
+            canvas.drawText(service.getName(), xSubTitle + 10, yItem, paint);
+            canvas.drawText(price.toString(), xSubTitle, yItem + 50, paint);
+            canvas.drawText("-" + discount.toString() + "%", xSubTitle, yItem + 100, paint);
+            canvas.drawText("=" + priceWithDiscount.toString(), xSubTitle, yItem + 150, paint);
+            yItem += 50;
+        }
+
+        yItem = yPackagesTitle + 50;
+        i = 0;
+        for (Package packageItem : packages) {
+            Double price = packageItem.getPrice();
+            Double discount = packageItem.getDiscount();
+            Double priceWithDiscount = price * (1 - discount * 0.01);
+
+            canvas.drawText((++i) + ".", xSubTitle, yItem, paint);
+            canvas.drawText(packageItem.getName(), xSubTitle + 10, yItem, paint);
+            canvas.drawText(price.toString(), xSubTitle, yItem + 50, paint);
+            canvas.drawText("-" + discount.toString() + "%", xSubTitle, yItem + 100, paint);
+            canvas.drawText("=" + priceWithDiscount.toString(), xSubTitle, yItem + 150, paint);
+            yItem += 50;
+        }
+
         document.finishPage(page);
 
         String directoryPath = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).toString();
-        File file = new File(directoryPath, "pricelist - " + LocalDate.now() + ".pdf");
+        File file = new File(directoryPath, "pricelist - " + new Date().toString() + ".pdf");
 
         try {
             document.writeTo(new FileOutputStream(file));

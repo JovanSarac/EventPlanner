@@ -109,4 +109,7 @@
     <string name="reason_of_report">Reason of report</string>
     <string name="send">Send</string>
     <string name="user_info">User info</string>
+    <string name="reported">Reported:</string>
+    <string name="reporter">Reporter:</string>
+    <string name="user_reports">User reports</string>
 </resources>

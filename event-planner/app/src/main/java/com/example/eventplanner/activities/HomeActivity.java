@@ -192,11 +192,9 @@ public class HomeActivity extends AppCompatActivity {
             if(user.getDisplayName().equals("OD")){
                 binding.homeact.setVisibility(View.VISIBLE);
                 binding.companyInfo.setVisibility(View.VISIBLE);
-            }
-            else if(user.getDisplayName().equals("PUPV")){
                 binding.userInfo.setVisibility(View.VISIBLE);
             }
-            //pupv i pupz
+            //pupv i pupz i OD
             else if(!user.getDisplayName().equals("ADMIN")){
                 binding.categoriesButton.setVisibility(View.GONE);
                 binding.typesOfEventsButton.setVisibility(View.GONE);
@@ -207,6 +205,11 @@ public class HomeActivity extends AppCompatActivity {
                 binding.categoriesButton.setVisibility(View.VISIBLE);
                 binding.typesOfEventsButton.setVisibility(View.VISIBLE);
             }
+
+            if(user.getDisplayName().equals("PUPV")) {
+                binding.userInfo.setVisibility(View.VISIBLE);
+            }
+
         }
 
 
