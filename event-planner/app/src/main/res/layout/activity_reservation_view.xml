@@ -310,7 +310,6 @@
                             android:orientation="horizontal">
 
                             <com.google.android.material.button.MaterialButton
-                                android:id="@+id/approve_reservation_btn"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:text="Approve"
@@ -323,7 +322,6 @@
                                 app:cornerRadius="10dp" />
 
                             <com.google.android.material.button.MaterialButton
-                                android:id="@+id/deny_reservation_btn"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:text="Deny"
