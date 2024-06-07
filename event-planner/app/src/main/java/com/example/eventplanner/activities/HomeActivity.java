@@ -128,6 +128,11 @@ public class HomeActivity extends AppCompatActivity {
             startActivity(intent);
         });
 
+        binding.userReports.setOnClickListener(v ->{
+            Intent intent = new Intent(HomeActivity.this, UserReportsViewActivity.class);
+            startActivity(intent);
+        });
+
         binding.registerButton.setOnClickListener(v->{
             Intent intent = new Intent(HomeActivity.this, OD_RegisterActivity.class);
             startActivity(intent);
@@ -175,6 +180,7 @@ public class HomeActivity extends AppCompatActivity {
             binding.pricelist.setVisibility(View.GONE);
             binding.userInfo.setVisibility(View.GONE);
             binding.companyInfo.setVisibility(View.GONE);
+            binding.userReports.setVisibility(View.GONE);
 
 
             binding.registerButton.setVisibility(View.VISIBLE);
@@ -189,6 +195,7 @@ public class HomeActivity extends AppCompatActivity {
             binding.pricelist.setVisibility(View.GONE);
             binding.companyInfo.setVisibility(View.GONE);
             binding.userInfo.setVisibility(View.GONE);
+            binding.userReports.setVisibility(View.GONE);
             if(user.getDisplayName().equals("OD")){
                 binding.homeact.setVisibility(View.VISIBLE);
                 binding.companyInfo.setVisibility(View.VISIBLE);
@@ -204,6 +211,7 @@ public class HomeActivity extends AppCompatActivity {
             else{
                 binding.categoriesButton.setVisibility(View.VISIBLE);
                 binding.typesOfEventsButton.setVisibility(View.VISIBLE);
+                binding.userReports.setVisibility(View.VISIBLE);
             }
 
             if(user.getDisplayName().equals("PUPV")) {

@@ -41,7 +41,7 @@
                         android:layout_height="wrap_content"
                         android:textSize="20sp"
                         android:textStyle="bold"
-                        android:layout_marginLeft="10dp"
+                        android:layout_marginStart="10dp"
                         android:text="reported "/>
 
                     <Button
@@ -49,7 +49,7 @@
                         android:layout_width="25dp"
                         android:layout_height="25dp"
                         android:layout_marginTop="5dp"
-                        android:layout_marginEnd="20dp"
+                        android:layout_marginStart="10dp"
                         android:clickable="true"
                         android:background="@drawable/ic_account"
                         />
@@ -64,7 +64,7 @@
                     android:textStyle="bold"
                     android:gravity="right"
                     android:layout_marginEnd="10dp"
-
+                    android:layout_marginLeft="10dp"
                     android:text="reported"/>
 
             </LinearLayout>
@@ -88,7 +88,7 @@
                     android:layout_height="wrap_content"
                     android:textSize="20sp"
                     android:textStyle="bold"
-                    android:layout_marginLeft="10dp"
+                    android:layout_marginStart="10dp"
                     android:text="reporter "/>
 
                 <Button
@@ -96,7 +96,7 @@
                     android:layout_width="25dp"
                     android:layout_height="25dp"
                     android:layout_marginTop="5dp"
-                    android:layout_marginEnd="20dp"
+                    android:layout_marginStart="10dp"
                     android:clickable="true"
                     android:background="@drawable/ic_account"
                     />
@@ -104,12 +104,20 @@
             </LinearLayout>
 
             <TextView
+                android:id="@+id/dateOfReport"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="10sp"
+                android:textStyle="bold"
+                android:layout_marginTop="40dp"
+                android:text="dd/MM/yyyy"/>
+
+            <TextView
                 android:id="@+id/reason"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textSize="15sp"
                 android:textStyle="bold"
-                android:layout_marginTop="20dp"
                 android:text="reason of reporting"/>
 
             <LinearLayout

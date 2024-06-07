@@ -74,14 +74,26 @@ public class NotificationService extends FirebaseMessagingService {
                         PendingIntent.FLAG_IMMUTABLE);
                 String channelId = user.getUid();
                 Uri defaultSoundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
-                NotificationCompat.Builder notificationBuilder =
-                        new NotificationCompat.Builder(this, channelId)
-                                .setSmallIcon(R.drawable.ic_add)
-                                .setContentTitle("New category!")
-                                .setContentText(messageBody)
-                                .setAutoCancel(true)
-                                .setSound(defaultSoundUri)
-                                .setContentIntent(pendingIntent);
+
+                NotificationCompat.Builder notificationBuilder;
+                if(messageTitle.equals("Update on your report")){
+                    notificationBuilder = new NotificationCompat.Builder(this, channelId + "Topic");
+                    notificationBuilder.setContentTitle(messageTitle);
+                    notificationBuilder.setContentText(messageBody);
+                    notificationBuilder.setSmallIcon(R.drawable.ic_android);
+                    notificationBuilder.setAutoCancel(true);
+                    notificationBuilder.setSound(defaultSoundUri);
+                }
+                else{
+                    notificationBuilder = new NotificationCompat.Builder(this, channelId)
+                                    .setSmallIcon(R.drawable.ic_add)
+                                    .setContentTitle(messageTitle)
+                                    .setContentText(messageBody)
+                                    .setAutoCancel(true)
+                                    .setSound(defaultSoundUri)
+                                    .setContentIntent(pendingIntent);
+                }
+
 
                 NotificationManager notificationManager =
                         (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
