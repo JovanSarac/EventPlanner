@@ -19,11 +19,13 @@ import androidx.core.util.Pair;
 import androidx.fragment.app.Fragment;
 
 import com.example.eventplanner.R;
+import com.example.eventplanner.adapters.PackageListAdapter;
 import com.example.eventplanner.adapters.ProductListAdapter;
 import com.example.eventplanner.adapters.ServiceListAdapter;
 import com.example.eventplanner.databinding.FragmentProductsServicesPageBinding;
 import com.example.eventplanner.databinding.FragmentSearchPspBinding;
 import com.example.eventplanner.model.EventType;
+import com.example.eventplanner.model.Package;
 import com.example.eventplanner.model.Product;
 import com.example.eventplanner.model.Service;
 import com.example.eventplanner.model.Subcategory;
@@ -65,6 +67,8 @@ public class ProductsServicesPageFragment extends Fragment {
     ArrayList<Product> products;
 
     ArrayList<Service> services;
+
+    ArrayList<Package> packages;
     FirebaseFirestore db;
     FirebaseStorage storage;
 
@@ -199,8 +203,8 @@ public class ProductsServicesPageFragment extends Fragment {
         db = FirebaseFirestore.getInstance();
         storage = FirebaseStorage.getInstance();
 
-        //getProducts();
-        //getServices();
+        getProducts();
+        getServices();
 
 
         /*ArrayList<Package> packages = getPackages();
@@ -375,28 +379,31 @@ public class ProductsServicesPageFragment extends Fragment {
                 .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                     @Override
                     public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                        if (task.isSuccessful()) {
+                        if(task.isSuccessful()){
+
                             final List<DocumentSnapshot> productDocs = task.getResult().getDocuments();
                             final int numProducts = productDocs.size();
                             final int[] productsProcessed = {0};
 
-                            for (DocumentSnapshot doc : productDocs) {
-                                Product product = new Product(/*
+                            for(DocumentSnapshot doc: task.getResult()){
+                                Product product = new Product(
                                         Long.parseLong(doc.getId()),
-                                        doc.getLong("categoryId"),
-                                        doc.getLong("subcategoryId"),
+                                        doc.getString("pupvId"),
+                                        Long.parseLong(doc.getString("categoryId")),
+                                        Long.parseLong(doc.getString("subcategoryId")),
                                         doc.getString("name"),
                                         doc.getString("description"),
-                                        ((Number) doc.get("price")).doubleValue(),
-                                        ((Number) doc.get("discount")).doubleValue(),
-                                        new ArrayList<>(), //images
-                                        (ArrayList<Long>) doc.get("eventIds"),
+                                        doc.getDouble("price"),
+                                        doc.getDouble("discount"),
+                                        new ArrayList<>(),
+                                        new ArrayList<>(), //convertStringArrayToLong((ArrayList<String>) doc.get("eventTypeIds")),
                                         doc.getBoolean("available"),
                                         doc.getBoolean("visible"),
                                         doc.getBoolean("pending"),
-                                        doc.getBoolean("deleted")*/);
+                                        doc.getBoolean("deleted")
+                                );
 
-                                ArrayList<String> imageUrls = (ArrayList<String>) doc.get("imageUrls");
+                                ArrayList<String> imageUrls = (ArrayList<String>) doc.get("imageIds");
                                 final int numImages = imageUrls.size();
 
                                 for (String imageUrl : imageUrls) {
@@ -428,9 +435,12 @@ public class ProductsServicesPageFragment extends Fragment {
 
                                 products.add(product);
                             }
+
                         } else {
-                            Toast.makeText(requireContext(), "Failed to fetch products: " + task.getException().getMessage(), Toast.LENGTH_LONG).show();
+                        Toast.makeText(requireContext(), "Failed to fetch products: " + task.getException().getMessage(), Toast.LENGTH_LONG).show();
                         }
+
+
                     }
                 })
                 .addOnFailureListener(new OnFailureListener() {
@@ -440,7 +450,17 @@ public class ProductsServicesPageFragment extends Fragment {
                     }
                 });
     }
-    @NonNull
+
+    private ArrayList<Long> convertStringArrayToLong(ArrayList<String> list){
+        ArrayList<Long> ids = new ArrayList<>();
+
+        for(String item: list){
+            ids.add(Long.parseLong(item));
+        }
+
+        return ids;
+    }
+
     private void getServices() {
         services = new ArrayList<>();
         db.collection("Services")
@@ -457,32 +477,33 @@ public class ProductsServicesPageFragment extends Fragment {
                             final int[] servicesProccessed = {0};
 
                             for (DocumentSnapshot doc : serviceDocs) {
-                                Service service = new Service(/*
+                                Service service = new Service(
                                         Long.parseLong(doc.getId()),
-                                        doc.getLong("categoryId"),
-                                        doc.getLong("subcategoryId"),
+                                        doc.getString("pupvId"),
+                                        Long.parseLong(doc.getString("categoryId")),
+                                        Long.parseLong(doc.getString("subcategoryId")),
                                         doc.getString("name"),
                                         doc.getString("description"),
                                         new ArrayList<>(), //images
                                         doc.getString("specific"),
                                         ((Number) doc.get("pricePerHour")).doubleValue(),
                                         ((Number) doc.get("fullPrice")).doubleValue(),
-                                        ((Number) doc.get("duration")).doubleValue(),
-                                        ((Number) doc.get("durationMin")).doubleValue(),
-                                        ((Number) doc.get("durationMax")).doubleValue(),
+                                        doc.get("duration") != null ? ((Number) doc.get("duration")).doubleValue() : null,
+                                        doc.get("durationMin") != null ? ((Number) doc.get("durationMin")).doubleValue() : null,
+                                        doc.get("durationMax") != null ? ((Number) doc.get("durationMax")).doubleValue() : null,
                                         doc.getString("location"),
                                         ((Number) doc.get("discount")).doubleValue(),
-                                        (ArrayList<String>) doc.get("providers"),
-                                        (ArrayList<Long>) doc.get("eventIds"),
+                                        (ArrayList<String>) doc.get("pupIds"),
+                                        convertStringArrayToLong((ArrayList<String>) doc.get("eventTypeIds")),
                                         doc.getString("reservationDue"),
                                         doc.getString("cancelationDue"),
                                         doc.getBoolean("automaticAffirmation"),
                                         doc.getBoolean("available"),
                                         doc.getBoolean("visible"),
                                         doc.getBoolean("pending"),
-                                        doc.getBoolean("deleted")*/);
+                                        doc.getBoolean("deleted"));
 
-                                ArrayList<String> imageUrls = (ArrayList<String>) doc.get("imageUrls");
+                                ArrayList<String> imageUrls = (ArrayList<String>) doc.get("imageIds");
                                 final int numImages = imageUrls.size();
 
                                 for (String imageUrl : imageUrls) {
@@ -497,8 +518,8 @@ public class ProductsServicesPageFragment extends Fragment {
                                                         servicesProccessed[0]++;
 
                                                         if (servicesProccessed[0] == numServices) {
-                                                            ServiceListAdapter productListAdapter = new ServiceListAdapter(requireContext(), R.layout.service_card, services);
-                                                            binding.serviceList.setAdapter(productListAdapter);
+                                                            ServiceListAdapter serviceListAdapter = new ServiceListAdapter(requireContext(), R.layout.service_card, services);
+                                                            binding.serviceList.setAdapter(serviceListAdapter);
                                                             binding.serviceList.setClickable(true);
                                                         }
                                                     }
@@ -514,6 +535,8 @@ public class ProductsServicesPageFragment extends Fragment {
 
                                 services.add(service);
                             }
+
+                            getPackages();
                         } else {
                             Toast.makeText(requireContext(), "Failed to fetch services: " + task.getException().getMessage(), Toast.LENGTH_LONG).show();
                         }
@@ -527,46 +550,85 @@ public class ProductsServicesPageFragment extends Fragment {
                 });
     }
 
-    /*@NonNull
-    private static ArrayList<Package> getPackages() {
-        ArrayList<Product> products = getProducts();
-        ArrayList<Service> services = getServices();
-        ArrayList<Package> packages = new ArrayList<>();
+    private void getPackages(){
+        packages = new ArrayList<>();
+        db.collection("Packages")
+                .whereEqualTo("deleted", false)
+                .get()
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
 
-        Long[] ids = {1l, 2l, 3l, 4l, 5l};
-        String[] names = {"Package 1", "Package 2", "Package 3", "Package 4", "Package 5"};
-        String[] description = {"Description 1", "Description 2", "Description 3", "Description 4", "Description 5"};
-        Double[] discounts = {1.0, 2.0, 3.0, 4.0, 5.0};
-        Boolean[] available = {true, true, true, true, true};
-        Boolean[] visible = {true, true, true, true, true};
-        String[] categories = {"Category 1", "Category 2", "Category 3", "Category 4", "Category 5"};
-        String[] subcategories = {"Subcategory 1", "Subcategory 2", "Subcategory 3", "Subcategory 4", "Subcategory 5"};
-        ArrayList<String> events = new ArrayList<>(Arrays.asList(
-                "Event 11", "Event 12", "Event 13", "Event 14", "Event 15",
-                "Event 21", "Event 22", "Event 23", "Event 24", "Event 25",
-                "Event 31", "Event 32", "Event 33", "Event 34", "Event 35",
-                "Event 41", "Event 42", "Event 43", "Event 44", "Event 45",
-                "Event 51", "Event 52", "Event 53", "Event 54", "Event 55"));
-        Double[] prices = {10.0, 20.0, 30.0, 40.0, 50.0};
-        ArrayList<Integer> imageIds = new ArrayList<>(Arrays.asList(R.drawable.product_1, R.drawable.product_2, R.drawable.product_3,
-                R.drawable.product_4, R.drawable.product_5));
-        String[] reservationDues = {"1 day", "2 days", "3 days", "4 days", "5 days"};
-        String[] cancelationDues = {"1 day", "2 days", "3 days", "4 days", "5 days"};
-        Boolean [] automaticAffirmations = {true, true, false, false, false};
+                        if(task.isSuccessful()){
+                            final List<DocumentSnapshot> packageDocs = task.getResult().getDocuments();
+                            final int numProducts = packageDocs.size();
+                            final int[] productsProcessed = {0};
+                            for(DocumentSnapshot doc: task.getResult()) {
+                                Package packagee = new Package(
+                                        Long.parseLong(doc.getId()),
+                                        doc.getString("pupvId"),
+                                        doc.getString("name"),
+                                        doc.getString("description"),
+                                        ((Number) doc.get("discount")).doubleValue(),
+                                        doc.getBoolean("available"),
+                                        doc.getBoolean("visible"),
+                                        Long.parseLong(doc.getString("categoryId")),
+                                        convertStringArrayToLong((ArrayList<String>) doc.get("subcategoryIds")),
+                                        convertStringArrayToLong((ArrayList<String>) doc.get("productIds")),
+                                        convertStringArrayToLong((ArrayList<String>) doc.get("serviceIds")),
+                                        convertStringArrayToLong((ArrayList<String>) doc.get("eventTypeIds")),
+                                        ((Number) doc.get("price")).doubleValue(),
+                                        new ArrayList<>(), //images
+                                        doc.getString("reservationDue"),
+                                        doc.getString("cancelationDue"),
+                                        doc.getBoolean("automaticAffirmation"),
+                                        doc.getBoolean("deleted"));
 
-        for(int i = 0; i < ids.length; i++){
-            ArrayList<String> packageEvents = new ArrayList<>();
-            for(int j = i; j < i + 5; j++){
-                packageEvents.add(events.get(j));
-            }
+                                ArrayList<String> imageUrls = (ArrayList<String>) doc.get("imageIds");
+                                final int numImages = imageUrls.size();
 
-            packages.add(new Package(ids[i], names[i], description[i], discounts[i], available[i], visible[i],
-                    categories[i], subcategories[i], products, services, packageEvents, prices[i], imageIds, reservationDues[i], cancelationDues[i], automaticAffirmations[i]));
-        }
+                                for (String imageUrl : imageUrls) {
+                                    StorageReference imageRef = storage.getReference().child(imageUrl);
+                                    imageRef.getDownloadUrl()
+                                            .addOnSuccessListener(new OnSuccessListener<Uri>() {
+                                                @Override
+                                                public void onSuccess(Uri uri) {
+                                                    packagee.getImages().add(uri);
 
-        return  packages;
-    }*/
+                                                    if (packagee.getImages().size() == numImages) {
+                                                        productsProcessed[0]++;
 
+                                                        if (productsProcessed[0] == numProducts) {
+                                                            PackageListAdapter packageListAdapter = new PackageListAdapter(requireContext(), packages);
+                                                            binding.packageList.setAdapter(packageListAdapter);
+                                                            binding.packageList.setClickable(true);
+                                                        }
+                                                    }
+                                                }
+                                            })
+                                            .addOnFailureListener(new OnFailureListener() {
+                                                @Override
+                                                public void onFailure(@NonNull Exception e) {
+                                                    Toast.makeText(requireContext(), e.getMessage(), Toast.LENGTH_LONG).show();
+                                                }
+                                            });
+                                }
+
+                                packages.add(packagee);
+                            }
+
+                        }else{
+                            Toast.makeText(requireContext(), "Failed to fetch products: " + task.getException().getMessage(), Toast.LENGTH_LONG).show();
+                        }
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Toast.makeText(requireContext(), e.getMessage(), Toast.LENGTH_LONG).show();
+                    }
+                });
+    }
     private void getEventTypes(View dialogView) {
         itemList=new ArrayList<>();
         db.collection("EventTypes")

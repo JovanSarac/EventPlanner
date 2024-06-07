@@ -11,12 +11,9 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.example.eventplanner.R;
+import com.example.eventplanner.model.Package;
 
 import java.util.ArrayList;
-
-import com.example.eventplanner.model.Package;
-import com.example.eventplanner.model.Product;
-import com.example.eventplanner.model.Service;
 
 public class PackageListAdapter extends ArrayAdapter<Package> {
 
