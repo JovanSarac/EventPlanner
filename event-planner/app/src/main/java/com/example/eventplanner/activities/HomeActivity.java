@@ -165,6 +165,10 @@ public class HomeActivity extends AppCompatActivity {
             Intent intent = new Intent(HomeActivity.this, ReserveServiceActivity.class);
             startActivity(intent);
         });
+        binding.reservePackage.setOnClickListener(v->{
+            Intent intent = new Intent(HomeActivity.this, ReservePackageActivity.class);
+            startActivity(intent);
+        });
         binding.signOut.setOnClickListener(v->{
             FirebaseAuth.getInstance().signOut();
             Toast.makeText(this, "SingedOut", Toast.LENGTH_SHORT).show();

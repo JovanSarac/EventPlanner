@@ -130,6 +130,13 @@
         android:text="Reserve Service"
         android:layout_gravity="center"
         />
+    <Button
+        android:id="@+id/reservePackage"
+        android:layout_width="300dp"
+        android:layout_height="50dp"
+        android:text="Reserve Package"
+        android:layout_gravity="center"
+        />
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/owner_dashboard_btn"
