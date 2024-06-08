@@ -3,11 +3,17 @@ package com.example.eventplanner.activities;
 import android.app.Dialog;
 import android.content.Intent;
 import android.graphics.drawable.ColorDrawable;
+import android.nfc.Tag;
 import android.os.Bundle;
+import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.View;
 import android.view.Window;
 import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
@@ -19,10 +25,23 @@ import androidx.core.view.WindowInsetsCompat;
 import com.example.eventplanner.R;
 import com.example.eventplanner.databinding.ActivityHomeBinding;
 import com.example.eventplanner.databinding.ActivityReservationViewBinding;
+import com.example.eventplanner.model.Service;
+import com.google.android.material.button.MaterialButton;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
+
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
 
 public class ReservationView extends AppCompatActivity {
 
     ActivityReservationViewBinding binding;
+    FirebaseFirestore db;
+
+    private LinearLayout serviceReservationsContainer;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,6 +57,8 @@ public class ReservationView extends AppCompatActivity {
         binding= ActivityReservationViewBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
+        serviceReservationsContainer = binding.reservationContainer;
+
         binding.backBtn.setOnClickListener(v -> {
             Intent intent = new Intent(this, HomeActivity.class);
             startActivity(intent);
@@ -51,6 +72,30 @@ public class ReservationView extends AppCompatActivity {
             showFilterDialog();
         });
 
+        db = FirebaseFirestore.getInstance();
+
+        retrieveAllServiceReservationRequests();
+
+    }
+
+    private void retrieveAllServiceReservationRequests() {
+        db.collection("ServiceReservationRequest")
+                .get()
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        QuerySnapshot querySnapshot = task.getResult();
+                        if (querySnapshot != null) {
+                            for (QueryDocumentSnapshot document : querySnapshot) {
+                                addDocumentToView(document);
+                                Log.d("ServiceReservation", document.getId() + " => " + document.getData());
+                            }
+                        } else {
+                            Log.d("ServiceReservation", "No documents found in the collection.");
+                        }
+                    } else {
+                        Log.w("ServiceReservation", "Error getting documents.", task.getException());
+                    }
+                });
     }
 
     void showFilterDialog(){
@@ -78,4 +123,55 @@ public class ReservationView extends AppCompatActivity {
         });
 
     };
+
+    private void addDocumentToView(QueryDocumentSnapshot document) {
+        LayoutInflater inflater = LayoutInflater.from(this);
+        View view = inflater.inflate(R.layout.reservation_card, serviceReservationsContainer, false);
+
+        TextView workerName = view.findViewById(R.id.worker_name_value);
+        TextView clientNmae = view.findViewById(R.id.client_name_value);
+        TextView occurrenceDate = view.findViewById(R.id.occurrence_date_value);
+        TextView duration = view.findViewById(R.id.duration_value);
+        MaterialButton approveButton = view.findViewById(R.id.approve_reservation_btn);
+        MaterialButton denyButton = view.findViewById(R.id.deny_reservation_btn);
+        TextView serviceName = view.findViewById(R.id.service_name);
+
+        com.example.eventplanner.model.Service service = document.get("service", Service.class);
+        serviceName.setText(service.getName());
+
+        clientNmae.setText(document.getString("worker_name"));
+        workerName.setText(document.getString("worker_name"));
+        occurrenceDate.setText(parseDate(document.getString("occurenceDate")));
+        duration.setText(document.getString("startHours").concat("-").concat(document.getString("endHours")));
+
+        approveButton.setOnClickListener(v -> {
+        });
+
+        denyButton.setOnClickListener(v -> {
+        });
+
+        serviceReservationsContainer.addView(view);
+    }
+
+    private String parseDate(String documentDate){
+
+        if (documentDate == null || documentDate.isEmpty()) {
+            return null;
+        }
+
+        SimpleDateFormat originalFormat = new SimpleDateFormat("EEE MMM dd HH:mm:ss zzz yyyy", Locale.ENGLISH);
+        SimpleDateFormat targetFormat = new SimpleDateFormat("dd-MM-yyyy");
+
+        try {
+            Date date = originalFormat.parse(documentDate);
+
+            String formattedDateStr = targetFormat.format(date);
+
+            return formattedDateStr;
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+
+        return null;
+    }
 }
