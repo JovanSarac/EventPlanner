@@ -5,6 +5,10 @@ import android.content.Intent;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.view.Window;
+import android.widget.Button;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
+import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
@@ -58,6 +62,20 @@ public class ReservationView extends AppCompatActivity {
         dialog.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
 
         dialog.show();
+
+        final RadioGroup radioGroup = dialog.findViewById(R.id.filter_radio_grp);
+        final Button refreshButton = dialog.findViewById(R.id.refresh_btn);
+
+        refreshButton.setOnClickListener(v->{
+            dialog.dismiss();
+        });
+        radioGroup.setOnCheckedChangeListener((group, checkedId) -> {
+
+            RadioButton checkedRadioButton = dialog.findViewById(checkedId);
+            String option = checkedRadioButton.getText().toString().toUpperCase().replace(" ", "");
+
+            dialog.dismiss();
+        });
 
     };
 }
