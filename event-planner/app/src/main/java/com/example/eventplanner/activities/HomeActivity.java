@@ -117,16 +117,6 @@ public class HomeActivity extends AppCompatActivity {
             startActivity(intent);
         });
 
-        binding.companyInfo.setOnClickListener(v -> {
-            Intent intent = new Intent(HomeActivity.this, CompanyViewActivity.class);
-            startActivity(intent);
-        });
-
-        binding.userInfo.setOnClickListener(v -> {
-            Intent intent = new Intent(HomeActivity.this, UserInfoActivity.class);
-            startActivity(intent);
-        });
-
         binding.userReports.setOnClickListener(v ->{
             Intent intent = new Intent(HomeActivity.this, UserReportsViewActivity.class);
             startActivity(intent);
@@ -194,8 +184,6 @@ public class HomeActivity extends AppCompatActivity {
         if (user == null) {
             binding.signOut.setVisibility(View.GONE);
             binding.pricelist.setVisibility(View.GONE);
-            binding.userInfo.setVisibility(View.GONE);
-            binding.companyInfo.setVisibility(View.GONE);
             binding.userReports.setVisibility(View.GONE);
 
 
@@ -209,13 +197,9 @@ public class HomeActivity extends AppCompatActivity {
             binding.registerButton.setVisibility(View.GONE);
             binding.loginButton.setVisibility(View.GONE);
             binding.pricelist.setVisibility(View.GONE);
-            binding.companyInfo.setVisibility(View.GONE);
-            binding.userInfo.setVisibility(View.GONE);
             binding.userReports.setVisibility(View.GONE);
             if(user.getDisplayName().equals("OD")){
                 binding.homeact.setVisibility(View.VISIBLE);
-                binding.companyInfo.setVisibility(View.VISIBLE);
-                binding.userInfo.setVisibility(View.VISIBLE);
             }
             //pupv i pupz i OD
             else if(!user.getDisplayName().equals("ADMIN")){
@@ -232,7 +216,6 @@ public class HomeActivity extends AppCompatActivity {
             }
 
             if(user.getDisplayName().equals("PUPV")) {
-                binding.userInfo.setVisibility(View.VISIBLE);
             }
 
         }
