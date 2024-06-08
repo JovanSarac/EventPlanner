@@ -28,6 +28,7 @@ import com.example.eventplanner.model.PackageReservationRequest;
 import com.example.eventplanner.model.Product;
 import com.example.eventplanner.model.Service;
 import com.example.eventplanner.model.ServiceReservationRequest;
+import com.example.eventplanner.services.FCMHttpClient;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
@@ -310,10 +311,17 @@ public class ReservePackageActivity extends AppCompatActivity implements Reserve
                 .addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {
                         Toast.makeText(this, "Data added successfully", Toast.LENGTH_SHORT).show();
+                        String jsonPayload = "{\"data\":{\"title\":\"New category!\",\"body\":\""+"neki body"+"\"},\"to\":\"/topics/" + "PUPV" + "\"}";
+                        sendMessage(serverKey,jsonPayload);
                     } else {
                         Toast.makeText(this, "Failed to add data", Toast.LENGTH_SHORT).show();
                     }
                 });
+    }
+    String serverKey="AAAA8GYmoZ8:APA91bHsjyzOSa2JtO_cQWFO-X1p9nMuHRO8DTfD1zhcY4mnqZ-2EZmIn8tMf1ISmnM31WB68Mzn2soeUgEISXlSc9WjRvcRhyYbmBgi7whJuYXX-24wkODByasquofLaMZydpg78esK";
+    public static void sendMessage(String serverKey, String jsonPayload) {
+        FCMHttpClient httpClient = new FCMHttpClient();
+        httpClient.sendMessageToTopic(serverKey, "PUPV", jsonPayload);
     }
 
 }

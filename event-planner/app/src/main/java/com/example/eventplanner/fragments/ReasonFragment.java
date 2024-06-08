@@ -1,5 +1,6 @@
 package com.example.eventplanner.fragments;
 
+import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.AsyncTask;
@@ -40,6 +41,23 @@ public class ReasonFragment extends BottomSheetDialogFragment {
     public ReasonFragment(UserPUPV user) {
         this.user=user;
     }
+
+    private FragmentCloseListener listener;
+
+    public interface FragmentCloseListener {
+        void onFragmentClosed();
+    }
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        if (context instanceof FragmentCloseListener) {
+            listener = (FragmentCloseListener) context;
+        } else {
+            throw new RuntimeException(context.toString()
+                    + " must implement FragmentCloseListener");
+        }
+    }
+
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
@@ -95,7 +113,6 @@ public class ReasonFragment extends BottomSheetDialogFragment {
             return;
         }
         Map<String, Object> updates = new HashMap<>();
-        updates.put("IsValid", true);
         updates.put("Reason", text.getText().toString());
         db.collection("User").document(user.getId()).update(updates)
                 .addOnSuccessListener(new OnSuccessListener<Void>() {
@@ -103,6 +120,9 @@ public class ReasonFragment extends BottomSheetDialogFragment {
                     public void onSuccess(Void aVoid) {
                         Log.d("Firestore", "DocumentSnapshot successfully updated!");
                         sendEmail();
+                        listener.onFragmentClosed();
+                        getActivity().getSupportFragmentManager().beginTransaction().remove(ReasonFragment.this).commit();
+
                     }
                 })
                 .addOnFailureListener(new OnFailureListener() {

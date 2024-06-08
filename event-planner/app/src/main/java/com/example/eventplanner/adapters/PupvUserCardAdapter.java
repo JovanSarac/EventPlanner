@@ -33,6 +33,8 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.ActionCodeSettings;
+import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentSnapshot;
@@ -43,10 +45,12 @@ public class PupvUserCardAdapter extends RecyclerView.Adapter<PupvUserCardAdapte
     FirebaseFirestore db = FirebaseFirestore.getInstance();
     private List<UserPUPV> dataList;
     private Context context;
+    private ApproveRegistrationActivity activity;
 
-    public PupvUserCardAdapter(List<UserPUPV> dataList,Context context) {
+    public PupvUserCardAdapter(List<UserPUPV> dataList,Context context,ApproveRegistrationActivity activity) {
         this.dataList = dataList;
         this.context=context;
+        this.activity = activity;
     }
     public static class ViewHolder extends RecyclerView.ViewHolder {
         public TextView nameText;
@@ -89,7 +93,23 @@ public class PupvUserCardAdapter extends RecyclerView.Adapter<PupvUserCardAdapte
         holder.addIcon.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                Map<String, Object> updates = new HashMap<>();
+                updates.put("IsValid", true);
+                db.collection("User").document(data.getId()).update(updates)
+                        .addOnSuccessListener(new OnSuccessListener<Void>() {
+                            @Override
+                            public void onSuccess(Void aVoid) {
+                                Log.d("Firestore", "DocumentSnapshot successfully updated!");
+                                activity.getUsers();
+                            }
+                        })
+                        .addOnFailureListener(new OnFailureListener() {
+                            @Override
+                            public void onFailure(@NonNull Exception e) {
+                                // Handle the error
+                                Log.w("Firestore", "Error updating document", e);
+                            }
+                        });
 
             }
         });
@@ -112,6 +132,8 @@ public class PupvUserCardAdapter extends RecyclerView.Adapter<PupvUserCardAdapte
         });
 
     }
+
+
     @Override
     public int getItemCount() {
         return dataList.size();

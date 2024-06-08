@@ -172,7 +172,7 @@ public class PUPV_RegisterCategoryActivity extends AppCompatActivity {
         item.put("UserType","PUPV");
     }
     private void addToCollectionPUPV(String id){
-        item.put("DateTimePosted", System.currentTimeMillis());
+        item.put("DateTimePosted",String.valueOf(System.currentTimeMillis()) );
         db.collection("User")
                 .document(id)
                 .set(item)

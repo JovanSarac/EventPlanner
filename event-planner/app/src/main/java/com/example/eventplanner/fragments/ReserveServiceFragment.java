@@ -388,6 +388,7 @@ public class ReserveServiceFragment extends BottomSheetDialogFragment {
                 .addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {
                         Toast.makeText(getContext(), "Data added successfully", Toast.LENGTH_SHORT).show();
+                        getActivity().getSupportFragmentManager().beginTransaction().remove(ReserveServiceFragment.this).commit();
                     } else {
                         Toast.makeText(getContext(), "Failed to add data", Toast.LENGTH_SHORT).show();
                     }
