@@ -26,18 +26,22 @@ import androidx.core.view.WindowInsetsCompat;
 import com.example.eventplanner.R;
 import com.example.eventplanner.databinding.ActivityHomeBinding;
 import com.example.eventplanner.databinding.ActivityReservationViewBinding;
+import com.example.eventplanner.model.EventPUPZ;
 import com.example.eventplanner.model.Service;
+import com.example.eventplanner.model.ServiceReservationRequest;
 import com.example.eventplanner.model.UserOD;
 import com.example.eventplanner.model.UserPUPZ;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.button.MaterialButton;
+import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
+import com.google.firebase.firestore.SetOptions;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -145,6 +149,10 @@ public class ReservationView extends AppCompatActivity {
         MaterialButton approveButton = view.findViewById(R.id.approve_reservation_btn);
         MaterialButton denyButton = view.findViewById(R.id.deny_reservation_btn);
         TextView serviceName = view.findViewById(R.id.service_name);
+        LinearLayout btnLayout = view.findViewById(R.id.reservation_btns_layout);
+
+        if(!document.getString("status").equals("NEW"))
+            btnLayout.setVisibility(View.GONE);
 
         com.example.eventplanner.model.Service service = document.get("service", Service.class);
         serviceName.setText(service.getName());
@@ -159,12 +167,51 @@ public class ReservationView extends AppCompatActivity {
         duration.setText(document.getString("startHours").concat("-").concat(document.getString("endHours")));
 
         approveButton.setOnClickListener(v -> {
+            getDocumentCount("Event").thenAccept(count ->{
+                ServiceReservationRequest reservation = document.toObject(ServiceReservationRequest.class);
+
+                EventPUPZ event = new EventPUPZ(new Long(count+1), reservation);
+                reservation.setStatus("APPROVED");
+
+                db.collection("Event").add(event).addOnSuccessListener(t -> {
+                    String reservationDocumentId = document.getId();
+
+                    db.collection("ServiceReservationRequest")
+                            .document(reservationDocumentId)
+                            .set(reservation, SetOptions.merge())
+                            .addOnSuccessListener(aVoid -> {
+                                Log.d("Firestore", "Reservation updated successfully!");
+                            })
+                            .addOnFailureListener(e -> {
+                                Log.w("Firestore", "Error updating reservation", e);
+                            });
+                });
+            });
         });
 
         denyButton.setOnClickListener(v -> {
         });
 
         serviceReservationsContainer.addView(view);
+    }
+
+    public CompletableFuture<Integer> getDocumentCount(String collectionName) {
+        CompletableFuture<Integer> future = new CompletableFuture<>();
+        CollectionReference collectionRef = db.collection(collectionName);
+
+        collectionRef.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                if (task.isSuccessful()) {
+                    int count = task.getResult().size();
+                    future.complete(count);
+                } else {
+                    future.completeExceptionally(task.getException());
+                }
+            }
+        });
+
+        return future;
     }
 
     private String parseDate(String documentDate){
