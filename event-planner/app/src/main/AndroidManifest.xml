@@ -19,6 +19,9 @@
         android:theme="@style/Theme.EventPlanner"
         tools:targetApi="31">
         <activity
+            android:name=".activities.ShowOneServiceActivity"
+            android:exported="false" />
+        <activity
             android:name=".activities.ShowOneProductActivity"
             android:exported="false" />
         <activity

@@ -11,7 +11,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.eventplanner.R;
 import com.example.eventplanner.adapters.ImageAdapter;
-import com.example.eventplanner.databinding.ActivityShowOneProductBinding;
+import com.example.eventplanner.databinding.ActivityShowOneServiceBinding;
 import com.example.eventplanner.model.Category;
 import com.example.eventplanner.model.Subcategory;
 import com.example.eventplanner.model.UserPUPV;
@@ -26,9 +26,9 @@ import com.google.firebase.firestore.QueryDocumentSnapshot;
 import java.util.ArrayList;
 import java.util.concurrent.CompletableFuture;
 
-public class ShowOneProductActivity extends AppCompatActivity {
+public class ShowOneServiceActivity extends AppCompatActivity {
+    ActivityShowOneServiceBinding binding;
 
-    ActivityShowOneProductBinding binding;
     RecyclerView recyclerView;
     ImageAdapter imageAdapter;
 
@@ -43,10 +43,10 @@ public class ShowOneProductActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        binding = ActivityShowOneProductBinding.inflate(getLayoutInflater());
+        binding = ActivityShowOneServiceBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
-        Long idProduct = getIntent().getLongExtra("productId", 0L);
+        Long idProduct = getIntent().getLongExtra("serviceId", 0L);
         String idPupv = getIntent().getStringExtra("pupvId");
         getUserPupv(idPupv).thenAccept(userPUPV -> {
             this.userPUPV = userPUPV;
@@ -58,7 +58,7 @@ public class ShowOneProductActivity extends AppCompatActivity {
         getSubcategory(idSubcategory);
 
         recyclerView = findViewById(R.id.recycler);
-        imageAdapter = new ImageAdapter(ShowOneProductActivity.this, R.layout.image_carousel_card_without_button,images);
+        imageAdapter = new ImageAdapter(ShowOneServiceActivity.this, R.layout.image_carousel_card_without_button,images);
         recyclerView.setAdapter(imageAdapter);
 
 
@@ -68,22 +68,27 @@ public class ShowOneProductActivity extends AppCompatActivity {
         double price = getIntent().getDoubleExtra("price", 0.0);
         double discount = getIntent().getDoubleExtra("discount", 0.0);
         boolean available = getIntent().getBooleanExtra("available", false);
+        String specific = getIntent().getStringExtra("specific");
+        double pricePerHour = getIntent().getDoubleExtra("pricePerHour",0.0);
+        double duration = getIntent().getDoubleExtra("duration", 0.0);
+        String reservationDue = getIntent().getStringExtra("deadlineReservation");
+        String cancellationDue = getIntent().getStringExtra("cancellationReservation");
         ArrayList<String> eventTypeIds = getIntent().getStringArrayListExtra("eventTypeIds");
         getEventTypesName(eventTypeIds);
 
-
-
-
-        binding.nameProductt.setText(name);
-        binding.descriptionProduct.setText(description);
-        binding.priceProduct.setText(String.valueOf(price) + " $");
+        binding.nameService.setText(name);
+        binding.descriptionSerivce.setText(description);
+        binding.priceService.setText(String.valueOf(price) + " $");
         binding.discountPrice.setText(String.valueOf(discount) + " %");
+        binding.pricePerHour.setText(String.valueOf(pricePerHour) + " $/hour");
+        binding.durationService.setText(String.valueOf(duration) + " hour");
         binding.priceWithDiscount.setText(String.valueOf(price - (price * discount/100)) + " $");
+        binding.specificOfService.setText(specific);
+        binding.deadlineReservation.setText(reservationDue);
+        binding.cancelationReservation.setText(cancellationDue);
         if(available){
             binding.availability.setChecked(true);
         }
-
-
     }
 
     private CompletableFuture<UserPUPV> getUserPupv(String uid) {
@@ -157,7 +162,6 @@ public class ShowOneProductActivity extends AppCompatActivity {
 
 
                             binding.eventTypesList.setAdapter(adapter);
-
                         } else {
                             Log.d("Firestore", "Error getting documents: ", task.getException());
                         }
@@ -179,7 +183,7 @@ public class ShowOneProductActivity extends AppCompatActivity {
                                 String description = document.getString("Description");
                                 Long type1 = document.getLong("Type");
                                 Subcategory subcategory = new Subcategory(idSubcategory, categoryName, name, description, type1.intValue());
-                                binding.subcategoryProduct.setText(subcategory.getName());
+                                binding.subcategoryService.setText(subcategory.getName());
                             } else {
                                 Log.d("Category", "No such document");
                             }
@@ -203,7 +207,7 @@ public class ShowOneProductActivity extends AppCompatActivity {
                                 String name = document.getString("Name");
                                 String description = document.getString("Description");
                                 Category category = new Category(idCategory, name, description);
-                                binding.categoryProduct.setText(category.getName());
+                                binding.categoryService.setText(category.getName());
                             } else {
                                 Log.d("Category", "No such document");
                             }

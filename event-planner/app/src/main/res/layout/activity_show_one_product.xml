@@ -6,7 +6,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".activities.ShowOneProductActivity"
-    android:scrollbarStyle="outsideOverlay">
+    android:scrollbarStyle="outsideOverlay"
+    android:background="@color/purple_dark">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -14,10 +15,20 @@
         android:layout_margin="10dp"
         android:orientation="vertical">
 
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColor="@color/yellow"
+            android:text="@string/product"
+            android:textAlignment="center"
+            android:textSize="35dp"
+            android:background="@drawable/create_event_background"/>
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:weightSum="1"
+            android:layout_marginTop="5dp"
             android:orientation="horizontal">
 
             <TextView
@@ -26,6 +37,7 @@
                 android:layout_weight="0.7"
                 android:layout_height="wrap_content"
                 android:text="@string/name"
+                android:textColor="@color/white"
                 android:textStyle="bold"
                 android:textSize="30sp"/>
 
@@ -36,7 +48,10 @@
                 android:layout_weight="0.3"
                 android:layout_marginTop="8dp"
                 android:enabled="false"
-                android:text="@string/available"/>
+                android:text="@string/available"
+                android:textColor="@color/white"
+                android:background="@drawable/create_event_background"
+                 />
 
         </LinearLayout>
 
@@ -44,16 +59,23 @@
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="35dp">
+            android:layout_marginTop="10dp">
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/recycler"
                 android:layout_width="match_parent"
                 android:layout_height="200sp"
                 android:layout_marginTop="15sp"
+                android:textColor="@color/white"
                 app:layoutManager="com.google.android.material.carousel.CarouselLayoutManager"/>
 
         </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="2dp"
+            android:background="@android:color/white"
+            android:layout_marginTop="5dp"/>
 
 
         <LinearLayout
@@ -71,12 +93,14 @@
                 android:textSize="18sp"
                 android:text="@string/description_of_product"
                 android:textStyle="italic"
-                android:paddingStart="5dp"/>
+                android:paddingStart="5dp"
+                android:textColor="@color/white"/>
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1.7"
+                android:textColor="@color/white"
                 android:id="@+id/descriptionProduct"
                 android:textSize="18sp"
                 />
@@ -98,6 +122,7 @@
                 android:textSize="18sp"
                 android:text="@string/category_name"
                 android:textStyle="italic"
+                android:textColor="@color/white"
                 android:paddingStart="5dp"/>
 
             <TextView
@@ -107,6 +132,7 @@
                 android:id="@+id/categoryProduct"
                 android:textAlignment="textStart"
                 android:textSize="18sp"
+                android:textColor="@color/white"
                 />
 
         </LinearLayout>
@@ -126,12 +152,14 @@
                 android:textSize="18sp"
                 android:text="@string/subcategory_name"
                 android:textStyle="italic"
+                android:textColor="@color/white"
                 android:paddingStart="5dp"/>
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1.7"
+                android:textColor="@color/white"
                 android:id="@+id/subcategoryProduct"
                 android:textAlignment="textStart"
                 android:textSize="18sp"
@@ -152,6 +180,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="0.1"
                 android:textSize="18sp"
+                android:textColor="@color/white"
                 android:text="@string/regular_price"
                 android:textStyle="italic"
                 android:paddingStart="5dp"/>
@@ -160,6 +189,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="0.9"
+                android:textColor="@color/white"
                 android:id="@+id/priceProduct"
                 android:textAlignment="textStart"
                 android:textSize="18sp"
@@ -171,6 +201,7 @@
                 android:layout_weight="0.1"
                 android:textSize="18sp"
                 android:text="@string/discountt"
+                android:textColor="@color/white"
                 android:textStyle="italic"
                 android:paddingStart="5dp"/>
 
@@ -179,6 +210,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="0.9"
                 android:id="@+id/discountPrice"
+                android:textColor="@color/white"
                 android:textAlignment="textStart"
                 android:textSize="18sp"
                 />
@@ -201,7 +233,7 @@
                 android:textSize="18sp"
                 android:text="@string/price_with_discount"
                 android:textStyle="italic"
-                android:textColor="@color/purple_dark"
+                android:textColor="@color/yellow"
                 android:paddingStart="5dp"/>
 
             <TextView
@@ -211,7 +243,7 @@
                 android:id="@+id/priceWithDiscount"
                 android:textAlignment="textStart"
                 android:textSize="18sp"
-                android:textColor="@color/purple_dark"
+                android:textColor="@color/yellow"
                 android:textStyle="bold"
                 />
 
@@ -235,9 +267,10 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/event_types"
+                android:text="@string/event_types_for_product"
                 android:textStyle="bold"
                 android:textSize="20sp"
+                android:textColor="@color/white"
                 android:layout_marginStart="10dp"
                 android:layout_marginTop="5dp"/>
 
@@ -252,7 +285,8 @@
             android:scrollbars="none"
             android:overScrollMode="never"
             android:nestedScrollingEnabled="true"
-            android:scrollbarStyle="insideOverlay" />
+            android:scrollbarStyle="insideOverlay"
+            />
 
         <View
             android:layout_width="match_parent"
