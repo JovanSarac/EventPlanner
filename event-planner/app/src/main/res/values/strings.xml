@@ -145,4 +145,11 @@
     <string name="reason_of_report">Reason of report</string>
     <string name="send">Send</string>
     <string name="user_info">User info</string>
+    <string name="event_types">This product is intended for the following types of events:</string>
+    <string name="category_name">Category name:</string>
+    <string name="subcategory_name">Subcategory name:</string>
+    <string name="regular_price">Regular price:</string>
+    <string name="discountt">Discount:</string>
+    <string name="price_with_discount">Price with discount:</string>
+    <string name="description_of_product">Description of product:</string>
 </resources>

@@ -396,7 +396,7 @@ public class ProductsServicesPageFragment extends Fragment {
                                         doc.getDouble("price"),
                                         doc.getDouble("discount"),
                                         new ArrayList<>(),
-                                        new ArrayList<>(), //convertStringArrayToLong((ArrayList<String>) doc.get("eventTypeIds")),
+                                        convertStringArrayToLong((ArrayList<String>) doc.get("eventTypeIds")),
                                         doc.getBoolean("available"),
                                         doc.getBoolean("visible"),
                                         doc.getBoolean("pending"),
