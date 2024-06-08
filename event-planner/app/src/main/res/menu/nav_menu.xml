@@ -6,11 +6,18 @@
     <group android:checkableBehavior="single">
         <item android:id="@+id/nav_product_and_services"
             android:title="@string/menuitem1"
-            android:orderInCategory="100" />
+            android:orderInCategory="100"
+            android:visible="true"/>
 
         <item android:id="@+id/nav_events"
             android:title="@string/events"
-            android:orderInCategory="200"/>
+            android:orderInCategory="200"
+            android:visible="false"/>
+
+        <item android:id="@+id/my_profile"
+            android:title="@string/my_profile"
+            android:orderInCategory="200"
+            android:visible="false"/>
 
 
     </group>

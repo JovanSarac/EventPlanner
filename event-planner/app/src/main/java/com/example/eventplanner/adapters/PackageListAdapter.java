@@ -1,22 +1,23 @@
 package com.example.eventplanner.adapters;
 
 import android.content.Context;
+import android.content.Intent;
+import android.os.Handler;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.example.eventplanner.R;
+import com.example.eventplanner.activities.ShowOnePackageActivity;
+import com.example.eventplanner.model.Package;
 
 import java.util.ArrayList;
-
-import com.example.eventplanner.model.Package;
-import com.example.eventplanner.model.Product;
-import com.example.eventplanner.model.Service;
 
 public class PackageListAdapter extends ArrayAdapter<Package> {
 
@@ -53,6 +54,40 @@ public class PackageListAdapter extends ArrayAdapter<Package> {
         TextView products = convertView.findViewById(R.id.products);
         TextView services = convertView.findViewById(R.id.services);
 
+        RelativeLayout packageCard = convertView.findViewById(R.id.package_card);
+        packageCard.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                packageCard.setAlpha(0.3f);
+                new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        packageCard.setAlpha(1.0f);
+                    }
+                }, 100);
+
+                Intent intent = new Intent(getContext(), ShowOnePackageActivity.class);
+                intent.putExtra("packageId", pckage.getId());
+                intent.putExtra("pupvId", pckage.getPupvId());
+                intent.putExtra("categoryId", pckage.getCategoryId());
+                intent.putExtra("name", pckage.getName());
+                intent.putExtra("description", pckage.getDescription());
+                intent.putExtra("available", pckage.getAvailable());
+                intent.putExtra("price",pckage.getPrice());
+                intent.putExtra("discount",pckage.getDiscount());
+                intent.putStringArrayListExtra("subcategoryIds", convertLongListToStringList(pckage.getSubCategoryId()));
+                intent.putStringArrayListExtra("productIds", convertLongListToStringList(pckage.getProductIds()));
+                intent.putStringArrayListExtra("serviceIds",convertLongListToStringList(pckage.getServiceIds()));
+                intent.putStringArrayListExtra("eventTypeIds", convertLongListToStringList(pckage.getEventTypeIds()));
+                intent.putExtra("deadlineReservation", pckage.getReservationDue());
+                intent.putExtra("cancellationReservation", pckage.getCancelationDue());
+
+                intent.putParcelableArrayListExtra("images",pckage.getImages());
+
+                getContext().startActivity(intent);
+            }
+        });
+
 
         if(pckage != null){
             name.setText(pckage.getName());
@@ -63,5 +98,13 @@ public class PackageListAdapter extends ArrayAdapter<Package> {
         }
 
         return convertView;
+    }
+
+    public static ArrayList<String> convertLongListToStringList(ArrayList<Long> longList) {
+        ArrayList<String> stringList = new ArrayList<>();
+        for (Long number : longList) {
+            stringList.add(String.valueOf(number));
+        }
+        return stringList;
     }
 }

@@ -2,6 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
 
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.READ_MEDIA_IMAGES" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.MANAGE_EXTERNAL_STORAGE" />
@@ -19,6 +20,18 @@
         tools:targetApi="31">
         <activity
             android:name=".activities.ReservationView"
+            android:exported="false" />
+        <activity
+            android:name=".activities.ShowOnePackageActivity"
+            android:exported="false" />
+        <activity
+            android:name=".activities.ShowOneServiceActivity"
+            android:exported="false" />
+        <activity
+            android:name=".activities.ShowOneProductActivity"
+            android:exported="false" />
+        <activity
+            android:name=".activities.UserInfoActivity"
             android:exported="false" />
         <activity
             android:name=".activities.ReserveServiceActivity"
