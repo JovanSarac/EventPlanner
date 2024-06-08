@@ -16,6 +16,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import androidx.annotation.NonNull;
+import androidx.fragment.app.FragmentActivity;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.eventplanner.R;
@@ -25,6 +26,7 @@ import com.example.eventplanner.activities.HomeActivity;
 import com.example.eventplanner.activities.PUPV_RegisterCategoryActivity;
 import com.example.eventplanner.activities.SuggestedSubcategoriesActivity;
 import com.example.eventplanner.activities.UserDetailsActivity;
+import com.example.eventplanner.fragments.ReasonFragment;
 import com.example.eventplanner.model.Subcategory;
 import com.example.eventplanner.model.UserPUPV;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -95,27 +97,8 @@ public class PupvUserCardAdapter extends RecyclerView.Adapter<PupvUserCardAdapte
         holder.deleteIcon.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Map<String, Object> updates = new HashMap<>();
-                updates.put("IsValid", true);
-                db.collection("User").document(data.getId()).update(updates)
-                        .addOnSuccessListener(new OnSuccessListener<Void>() {
-                            @Override
-                            public void onSuccess(Void aVoid) {
-//                               dataList=dataList.stream()
-//                                       .filter(user -> !data.getId().equals(user.getId()))
-//                                       .collect(Collectors.toList());
-//                                notifyDataSetChanged();
-
-                                Log.d("Firestore", "DocumentSnapshot successfully updated!");
-                            }
-                        })
-                        .addOnFailureListener(new OnFailureListener() {
-                            @Override
-                            public void onFailure(@NonNull Exception e) {
-                                // Handle the error
-                                Log.w("Firestore", "Error updating document", e);
-                            }
-                        });
+                ReasonFragment fragment = new ReasonFragment(data.getId());
+                fragment.show(((FragmentActivity) context).getSupportFragmentManager(), "ReasonFragment");
             }
         });
 
