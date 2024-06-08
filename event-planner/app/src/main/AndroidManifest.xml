@@ -24,6 +24,9 @@
             android:name=".activities.ReserveServiceActivity"
             android:exported="false" />
         <activity
+            android:name=".activities.ReservePackageActivity"
+            android:exported="false" />
+        <activity
             android:name=".activities.UserDetailsActivity"
             android:exported="false" />
         <activity

@@ -24,6 +24,7 @@ import androidx.core.view.WindowInsetsCompat;
 
 import com.example.eventplanner.R;
 import com.example.eventplanner.databinding.ActivityHomeBinding;
+import com.example.eventplanner.fragments.ReserveServiceFragment;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -167,7 +168,11 @@ public class HomeActivity extends AppCompatActivity {
             startActivity(intent);
         });
         binding.reserveService.setOnClickListener(v->{
-            Intent intent = new Intent(HomeActivity.this, ReserveServiceActivity.class);
+            ReserveServiceFragment fragment = new ReserveServiceFragment(2L,true,null);
+            fragment.show(getSupportFragmentManager(), "ReserveServiceFragment");
+        });
+        binding.reservePackage.setOnClickListener(v->{
+            Intent intent = new Intent(HomeActivity.this, ReservePackageActivity.class);
             startActivity(intent);
         });
         binding.signOut.setOnClickListener(v->{

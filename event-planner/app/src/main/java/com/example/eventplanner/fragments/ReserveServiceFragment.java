@@ -1,47 +1,38 @@
-package com.example.eventplanner.activities;
+package com.example.eventplanner.fragments;
 
-import android.content.Intent;
 import android.os.Bundle;
-import android.text.Editable;
-import android.text.TextWatcher;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+
 import android.util.Log;
 import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.TableLayout;
 import android.widget.TableRow;
+import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.activity.EdgeToEdge;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
-import androidx.recyclerview.widget.LinearLayoutManager;
-
 import com.example.eventplanner.R;
-import com.example.eventplanner.adapters.PupvUserCardAdapter;
-import com.example.eventplanner.model.Category;
 import com.example.eventplanner.model.DateSchedule;
 import com.example.eventplanner.model.Event;
 import com.example.eventplanner.model.EventPUPZ;
 import com.example.eventplanner.model.Service;
 import com.example.eventplanner.model.ServiceReservationRequest;
-import com.example.eventplanner.model.Subcategory;
-import com.example.eventplanner.model.UserPUPV;
 import com.example.eventplanner.model.UserPUPZ;
-import com.example.eventplanner.utils.WorkingHours;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
-import com.google.android.gms.tasks.Tasks;
+import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
-import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QuerySnapshot;
-import android.widget.TextView;
+
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalTime;
@@ -53,10 +44,9 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
-import java.util.UUID;
-import java.util.concurrent.CompletableFuture;
 
-public class ReserveServiceActivity extends AppCompatActivity {
+
+public class ReserveServiceFragment extends BottomSheetDialogFragment {
     FirebaseFirestore db = FirebaseFirestore.getInstance();
     List<String> pupz_list_names=new ArrayList<>();
     List<UserPUPZ> pupz_list=new ArrayList<>();
@@ -73,21 +63,44 @@ public class ReserveServiceActivity extends AppCompatActivity {
 
     String dayOfWeek="";
 
+    View view;
+    Long serviceId;
+    boolean flag;
+
+    private OnDataPass dataPasser;
+    public interface OnDataPass {
+        void onDataPass(ServiceReservationRequest data); // Define any method signature you need
+    }
+    public void setOnDataPass(OnDataPass dataPasser) {
+        this.dataPasser = dataPasser;
+    }
+    private void passDataToActivity(ServiceReservationRequest data) {
+        if (dataPasser != null) {
+            dataPasser.onDataPass(data);
+        }
+    }
+
+    public ReserveServiceFragment(Long serviceId,boolean flag,Event event) {
+        this.serviceId=serviceId;
+        this.flag=flag;
+        this.selectedEvent=event;
+
+    }
+
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        EdgeToEdge.enable(this);
-        setContentView(R.layout.activity_reserve_service);
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
-            Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
-            return insets;
-        });
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        view=inflater.inflate(R.layout.activity_reserve_service, container, false);
+        if(!flag)view.findViewById(R.id.event_pick).setVisibility(View.GONE);
+        return view;
+    }
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
         getService();
-
-
-        from=findViewById(R.id.fromTime);
-        to=findViewById(R.id.toTime);
+        from=view.findViewById(R.id.fromTime);
+        to=view.findViewById(R.id.toTime);
         from.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
@@ -109,12 +122,27 @@ public class ReserveServiceActivity extends AppCompatActivity {
             }
         });
 
-        findViewById(R.id.reserveService).setOnClickListener(v->{
-            createReservation();
+        view.findViewById(R.id.reserveService).setOnClickListener(v->{
+            if(flag){
+                createReservation();
+            }else{
+                ServiceReservationRequest event = new ServiceReservationRequest(
+                        from.getText().toString(),
+                        to.getText().toString(),
+                        "",
+                        dateScheule.getId().toString(),
+                        selectedPupz.getId().toString(),
+                        dayOfWeek.toUpperCase(),
+                        "RESERVED",
+                        "NEW",
+                        service.getId().toString()
+                );
+                passDataToActivity(event);
+            }
+
         });
 
     }
-
     void getPupz(){
         db.collection("User")
                 .whereEqualTo("userType", "PUPZ")
@@ -132,9 +160,9 @@ public class ReserveServiceActivity extends AppCompatActivity {
                                 }
 
                             }
-                            TextInputLayout textInputLayout = findViewById(R.id.pupz_pick);
+                            TextInputLayout textInputLayout = view.findViewById(R.id.pupz_pick);
                             AutoCompleteTextView autoCompleteTextView = (AutoCompleteTextView) textInputLayout.getEditText();
-                            ArrayAdapter<String> pupzAdapter = new ArrayAdapter<>(ReserveServiceActivity.this, android.R.layout.simple_dropdown_item_1line, pupz_list_names);
+                            ArrayAdapter<String> pupzAdapter = new ArrayAdapter<>(getContext(), android.R.layout.simple_dropdown_item_1line, pupz_list_names);
                             autoCompleteTextView.setAdapter(pupzAdapter);
 
                             autoCompleteTextView.setOnItemClickListener((parent, view, position, id) -> {
@@ -142,7 +170,7 @@ public class ReserveServiceActivity extends AppCompatActivity {
                                 getDateSchedules();
                             });
                         } else {
-                            Toast.makeText(ReserveServiceActivity.this, "Getting data failed", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(getContext(), "Getting data failed", Toast.LENGTH_SHORT).show();
                         }
                     }
                 });
@@ -150,7 +178,7 @@ public class ReserveServiceActivity extends AppCompatActivity {
     }
     void getService(){
         db.collection("Services")
-                .document("2")
+                .document(serviceId.toString())
                 .get()
                 .addOnSuccessListener(doc -> {
                     if (doc.exists()) {
@@ -202,82 +230,40 @@ public class ReserveServiceActivity extends AppCompatActivity {
 
         return ids;
     }
-//    void getEvents(){
-//        List<Task<DocumentSnapshot>> tasks = new ArrayList<>();
-//
-//        for (Long id : service.getEventTypeIds()) {
-//            tasks.add(db.collection("Events").document(id.toString()).get());
-//        }
-//        Task<List<DocumentSnapshot>> allTasks = Tasks.whenAllSuccess(tasks);
-//        allTasks.addOnCompleteListener(new OnCompleteListener<List<DocumentSnapshot>>() {
-//            @Override
-//            public void onComplete(Task<List<DocumentSnapshot>> task) {
-//                if (task.isSuccessful()) {
-//                    List<DocumentSnapshot> snapshots = task.getResult();
-//
-//                    for (DocumentSnapshot doc : snapshots) {
-//                        if (doc.exists()) {
-//                            Event yourObject = new Event(
-//                                    Long.parseLong(doc.getId()),
-//                                    doc.getString("userOdId"),
-//                                    doc.getString("typeEvent"),
-//                                    doc.getString("name"),
-//                                    doc.getString("description"),
-//                                    doc.getLong("maxPeople").intValue(),
-//                                    doc.getString("locationPlace"),
-//                                    doc.getLong("maxDistance").intValue(),
-//                                    doc.getDate("dateEvent"),
-//                                    doc.getBoolean("available")
-//                            );
-//                            events.add(yourObject);
-//                            event_names.add(yourObject.getName());
-//                        }
-//                    }
-//                    TextInputLayout textInputLayout = findViewById(R.id.event_pick);
-//                    AutoCompleteTextView autoCompleteTextView = (AutoCompleteTextView) textInputLayout.getEditText();
-//                    ArrayAdapter<String> eventAdapter = new ArrayAdapter<>(ReserveServiceActivity.this, android.R.layout.simple_dropdown_item_1line, event_names);
-//                    autoCompleteTextView.setAdapter(eventAdapter);
-//
-//                    autoCompleteTextView.setOnItemClickListener((parent, view, position, id) -> {
-//                        selectedEvent = events.get(position);
-//                    });
-//                }
-//            }
-//        });
-//    }
+
     void getEvents(){
         db.collection("Events").get().addOnCompleteListener(task ->  {
-            if (task.isSuccessful()) {
-                    for (DocumentSnapshot doc : task.getResult()) {
-                        if (doc.exists()) {
-                            Event yourObject = new Event(
-                                    Long.parseLong(doc.getId()),
-                                    doc.getString("userOdId"),
-                                    doc.getString("typeEvent"),
-                                    doc.getString("name"),
-                                    doc.getString("description"),
-                                    doc.getLong("maxPeople").intValue(),
-                                    doc.getString("locationPlace"),
-                                    doc.getLong("maxDistance").intValue(),
-                                    doc.getDate("dateEvent"),
-                                    doc.getBoolean("available")
-                            );
-                            events.add(yourObject);
-                            event_names.add(yourObject.getName());
+                    if (task.isSuccessful()) {
+                        for (DocumentSnapshot doc : task.getResult()) {
+                            if (doc.exists()) {
+                                Event yourObject = new Event(
+                                        Long.parseLong(doc.getId()),
+                                        doc.getString("userOdId"),
+                                        doc.getString("typeEvent"),
+                                        doc.getString("name"),
+                                        doc.getString("description"),
+                                        doc.getLong("maxPeople").intValue(),
+                                        doc.getString("locationPlace"),
+                                        doc.getLong("maxDistance").intValue(),
+                                        doc.getDate("dateEvent"),
+                                        doc.getBoolean("available")
+                                );
+                                events.add(yourObject);
+                                event_names.add(yourObject.getName());
+                            }
                         }
-                    }
-                    TextInputLayout textInputLayout = findViewById(R.id.event_pick);
-                    AutoCompleteTextView autoCompleteTextView = (AutoCompleteTextView) textInputLayout.getEditText();
-                    ArrayAdapter<String> eventAdapter = new ArrayAdapter<>(ReserveServiceActivity.this, android.R.layout.simple_dropdown_item_1line, event_names);
-                    autoCompleteTextView.setAdapter(eventAdapter);
+                        TextInputLayout textInputLayout = view.findViewById(R.id.event_pick);
+                        AutoCompleteTextView autoCompleteTextView = (AutoCompleteTextView) textInputLayout.getEditText();
+                        ArrayAdapter<String> eventAdapter = new ArrayAdapter<>(getContext(), android.R.layout.simple_dropdown_item_1line, event_names);
+                        autoCompleteTextView.setAdapter(eventAdapter);
 
-                    autoCompleteTextView.setOnItemClickListener((parent, view, position, id) -> {
-                        selectedEvent = events.get(position);
-                    });
-                }
+                        autoCompleteTextView.setOnItemClickListener((parent, view, position, id) -> {
+                            selectedEvent = events.get(position);
+                        });
+                    }
                 })
                 .addOnFailureListener(e -> {
-                    Toast.makeText(ReserveServiceActivity.this, e.getMessage(), Toast.LENGTH_SHORT);
+                    Toast.makeText(getContext(), e.getMessage(), Toast.LENGTH_SHORT);
                 });
     }
 
@@ -310,7 +296,7 @@ public class ReserveServiceActivity extends AppCompatActivity {
 
                             }
                         } else {
-                            Toast.makeText(ReserveServiceActivity.this, "Getting data failed", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(getContext(), "Getting data failed", Toast.LENGTH_SHORT).show();
                         }
                     }
                 });
@@ -340,7 +326,7 @@ public class ReserveServiceActivity extends AppCompatActivity {
                             displayTable();
 
                         } else {
-                            Toast.makeText(ReserveServiceActivity.this, "Getting data failed", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(getContext(), "Getting data failed", Toast.LENGTH_SHORT).show();
                         }
                     }
                 });
@@ -349,7 +335,7 @@ public class ReserveServiceActivity extends AppCompatActivity {
     void displayTable(){
         SimpleDateFormat sdf = new SimpleDateFormat("EEEE", Locale.getDefault());
         dayOfWeek = sdf.format(selectedEvent.getDateEvent());
-        TableLayout tableLayout = findViewById(R.id.tableLayout);
+        TableLayout tableLayout = view.findViewById(R.id.tableLayout);
         dayOfWeek="Friday";
 
         Collections.sort(busyDates.get(dayOfWeek.toUpperCase()), new Comparator<EventPUPZ>() {
@@ -360,18 +346,18 @@ public class ReserveServiceActivity extends AppCompatActivity {
         });
 
         for (EventPUPZ day:busyDates.get(dayOfWeek.toUpperCase())) {
-            TableRow newRow = new TableRow(this);
+            TableRow newRow = new TableRow(getContext());
             newRow.setGravity(Gravity.CENTER);
 
-            TextView textView1 = new TextView(this);
+            TextView textView1 = new TextView(getContext());
             textView1.setText(day.getStartHours());
             textView1.setGravity(Gravity.CENTER);
 
-            TextView textView2 = new TextView(this);
+            TextView textView2 = new TextView(getContext());
             textView2.setText(day.getEndHours());
             textView2.setGravity(Gravity.CENTER);
 
-            TextView textView3 = new TextView(this);
+            TextView textView3 = new TextView(getContext());
             textView3.setText(day.getType());
             textView3.setGravity(Gravity.CENTER);
 
@@ -397,11 +383,12 @@ public class ReserveServiceActivity extends AppCompatActivity {
         db.collection("ServiceReservationRequest").add(event)
                 .addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {
-                        Toast.makeText(ReserveServiceActivity.this, "Data added successfully", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getContext(), "Data added successfully", Toast.LENGTH_SHORT).show();
                     } else {
-                        Toast.makeText(ReserveServiceActivity.this, "Failed to add data", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getContext(), "Failed to add data", Toast.LENGTH_SHORT).show();
                     }
                 });
     }
+
 
 }
