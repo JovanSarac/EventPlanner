@@ -208,7 +208,7 @@ public class ReservePackageActivity extends AppCompatActivity implements Reserve
                 @Override
                 public void onClick(View v) {
                     showBottomSheetDialog(service.getId());
-                    Toast.makeText(getApplicationContext(), "Button clicked for " + service.getName(), Toast.LENGTH_SHORT).show();
+                    button.setVisibility(View.GONE);
                 }
             });
 
@@ -272,6 +272,10 @@ public class ReservePackageActivity extends AppCompatActivity implements Reserve
     }
 
     private void createPackageRequest(){
+        if(services.stream().count()!=reservations.stream().count()){
+            Toast.makeText(getApplicationContext(), "Please register all events", Toast.LENGTH_SHORT).show();
+            return;
+        }
         if(selectedEvent==null) {
             Toast.makeText(getApplicationContext(), "Please select an event", Toast.LENGTH_SHORT).show();
             return;
@@ -287,8 +291,6 @@ public class ReservePackageActivity extends AppCompatActivity implements Reserve
                 products,
                 "NEW"
         );
-//        Map<String, Object> map = new HashMap<>();
-//        map.put("services", reservations);
         
         db.collection("PackageReservationRequest").add(req)
                 .addOnCompleteListener(task -> {
@@ -297,6 +299,7 @@ public class ReservePackageActivity extends AppCompatActivity implements Reserve
                         for (Product prod:products) {
                             if(prod.getAvailable())reserveProduct(prod);
                         }
+                        finish();
                     } else {
                         Toast.makeText(this, "Failed to add data", Toast.LENGTH_SHORT).show();
                     }
@@ -311,17 +314,11 @@ public class ReservePackageActivity extends AppCompatActivity implements Reserve
                 .addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {
                         Toast.makeText(this, "Data added successfully", Toast.LENGTH_SHORT).show();
-                        String jsonPayload = "{\"data\":{\"title\":\"New category!\",\"body\":\""+"neki body"+"\"},\"to\":\"/topics/" + "PUPV" + "\"}";
-                        sendMessage(serverKey,jsonPayload);
                     } else {
                         Toast.makeText(this, "Failed to add data", Toast.LENGTH_SHORT).show();
                     }
                 });
     }
-    String serverKey="AAAA8GYmoZ8:APA91bHsjyzOSa2JtO_cQWFO-X1p9nMuHRO8DTfD1zhcY4mnqZ-2EZmIn8tMf1ISmnM31WB68Mzn2soeUgEISXlSc9WjRvcRhyYbmBgi7whJuYXX-24wkODByasquofLaMZydpg78esK";
-    public static void sendMessage(String serverKey, String jsonPayload) {
-        FCMHttpClient httpClient = new FCMHttpClient();
-        httpClient.sendMessageToTopic(serverKey, "PUPV", jsonPayload);
-    }
+
 
 }
