@@ -19,6 +19,9 @@
         android:theme="@style/Theme.EventPlanner"
         tools:targetApi="31">
         <activity
+            android:name=".activities.NotificationsViewActivity"
+            android:exported="false" />
+        <activity
             android:name=".activities.ReservationView"
             android:exported="false" />
         <activity

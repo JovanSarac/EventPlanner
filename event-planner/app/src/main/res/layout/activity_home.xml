@@ -69,6 +69,13 @@
         android:textSize="20sp"/>
 
     <Button
+        android:id="@+id/notifications"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/notifications"
+        android:textSize="20sp"/>
+
+    <Button
         android:id="@+id/user_reports"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

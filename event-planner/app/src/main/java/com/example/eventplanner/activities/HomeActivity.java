@@ -117,6 +117,11 @@ public class HomeActivity extends AppCompatActivity {
             startActivity(intent);
         });
 
+        binding.notifications.setOnClickListener(v -> {
+            Intent intent = new Intent(HomeActivity.this, NotificationsViewActivity.class);
+            startActivity(intent);
+        });
+
         binding.userReports.setOnClickListener(v ->{
             Intent intent = new Intent(HomeActivity.this, UserReportsViewActivity.class);
             startActivity(intent);
@@ -185,6 +190,7 @@ public class HomeActivity extends AppCompatActivity {
             binding.signOut.setVisibility(View.GONE);
             binding.pricelist.setVisibility(View.GONE);
             binding.userReports.setVisibility(View.GONE);
+            binding.notifications.setVisibility(View.GONE);
 
 
             binding.registerButton.setVisibility(View.VISIBLE);
@@ -193,6 +199,7 @@ public class HomeActivity extends AppCompatActivity {
 
         } else {
             binding.signOut.setVisibility(View.VISIBLE);
+            binding.notifications.setVisibility(View.VISIBLE);
 
             binding.registerButton.setVisibility(View.GONE);
             binding.loginButton.setVisibility(View.GONE);
