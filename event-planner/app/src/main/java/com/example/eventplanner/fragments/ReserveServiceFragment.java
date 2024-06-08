@@ -29,6 +29,7 @@ import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QuerySnapshot;
@@ -48,6 +49,7 @@ import java.util.Locale;
 
 public class ReserveServiceFragment extends BottomSheetDialogFragment {
     FirebaseFirestore db = FirebaseFirestore.getInstance();
+    FirebaseAuth mAuth = FirebaseAuth.getInstance();
     List<String> pupz_list_names=new ArrayList<>();
     List<UserPUPZ> pupz_list=new ArrayList<>();
     Service service;
@@ -135,7 +137,8 @@ public class ReserveServiceFragment extends BottomSheetDialogFragment {
                         dayOfWeek.toUpperCase(),
                         "RESERVED",
                         "NEW",
-                        service.getId().toString()
+                        service,
+                        mAuth.getCurrentUser().getUid().toString()
                 );
                 passDataToActivity(event);
             }
@@ -378,7 +381,8 @@ public class ReserveServiceFragment extends BottomSheetDialogFragment {
                 dayOfWeek.toUpperCase(),
                 "RESERVED",
                 "NEW",
-                service.getId().toString()
+                service,
+                mAuth.getCurrentUser().getUid().toString()
         );
         db.collection("ServiceReservationRequest").add(event)
                 .addOnCompleteListener(task -> {

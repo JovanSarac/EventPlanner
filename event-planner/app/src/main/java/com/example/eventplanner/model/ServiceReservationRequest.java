@@ -11,12 +11,12 @@ public class ServiceReservationRequest {
     private String day;
     private String type;
     private String status;
-    private String serviceId;
-
+    private Service service;
+    private String userId;
     public ServiceReservationRequest() {
     }
 
-    public ServiceReservationRequest( String startHours, String endHours, String occurenceDate, String dateScheduleId, String workerId, String day, String type, String status, String serviceId) {
+    public ServiceReservationRequest( String startHours, String endHours, String occurenceDate, String dateScheduleId, String workerId, String day, String type, String status, Service service, String userId) {
 
         this.startHours = startHours;
         this.endHours = endHours;
@@ -26,7 +26,16 @@ public class ServiceReservationRequest {
         this.day = day;
         this.type = type;
         this.status = status;
-        this.serviceId = serviceId;
+        this.service = service;
+        this.userId = userId;
+    }
+
+    public String getUserId() {
+        return userId;
+    }
+
+    public void setUserId(String userId) {
+        this.userId = userId;
     }
 
     public String getId() {
@@ -101,11 +110,11 @@ public class ServiceReservationRequest {
         this.status = status;
     }
 
-    public String getServiceId() {
-        return serviceId;
+    public Service getService() {
+        return service;
     }
 
-    public void setServiceId(String serviceId) {
-        this.serviceId = serviceId;
+    public void setService(Service service) {
+        this.service = service;
     }
 }

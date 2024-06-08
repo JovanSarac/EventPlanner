@@ -112,26 +112,6 @@ public class PupvUserCardAdapter extends RecyclerView.Adapter<PupvUserCardAdapte
         });
 
     }
-    private void sendVerificationEmail() {
-        FirebaseAuth mAuth= FirebaseAuth.getInstance();
-        FirebaseUser user = mAuth.getCurrentUser();
-        if (user != null) {
-            user.sendEmailVerification()
-                    .addOnCompleteListener(new OnCompleteListener<Void>() {
-                        @Override
-                        public void onComplete(@NonNull Task<Void> emailTask) {
-                            if (emailTask.isSuccessful()) {
-                                // Email sent successfully
-                                Toast.makeText(context, "Verification email sent", Toast.LENGTH_SHORT).show();
-                            } else {
-                                // Failed to send email
-                                Log.e("EmailFailedToSend", "sendEmailVerification", emailTask.getException());
-                                Toast.makeText(context, "Failed to send verification email", Toast.LENGTH_SHORT).show();
-                            }
-                        }
-                    });
-        }
-    }
     @Override
     public int getItemCount() {
         return dataList.size();
