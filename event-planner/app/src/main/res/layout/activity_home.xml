@@ -9,7 +9,8 @@
 <LinearLayout
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    tools:ignore="MissingConstraints">
 
     <Button
         android:id="@+id/homeact"
@@ -138,6 +139,13 @@
         android:layout_gravity="center"
         />
 
+    <Button
+        android:id="@+id/reserveProduct"
+        android:layout_width="300dp"
+        android:layout_height="50dp"
+        android:text="Reserve Product"
+        android:layout_gravity="center"
+        />
     <com.google.android.material.button.MaterialButton
         android:id="@+id/owner_dashboard_btn"
         android:layout_width="match_parent"

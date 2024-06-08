@@ -293,6 +293,23 @@ public class ReservePackageActivity extends AppCompatActivity implements Reserve
                 .addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {
                         Toast.makeText(this, "Data added successfully", Toast.LENGTH_SHORT).show();
+                        for (Product prod:products) {
+                            if(prod.getAvailable())reserveProduct(prod);
+                        }
+                    } else {
+                        Toast.makeText(this, "Failed to add data", Toast.LENGTH_SHORT).show();
+                    }
+                });
+    }
+    private void reserveProduct(Product product){
+        Map<String,Object> map= new HashMap<>();
+        map.put("product",product);
+        map.put("userId",mAuth.getCurrentUser().getUid());
+
+        db.collection("ProductReservation").add(map)
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        Toast.makeText(this, "Data added successfully", Toast.LENGTH_SHORT).show();
                     } else {
                         Toast.makeText(this, "Failed to add data", Toast.LENGTH_SHORT).show();
                     }
