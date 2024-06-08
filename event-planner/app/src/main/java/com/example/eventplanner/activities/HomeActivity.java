@@ -24,12 +24,19 @@ import androidx.core.view.WindowInsetsCompat;
 
 import com.example.eventplanner.R;
 import com.example.eventplanner.databinding.ActivityHomeBinding;
+import com.example.eventplanner.fragments.ReserveServiceFragment;
+import com.example.eventplanner.model.Product;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.auth.User;
 import com.google.firebase.messaging.FirebaseMessaging;
 import com.google.android.gms.tasks.OnCompleteListener;
+
+import java.util.HashMap;
+import java.util.Map;
+
 public class HomeActivity extends AppCompatActivity {
 
     private Button buttonCreateEventOD;
@@ -162,7 +169,14 @@ public class HomeActivity extends AppCompatActivity {
             startActivity(intent);
         });
         binding.reserveService.setOnClickListener(v->{
-            Intent intent = new Intent(HomeActivity.this, ReserveServiceActivity.class);
+            ReserveServiceFragment fragment = new ReserveServiceFragment(2L,true,null);
+            fragment.show(getSupportFragmentManager(), "ReserveServiceFragment");
+        });
+        binding.reserveProduct.setOnClickListener(v->{
+            reserveProduct();
+        });
+        binding.reservePackage.setOnClickListener(v->{
+            Intent intent = new Intent(HomeActivity.this, ReservePackageActivity.class);
             startActivity(intent);
         });
         binding.signOut.setOnClickListener(v->{
@@ -176,6 +190,23 @@ public class HomeActivity extends AppCompatActivity {
             startActivity(intent);
         });
 
+    }
+    FirebaseFirestore db = FirebaseFirestore.getInstance();
+    private void reserveProduct(){
+        Product product=new Product();
+        Map<String,Object> map= new HashMap<>();
+        map.put("product",product);
+        map.put("userId",mAuth.getCurrentUser().getUid());
+
+
+        db.collection("ProductReservation").add(map)
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        Toast.makeText(this, "Data added successfully", Toast.LENGTH_SHORT).show();
+                    } else {
+                        Toast.makeText(this, "Failed to add data", Toast.LENGTH_SHORT).show();
+                    }
+                });
     }
 
     @Override

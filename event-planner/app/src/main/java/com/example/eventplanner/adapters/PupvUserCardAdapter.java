@@ -16,6 +16,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import androidx.annotation.NonNull;
+import androidx.fragment.app.FragmentActivity;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.eventplanner.R;
@@ -25,12 +26,15 @@ import com.example.eventplanner.activities.HomeActivity;
 import com.example.eventplanner.activities.PUPV_RegisterCategoryActivity;
 import com.example.eventplanner.activities.SuggestedSubcategoriesActivity;
 import com.example.eventplanner.activities.UserDetailsActivity;
+import com.example.eventplanner.fragments.ReasonFragment;
 import com.example.eventplanner.model.Subcategory;
 import com.example.eventplanner.model.UserPUPV;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.ActionCodeSettings;
+import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentSnapshot;
@@ -41,10 +45,12 @@ public class PupvUserCardAdapter extends RecyclerView.Adapter<PupvUserCardAdapte
     FirebaseFirestore db = FirebaseFirestore.getInstance();
     private List<UserPUPV> dataList;
     private Context context;
+    private ApproveRegistrationActivity activity;
 
-    public PupvUserCardAdapter(List<UserPUPV> dataList,Context context) {
+    public PupvUserCardAdapter(List<UserPUPV> dataList,Context context,ApproveRegistrationActivity activity) {
         this.dataList = dataList;
         this.context=context;
+        this.activity = activity;
     }
     public static class ViewHolder extends RecyclerView.ViewHolder {
         public TextView nameText;
@@ -87,26 +93,14 @@ public class PupvUserCardAdapter extends RecyclerView.Adapter<PupvUserCardAdapte
         holder.addIcon.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
-
-            }
-        });
-
-        holder.deleteIcon.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
                 Map<String, Object> updates = new HashMap<>();
                 updates.put("IsValid", true);
                 db.collection("User").document(data.getId()).update(updates)
                         .addOnSuccessListener(new OnSuccessListener<Void>() {
                             @Override
                             public void onSuccess(Void aVoid) {
-//                               dataList=dataList.stream()
-//                                       .filter(user -> !data.getId().equals(user.getId()))
-//                                       .collect(Collectors.toList());
-//                                notifyDataSetChanged();
-
                                 Log.d("Firestore", "DocumentSnapshot successfully updated!");
+                                activity.getUsers();
                             }
                         })
                         .addOnFailureListener(new OnFailureListener() {
@@ -116,6 +110,15 @@ public class PupvUserCardAdapter extends RecyclerView.Adapter<PupvUserCardAdapte
                                 Log.w("Firestore", "Error updating document", e);
                             }
                         });
+
+            }
+        });
+
+        holder.deleteIcon.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ReasonFragment fragment = new ReasonFragment(data);
+                fragment.show(((FragmentActivity) context).getSupportFragmentManager(), "ReasonFragment");
             }
         });
 
@@ -129,26 +132,8 @@ public class PupvUserCardAdapter extends RecyclerView.Adapter<PupvUserCardAdapte
         });
 
     }
-    private void sendVerificationEmail() {
-        FirebaseAuth mAuth= FirebaseAuth.getInstance();
-        FirebaseUser user = mAuth.getCurrentUser();
-        if (user != null) {
-            user.sendEmailVerification()
-                    .addOnCompleteListener(new OnCompleteListener<Void>() {
-                        @Override
-                        public void onComplete(@NonNull Task<Void> emailTask) {
-                            if (emailTask.isSuccessful()) {
-                                // Email sent successfully
-                                Toast.makeText(context, "Verification email sent", Toast.LENGTH_SHORT).show();
-                            } else {
-                                // Failed to send email
-                                Log.e("EmailFailedToSend", "sendEmailVerification", emailTask.getException());
-                                Toast.makeText(context, "Failed to send verification email", Toast.LENGTH_SHORT).show();
-                            }
-                        }
-                    });
-        }
-    }
+
+
     @Override
     public int getItemCount() {
         return dataList.size();

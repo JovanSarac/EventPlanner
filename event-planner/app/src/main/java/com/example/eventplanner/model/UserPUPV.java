@@ -26,7 +26,9 @@ public class UserPUPV implements Serializable {
 
     private List<Category> categories;
 
-    public UserPUPV(String id, String firstName, String lastName, String email, String password, String phone, String address, boolean isValid, String companyName, String companyDescription, String companyAddress, String companyemail, String companyPhone, String workTime,List<String> eventTypesLong,List<String> categoriesLong) {
+    private String dateTimePosted;
+
+    public UserPUPV(String id, String firstName, String lastName, String email, String password, String phone, String address, boolean isValid, String companyName, String companyDescription, String companyAddress, String companyemail, String companyPhone, String workTime,List<String> eventTypesLong,List<String> categoriesLong,String dateTimePosted) {
         this.id = id;
         this.firstName = firstName;
         this.lastName = lastName;
@@ -43,7 +45,16 @@ public class UserPUPV implements Serializable {
         this.workTime = workTime;
         this.eventTypesIds=eventTypesLong;
         this.categoriesIds=categoriesLong;
+        this.dateTimePosted=dateTimePosted;
 
+    }
+
+    public String getDateTimePosted() {
+        return dateTimePosted;
+    }
+
+    public void setDateTimePosted(String dateTimePosted) {
+        this.dateTimePosted = dateTimePosted;
     }
 
     public List<String> getEventTypesIds() {
