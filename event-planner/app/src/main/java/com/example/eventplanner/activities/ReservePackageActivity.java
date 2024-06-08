@@ -20,10 +20,12 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
 import com.example.eventplanner.R;
+import com.example.eventplanner.fragments.ReserveServiceFragment;
 import com.example.eventplanner.model.Event;
 import com.example.eventplanner.model.EventPUPZ;
 import com.example.eventplanner.model.Package;
 import com.example.eventplanner.model.Service;
+import com.example.eventplanner.model.ServiceReservationRequest;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
@@ -33,9 +35,11 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
-public class ReservePackageActivity extends AppCompatActivity {
+public class ReservePackageActivity extends AppCompatActivity implements ReserveServiceFragment.OnDataPass{
     FirebaseFirestore db = FirebaseFirestore.getInstance();
     Package pac;
     List<Service> services=new ArrayList<>();
@@ -43,6 +47,11 @@ public class ReservePackageActivity extends AppCompatActivity {
     List<Event> events=new ArrayList<>();
     List<String> event_names=new ArrayList<>();
 
+    List<ServiceReservationRequest> reservations=new ArrayList<>();
+    @Override
+    public void onDataPass(ServiceReservationRequest data) {
+        reservations.add(data);
+    }
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -53,6 +62,10 @@ public class ReservePackageActivity extends AppCompatActivity {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
+        findViewById(R.id.reservePackage).setOnClickListener(v->{
+           createPackageRequest();
+        });
+
         getPackage();
         getEvents();
     }
@@ -151,11 +164,10 @@ public class ReservePackageActivity extends AppCompatActivity {
             button.setText("Select");
             button.setGravity(Gravity.CENTER);
 
-            // Set an OnClickListener for the button
             button.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    showBottomSheetDialog();
+                    showBottomSheetDialog(service.getId());
                     Toast.makeText(getApplicationContext(), "Button clicked for " + service.getName(), Toast.LENGTH_SHORT).show();
                 }
             });
@@ -213,12 +225,31 @@ public class ReservePackageActivity extends AppCompatActivity {
                     Toast.makeText(ReservePackageActivity.this, e.getMessage(), Toast.LENGTH_SHORT);
                 });
     }
-    private void showBottomSheetDialog() {
-        BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(ReservePackageActivity.this);
-        View bottomSheetView = getLayoutInflater().inflate(R.layout.activity_reserve_service, null);
-        bottomSheetDialog.setContentView(bottomSheetView);
+    private void showBottomSheetDialog(Long id) {
+        ReserveServiceFragment bottomSheetDialogFragment = new ReserveServiceFragment(id,false,selectedEvent);
+        bottomSheetDialogFragment.setOnDataPass(this);
+        bottomSheetDialogFragment.show(getSupportFragmentManager(), "ReserveServiceFragment");
+    }
 
-        bottomSheetDialog.show();
+    private void createPackageRequest(){
+        if(selectedEvent==null) {
+            Toast.makeText(getApplicationContext(), "Please select an event", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        for (ServiceReservationRequest res:reservations) {
+            res.setOccurenceDate(selectedEvent.getDateEvent().toString());
+        }
+        Map<String, Object> map = new HashMap<>();
+        map.put("packages", reservations);
+        
+        db.collection("PackageReservationRequest").add(map)
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        Toast.makeText(this, "Data added successfully", Toast.LENGTH_SHORT).show();
+                    } else {
+                        Toast.makeText(this, "Failed to add data", Toast.LENGTH_SHORT).show();
+                    }
+                });
     }
 
 }
