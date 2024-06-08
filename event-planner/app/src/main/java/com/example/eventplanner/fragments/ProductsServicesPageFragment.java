@@ -554,6 +554,7 @@ public class ProductsServicesPageFragment extends Fragment {
         packages = new ArrayList<>();
         db.collection("Packages")
                 .whereEqualTo("deleted", false)
+                .whereEqualTo("visible", true)
                 .get()
                 .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                     @Override

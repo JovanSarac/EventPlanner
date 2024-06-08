@@ -162,4 +162,7 @@
     <string name="deadline_for_reservation">Deadline for reservation:</string>
     <string name="cancellation_deadline">Cancellation deadline:</string>
     <string name="subcategory_names">Subcategory names:</string>
+    <string name="buy_the_product">Buy the product</string>
+    <string name="book_a_service">Book a service</string>
+    <string name="book_a_package">Book a package</string>
 </resources>

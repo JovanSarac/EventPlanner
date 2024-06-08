@@ -302,6 +302,18 @@
 
         </LinearLayout>
 
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <Button
+                android:id="@+id/bookPackage"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/book_a_package"
+                android:textColor="@color/white"
+                android:textSize="20dp"/>
+        </LinearLayout>
+
         <View
             android:layout_width="match_parent"
             android:layout_height="2dp"

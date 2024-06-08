@@ -3,6 +3,7 @@ package com.example.eventplanner.activities;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Toast;
 
@@ -102,6 +103,15 @@ public class ShowOnePackageActivity extends AppCompatActivity {
         binding.cancelationReservationPackage.setText(cancellationDue);
         if(available){
             binding.availability.setChecked(true);
+            //TO DO Implementirati rezervaciju paketa
+            binding.bookPackage.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+
+                }
+            });
+        }else{
+            binding.bookPackage.setVisibility(View.GONE);
         }
     }
 

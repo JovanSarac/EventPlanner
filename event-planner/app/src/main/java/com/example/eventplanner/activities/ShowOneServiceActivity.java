@@ -76,6 +76,7 @@ public class ShowOneServiceActivity extends AppCompatActivity {
         double durationMax = getIntent().getDoubleExtra("durationMax", 0.0);
         String reservationDue = getIntent().getStringExtra("deadlineReservation");
         String cancellationDue = getIntent().getStringExtra("cancellationReservation");
+        ArrayList<String> pupIds = getIntent().getStringArrayListExtra("pupIds");
         ArrayList<String> eventTypeIds = getIntent().getStringArrayListExtra("eventTypeIds");
         getEventTypesName(eventTypeIds);
 
@@ -99,6 +100,15 @@ public class ShowOneServiceActivity extends AppCompatActivity {
         binding.cancelationReservation.setText(cancellationDue);
         if(available){
             binding.availability.setChecked(true);
+            //TO DO implementirati rezervaciju usluge
+            binding.bookService.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+
+                }
+            });
+        }else{
+            binding.bookService.setVisibility(View.GONE);
         }
     }
 

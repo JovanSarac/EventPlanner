@@ -3,6 +3,7 @@ package com.example.eventplanner.activities;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
 import android.widget.ArrayAdapter;
 
 import androidx.annotation.NonNull;
@@ -81,6 +82,16 @@ public class ShowOneProductActivity extends AppCompatActivity {
         binding.priceWithDiscount.setText(String.valueOf(price - (price * discount/100)) + " $");
         if(available){
             binding.availability.setChecked(true);
+
+            //TO DO implementirati kupovinu proizovda
+            binding.buyProduct.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+
+                }
+            });
+        }else{
+            binding.buyProduct.setVisibility(View.GONE);
         }
 
 

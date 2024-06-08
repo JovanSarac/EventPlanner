@@ -249,7 +249,17 @@
 
         </LinearLayout>
 
-
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <Button
+                android:id="@+id/buyProduct"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/buy_the_product"
+                android:textColor="@color/white"
+                android:textSize="20dp"/>
+        </LinearLayout>
 
 
 
