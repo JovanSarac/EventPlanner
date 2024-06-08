@@ -45,7 +45,9 @@ import com.google.firebase.firestore.SetOptions;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.Locale;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Future;
@@ -54,7 +56,7 @@ public class ReservationView extends AppCompatActivity {
 
     ActivityReservationViewBinding binding;
     FirebaseFirestore db;
-
+    List<ServiceReservationRequest> serviceReservations;
     private LinearLayout serviceReservationsContainer;
 
     @Override
@@ -67,6 +69,8 @@ public class ReservationView extends AppCompatActivity {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
+
+        serviceReservations = new ArrayList<>();
 
         binding= ActivityReservationViewBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
@@ -101,6 +105,7 @@ public class ReservationView extends AppCompatActivity {
                         if (querySnapshot != null) {
                             for (QueryDocumentSnapshot document : querySnapshot) {
                                 addDocumentToView(document);
+                                serviceReservations.add(document.toObject(ServiceReservationRequest.class));
                                 Log.d("ServiceReservation", document.getId() + " => " + document.getData());
                             }
                         } else {
@@ -126,12 +131,32 @@ public class ReservationView extends AppCompatActivity {
         final Button refreshButton = dialog.findViewById(R.id.refresh_btn);
 
         refreshButton.setOnClickListener(v->{
+            retrieveAllServiceReservationRequests();
             dialog.dismiss();
         });
         radioGroup.setOnCheckedChangeListener((group, checkedId) -> {
 
             RadioButton checkedRadioButton = dialog.findViewById(checkedId);
             String option = checkedRadioButton.getText().toString().toUpperCase().replace(" ", "");
+
+            serviceReservationsContainer.removeAllViews();
+
+            CollectionReference collectionRef = db.collection("ServiceReservationRequest");
+
+            collectionRef.whereEqualTo("status", option)
+                    .get()
+                    .addOnCompleteListener(task -> {
+                        if (task.isSuccessful()) {
+                            for (QueryDocumentSnapshot document : task.getResult()) {
+                                addDocumentToView(document);
+                            }
+                        } else {
+                            Log.d("Firestore", "Error getting documents: ", task.getException());
+                        }
+                    })
+                    .addOnFailureListener(e -> {
+                        Log.w("Firestore", "Error querying documents", e);
+                    });
 
             dialog.dismiss();
         });
