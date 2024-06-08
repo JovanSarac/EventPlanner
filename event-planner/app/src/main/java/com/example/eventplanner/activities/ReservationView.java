@@ -17,6 +17,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
@@ -26,7 +27,14 @@ import com.example.eventplanner.R;
 import com.example.eventplanner.databinding.ActivityHomeBinding;
 import com.example.eventplanner.databinding.ActivityReservationViewBinding;
 import com.example.eventplanner.model.Service;
+import com.example.eventplanner.model.UserOD;
+import com.example.eventplanner.model.UserPUPZ;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.button.MaterialButton;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
@@ -35,6 +43,8 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.Future;
 
 public class ReservationView extends AppCompatActivity {
 
@@ -139,8 +149,12 @@ public class ReservationView extends AppCompatActivity {
         com.example.eventplanner.model.Service service = document.get("service", Service.class);
         serviceName.setText(service.getName());
 
-        clientNmae.setText(document.getString("worker_name"));
-        workerName.setText(document.getString("worker_name"));
+        getUserById(Double.parseDouble(document.getString("workerId"))).thenAccept(full ->{
+            workerName.setText(full);
+        });
+        getUserDocument(document.getString("userId")).thenAccept(fullName -> {
+            clientNmae.setText(fullName);
+        });
         occurrenceDate.setText(parseDate(document.getString("occurenceDate")));
         duration.setText(document.getString("startHours").concat("-").concat(document.getString("endHours")));
 
@@ -173,5 +187,61 @@ public class ReservationView extends AppCompatActivity {
         }
 
         return null;
+    }
+
+    public CompletableFuture<String> getUserDocument(String documentId) {
+        CompletableFuture<String> future = new CompletableFuture<>();
+        DocumentReference docRef = db.collection("User").document(documentId);
+        docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                if (task.isSuccessful()) {
+                    DocumentSnapshot document = task.getResult();
+                    if (document.exists()) {
+
+                        String firstName = document.getString("FirstName") == null ? document.getString("firstName") : document.getString("FirstName");
+                        String lastName = document.getString("LastName") == null ? document.getString("lastName") : document.getString("LastName");
+
+                        future.complete(firstName.concat(" ").concat(lastName));
+                    } else {
+                        future.completeExceptionally(new Exception("No such document"));
+                    }
+                } else {
+                    future.completeExceptionally(task.getException());
+                }
+            }
+        });
+        return future;
+    }
+
+    public CompletableFuture<String> getUserById(Double id) {
+        CompletableFuture<String> future = new CompletableFuture<>();
+        db.collection("User")
+                .whereEqualTo("id", id)
+                .get()
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        if (task.isSuccessful()) {
+                            for (QueryDocumentSnapshot document : task.getResult()) {
+                                String firstName = document.getString("FirstName") == null ? document.getString("firstName") : document.getString("FirstName");
+                                String lastName = document.getString("LastName") == null ? document.getString("lastName") : document.getString("LastName");
+
+                                future.complete(firstName.concat(" ").concat(lastName));
+                                return;
+                            }
+                            future.completeExceptionally(new Exception("No such document"));
+                        } else {
+                            future.completeExceptionally(task.getException());
+                        }
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Toast.makeText(ReservationView.this, "ne radi", Toast.LENGTH_SHORT).show();
+                    }
+                });
+        return future;
     }
 }
