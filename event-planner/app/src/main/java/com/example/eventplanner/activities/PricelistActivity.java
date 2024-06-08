@@ -47,6 +47,7 @@ import java.io.IOException;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.Locale;
 
 public class PricelistActivity extends AppCompatActivity {
 
@@ -88,91 +89,78 @@ public class PricelistActivity extends AppCompatActivity {
         });
     }
 
-    private void createPdf(){
+    private void createPdf() {
         PdfDocument document = new PdfDocument();
         PdfDocument.PageInfo pageInfo = new PdfDocument.PageInfo.Builder(1080, 1920, 1).create();
         PdfDocument.Page page = document.startPage(pageInfo);
-
         Canvas canvas = page.getCanvas();
-
         Paint paint = new Paint();
         paint.setColor(Color.BLACK);
         paint.setTextSize(42);
         paint.setTypeface(Typeface.create(Typeface.DEFAULT, Typeface.BOLD));
 
-        String title = "Pricelist";
         float xTitle = 500;
         float yTitle = 100;
-        canvas.drawText(title, xTitle, yTitle, paint);
+        canvas.drawText("Pricelist", xTitle, yTitle, paint);
 
-        paint.setTextSize(36);
-        paint.setTypeface(Typeface.create(Typeface.DEFAULT, Typeface.BOLD));
+        float marginLeft = 50; // Left margin
+        float marginRight = 30; // Right margin
+        float xStart = marginLeft;
+        float yStart = 200;
+        float cellWidth = (1080 - marginLeft - marginRight) / 5;
+        float cellHeight = 100;
+        float lineHeight = 50;
 
-        String productsTitle = "Products";
-        float xSubTitle = 100;
-        float yProductsTitle = 200;
-        canvas.drawText(productsTitle, xSubTitle, yProductsTitle, paint);
+        float remainingSpace = 1920 - yStart; // Remaining space on the page
 
-        String servicesTitle = "Services";
-        float yServicesTitle = yProductsTitle + 400;
-        canvas.drawText(servicesTitle, xSubTitle, yServicesTitle, paint);
-
-        String packagesTitle = "Packages";
-        float yPackagesTitle = yServicesTitle + 400;
-        canvas.drawText(packagesTitle, xSubTitle, yPackagesTitle, paint);
-
-        paint.setTextSize(32);
-        paint.setTypeface(Typeface.create(Typeface.DEFAULT, Typeface.NORMAL));
-
-        float yItem = yProductsTitle + 50;
-        int i = 0;
-        for (Product product : products) {
-            Double price = product.getPrice();
-            Double discount = product.getDiscount();
-            Double priceWithDiscount = price * (1 - discount * 0.01);
-
-            canvas.drawText((++i) + ".", xSubTitle, yItem, paint);
-            canvas.drawText(product.getName(), xSubTitle + 10, yItem, paint);
-            canvas.drawText(price.toString(), xSubTitle, yItem + 50, paint);
-            canvas.drawText("-" + discount.toString() + "%", xSubTitle, yItem + 100, paint);
-            canvas.drawText("=" + priceWithDiscount.toString(), xSubTitle, yItem + 150, paint);
-            yItem += 50;
+        // Draw Products section
+        drawSectionHeader(canvas, paint, "Products", xStart, yStart);
+        drawTableHeader(canvas, paint, xStart, yStart + lineHeight, cellWidth, cellHeight, lineHeight);
+        float yItem = yStart + 2 * lineHeight;
+        remainingSpace -= (products.size() + 3) * cellHeight; // Account for header and each row
+        if (remainingSpace < 0) {
+            document.finishPage(page);
+            pageInfo = new PdfDocument.PageInfo.Builder(1080, 1920, document.getPages().size() + 1).create();
+            page = document.startPage(pageInfo);
+            canvas = page.getCanvas();
+            yItem = yStart;
         }
+        yItem = drawProductContent(canvas, paint, xStart, yItem, cellWidth, cellHeight, lineHeight);
 
-        yItem = yServicesTitle + 50;
-        i = 0;
-        for (Service service : services) {
-            Double price = service.getFullPrice();
-            Double discount = service.getDiscount();
-            Double priceWithDiscount = price * (1 - discount * 0.01);
-
-            canvas.drawText((++i) + ".", xSubTitle, yItem, paint);
-            canvas.drawText(service.getName(), xSubTitle + 10, yItem, paint);
-            canvas.drawText(price.toString(), xSubTitle, yItem + 50, paint);
-            canvas.drawText("-" + discount.toString() + "%", xSubTitle, yItem + 100, paint);
-            canvas.drawText("=" + priceWithDiscount.toString(), xSubTitle, yItem + 150, paint);
-            yItem += 50;
+        // Draw Services section
+        remainingSpace = 1920 - yItem;
+        drawSectionHeader(canvas, paint, "Services", xStart, yItem + cellHeight);
+        drawTableHeader(canvas, paint, xStart, yItem + cellHeight + lineHeight, cellWidth, cellHeight, lineHeight);
+        yItem += cellHeight + 2 * lineHeight;
+        remainingSpace -= (services.size() + 3) * cellHeight; // Account for header and each row
+        if (remainingSpace < 0) {
+            document.finishPage(page);
+            pageInfo = new PdfDocument.PageInfo.Builder(1080, 1920, document.getPages().size() + 1).create();
+            page = document.startPage(pageInfo);
+            canvas = page.getCanvas();
+            yItem = yStart;
         }
+        yItem = drawServiceContent(canvas, paint, xStart, yItem, cellWidth, cellHeight, lineHeight);
 
-        yItem = yPackagesTitle + 50;
-        i = 0;
-        for (Package packageItem : packages) {
-            Double price = packageItem.getPrice();
-            Double discount = packageItem.getDiscount();
-            Double priceWithDiscount = price * (1 - discount * 0.01);
-
-            canvas.drawText((++i) + ".", xSubTitle, yItem, paint);
-            canvas.drawText(packageItem.getName(), xSubTitle + 10, yItem, paint);
-            canvas.drawText(price.toString(), xSubTitle, yItem + 50, paint);
-            canvas.drawText("-" + discount.toString() + "%", xSubTitle, yItem + 100, paint);
-            canvas.drawText("=" + priceWithDiscount.toString(), xSubTitle, yItem + 150, paint);
-            yItem += 50;
+        // Draw Packages section
+        remainingSpace = 1920 - yItem;
+        drawSectionHeader(canvas, paint, "Packages", xStart, yItem + cellHeight);
+        drawTableHeader(canvas, paint, xStart, yItem + cellHeight + lineHeight, cellWidth, cellHeight, lineHeight);
+        yItem += cellHeight + 2 * lineHeight;
+        remainingSpace -= (packages.size() + 3) * cellHeight; // Account for header and each row
+        if (remainingSpace < 0) {
+            document.finishPage(page);
+            pageInfo = new PdfDocument.PageInfo.Builder(1080, 1920, document.getPages().size() + 1).create();
+            page = document.startPage(pageInfo);
+            canvas = page.getCanvas();
+            yItem = yStart;
         }
+        drawPackageContent(canvas, paint, xStart, yItem, cellWidth, cellHeight, lineHeight);
 
         document.finishPage(page);
 
         String directoryPath = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).toString();
-        File file = new File(directoryPath, "pricelist - " + new Date().toString() + ".pdf");
+        File file = new File(directoryPath, "pricelist - " + LocalDate.now() + ".pdf");
 
         try {
             document.writeTo(new FileOutputStream(file));
@@ -186,7 +174,95 @@ public class PricelistActivity extends AppCompatActivity {
         }
     }
 
-    private void getUser(){
+    private void drawSectionHeader(Canvas canvas, Paint paint, String sectionTitle, float xStart, float yStart) {
+        paint.setTextSize(36);
+        paint.setTypeface(Typeface.create(Typeface.DEFAULT, Typeface.BOLD));
+        canvas.drawText(sectionTitle, xStart, yStart, paint);
+    }
+
+    private void drawTableHeader(Canvas canvas, Paint paint, float xStart, float yStart, float cellWidth, float cellHeight, float lineHeight) {
+        paint.setTextSize(36);
+        paint.setTypeface(Typeface.create(Typeface.DEFAULT, Typeface.BOLD));
+
+        canvas.drawText("No.", xStart, yStart + lineHeight, paint);
+        canvas.drawText("Name", xStart + cellWidth, yStart + lineHeight, paint);
+        canvas.drawText("Price", xStart + 2 * cellWidth, yStart + lineHeight, paint);
+        canvas.drawText("Discount", xStart + 3 * cellWidth, yStart + lineHeight, paint);
+        canvas.drawText("Final Price", xStart + 4 * cellWidth, yStart + lineHeight, paint);
+    }
+
+    private float drawProductContent(Canvas canvas, Paint paint, float xStart, float yStart, float cellWidth, float cellHeight, float lineHeight) {
+        paint.setTextSize(32);
+        paint.setTypeface(Typeface.create(Typeface.DEFAULT, Typeface.NORMAL));
+
+        int i = 1;
+        float yItem = yStart;
+        for (Product product : products) {
+            Double price = product.getPrice();
+            Double discount = product.getDiscount();
+            Double priceWithDiscount = price * (1 - discount * 0.01);
+
+            canvas.drawText(String.valueOf(i), xStart, yItem + lineHeight, paint);
+            canvas.drawText(product.getName(), xStart + cellWidth, yItem + lineHeight, paint);
+            canvas.drawText(price.toString(), xStart + 2 * cellWidth, yItem + lineHeight, paint);
+            canvas.drawText("-" + discount.toString() + "%", xStart + 3 * cellWidth, yItem + lineHeight, paint);
+            canvas.drawText(priceWithDiscount.toString(), xStart + 4 * cellWidth, yItem + lineHeight, paint);
+
+            yItem += cellHeight;
+            i++;
+        }
+        return yItem; // Return the final y position
+    }
+
+    private float drawServiceContent(Canvas canvas, Paint paint, float xStart, float yStart, float cellWidth, float cellHeight, float lineHeight) {
+        paint.setTextSize(32);
+        paint.setTypeface(Typeface.create(Typeface.DEFAULT, Typeface.NORMAL));
+
+        int i = 1;
+        float yItem = yStart;
+        for (Service service : services) {
+            Double price = service.getFullPrice();
+            Double discount = service.getDiscount();
+            Double priceWithDiscount = price * (1 - discount * 0.01);
+
+            canvas.drawText(String.valueOf(i), xStart, yItem + lineHeight, paint);
+            canvas.drawText(service.getName(), xStart + cellWidth, yItem + lineHeight, paint);
+            canvas.drawText(price.toString(), xStart + 2 * cellWidth, yItem + lineHeight, paint);
+            canvas.drawText("-" + discount.toString() + "%", xStart + 3 * cellWidth, yItem + lineHeight, paint);
+            canvas.drawText(priceWithDiscount.toString(), xStart + 4 * cellWidth, yItem + lineHeight, paint);
+
+            yItem += cellHeight;
+            i++;
+        }
+        return yItem; // Return the final y position
+    }
+
+
+    private void drawPackageContent(Canvas canvas, Paint paint, float xStart, float yStart, float cellWidth, float cellHeight, float lineHeight) {
+        paint.setTextSize(32);
+        paint.setTypeface(Typeface.create(Typeface.DEFAULT, Typeface.NORMAL));
+
+        int i = 1;
+        float yItem = yStart;
+        for (Package packageItem : packages) {
+            Double price = packageItem.getPrice();
+            Double discount = packageItem.getDiscount();
+            Double priceWithDiscount = price * (1 - discount * 0.01);
+
+            canvas.drawText(String.valueOf(i), xStart, yItem + lineHeight, paint);
+            canvas.drawText(packageItem.getName(), xStart + cellWidth, yItem + lineHeight, paint);
+            canvas.drawText(price.toString(), xStart + 2 * cellWidth, yItem + lineHeight, paint);
+            canvas.drawText("-" + discount.toString() + "%", xStart + 3 * cellWidth, yItem + lineHeight, paint);
+            canvas.drawText(priceWithDiscount.toString(), xStart +
+                    4 * cellWidth, yItem + lineHeight, paint);
+
+            yItem += cellHeight;
+            i++;
+        }
+    }
+
+
+        private void getUser(){
         db.collection("User")
                 .document(user.getUid())
                 .get()

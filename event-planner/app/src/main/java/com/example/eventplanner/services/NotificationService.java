@@ -52,12 +52,16 @@ public class NotificationService extends FirebaseMessagingService {
                 if(value==null)return;
                 body=value.toString();
             }
-            else if(key.equals("topic")){
+            else if (key.equals("to")) {
                 Object value = bundle.get(key);
-                if(value==null)return;
-                topic=value.toString();
+                if (value == null) return;
+                topic = value.toString();
+                if (topic.startsWith("/topics/")) {
+                    topic = topic.substring(8);
+                }
             }
         }
+
         Log.d(TAG, "Message Notification Body: " + body);
         String notificationTitle = title;
         String notificationBody = body;
@@ -83,7 +87,7 @@ public class NotificationService extends FirebaseMessagingService {
                 Uri defaultSoundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
 
                 NotificationCompat.Builder notificationBuilder;
-                if(messageTitle.equals("Update on your report")){
+                if(messageTitle.equals("Update on your report") || messageTitle.equals("Reservation update")){
                     notificationBuilder = new NotificationCompat.Builder(this, channelId + "Topic");
                     notificationBuilder.setContentTitle(messageTitle);
                     notificationBuilder.setContentText(messageBody);
@@ -133,12 +137,35 @@ public class NotificationService extends FirebaseMessagingService {
                             (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
 
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                        NotificationChannel channel = new NotificationChannel("AdminChannel", "AdminChannel", NotificationManager.IMPORTANCE_DEFAULT);
+                        NotificationChannel channel = new NotificationChannel(channelId, "AdminChannel", NotificationManager.IMPORTANCE_DEFAULT);
                         notificationManager.createNotificationChannel(channel);
                     }
 
                     notificationManager.notify(0, builder.build());
                 }
+            }
+            else if(user.getDisplayName().equals("OD")){
+                String channelId = user.getUid() + "Topic";
+                Uri defaultSoundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
+
+                NotificationCompat.Builder builder = new NotificationCompat.Builder(this, channelId);
+                builder.setContentTitle(messageTitle);
+                builder.setContentText(messageBody);
+                builder.setSmallIcon(R.drawable.ic_android);
+                builder.setAutoCancel(true);
+                builder.setSound(defaultSoundUri);
+
+                NotificationManagerCompat managerCompat = NotificationManagerCompat.from(this);
+
+                NotificationManager notificationManager =
+                        (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                    NotificationChannel channel = new NotificationChannel(channelId, "OD channel", NotificationManager.IMPORTANCE_DEFAULT);
+                    notificationManager.createNotificationChannel(channel);
+                }
+
+                notificationManager.notify(0, builder.build());
             }
         }
 
