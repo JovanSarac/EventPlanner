@@ -1,7 +1,11 @@
 package com.example.eventplanner.model;
 
-public class UserPUPV {
-    private Long id;
+import java.io.Serializable;
+import java.util.List;
+
+@SuppressWarnings("serial")
+public class UserPUPV implements Serializable {
+    private String id;
     private String firstName;
     private String lastName;
     private String email;
@@ -16,7 +20,13 @@ public class UserPUPV {
     private String companyPhone;
     private String workTime;
 
-    public UserPUPV(Long id, String firstName, String lastName, String email, String password, String phone, String address, boolean isValid, String companyName, String companyDescription, String companyAddress, String companyemail, String companyPhone, String workTime) {
+    private List<String> eventTypesIds;
+    private List<EventType> eventTypes;
+    private List<String> categoriesIds;
+
+    private List<Category> categories;
+
+    public UserPUPV(String id, String firstName, String lastName, String email, String password, String phone, String address, boolean isValid, String companyName, String companyDescription, String companyAddress, String companyemail, String companyPhone, String workTime,List<String> eventTypesLong,List<String> categoriesLong) {
         this.id = id;
         this.firstName = firstName;
         this.lastName = lastName;
@@ -31,6 +41,41 @@ public class UserPUPV {
         this.companyemail = companyemail;
         this.companyPhone = companyPhone;
         this.workTime = workTime;
+        this.eventTypesIds=eventTypesLong;
+        this.categoriesIds=categoriesLong;
+
+    }
+
+    public List<String> getEventTypesIds() {
+        return eventTypesIds;
+    }
+
+    public void setEventTypesIds(List<String> eventTypesIds) {
+        this.eventTypesIds = eventTypesIds;
+    }
+
+    public List<String> getCategoriesIds() {
+        return categoriesIds;
+    }
+
+    public void setCategoriesIds(List<String> categoriesIds) {
+        this.categoriesIds = categoriesIds;
+    }
+
+    public List<EventType> getEventTypes() {
+        return eventTypes;
+    }
+
+    public void setEventTypes(List<EventType> eventTypes) {
+        this.eventTypes = eventTypes;
+    }
+
+    public List<Category> getCategories() {
+        return categories;
+    }
+
+    public void setCategories(List<Category> categories) {
+        this.categories = categories;
     }
 
     public UserPUPV(String firstName, String lastName, String email, String password, String phone, String address, boolean isValid, String companyName, String companyDescription, String companyAddress, String companyemail, String companyPhone, String workTime) {
@@ -52,11 +97,11 @@ public class UserPUPV {
     public UserPUPV() {
     }
 
-    public Long getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(String id) {
         this.id = id;
     }
 

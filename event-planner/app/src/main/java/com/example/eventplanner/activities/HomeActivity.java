@@ -162,10 +162,23 @@ public class HomeActivity extends AppCompatActivity {
             Intent intent = new Intent(HomeActivity.this, OwnerDashboard.class);
             startActivity(intent);
         });
+        binding.approveRegistration.setOnClickListener(v->{
+            Intent intent = new Intent(HomeActivity.this, ApproveRegistrationActivity.class);
+            startActivity(intent);
+        });
+        binding.reserveService.setOnClickListener(v->{
+            Intent intent = new Intent(HomeActivity.this, ReserveServiceActivity.class);
+            startActivity(intent);
+        });
         binding.signOut.setOnClickListener(v->{
             FirebaseAuth.getInstance().signOut();
             Toast.makeText(this, "SingedOut", Toast.LENGTH_SHORT).show();
             this.onResume();
+        });
+
+        binding.reservationViewId.setOnClickListener(v->{
+            Intent intent = new Intent(HomeActivity.this, ReservationView.class);
+            startActivity(intent);
         });
 
     }
@@ -206,6 +219,7 @@ public class HomeActivity extends AppCompatActivity {
                 binding.categoriesButton.setVisibility(View.GONE);
                 binding.typesOfEventsButton.setVisibility(View.GONE);
                 binding.pricelist.setVisibility(View.VISIBLE);
+                binding.reservationViewId.setVisibility(View.VISIBLE);
             }
             //admin
             else{
