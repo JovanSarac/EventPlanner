@@ -108,6 +108,8 @@ public class ServiceListAdapter extends ArrayAdapter<Service> {
                 intent.putExtra("duration", service.getDuration());
                 intent.putExtra("pricePerHour",service.getPricePerHour());
                 intent.putExtra("duration", service.getDuration());
+                intent.putExtra("durationMin", service.getDurationMin());
+                intent.putExtra("durationMax",service.getDurationMax());
                 intent.putExtra("deadlineReservation", service.getReservationDue());
                 intent.putExtra("cancellationReservation", service.getCancelationDue());
                 intent.putStringArrayListExtra("eventTypeIds", convertLongListToStringList(service.getEventTypeIds()));

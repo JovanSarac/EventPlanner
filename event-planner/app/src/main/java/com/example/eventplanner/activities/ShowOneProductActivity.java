@@ -32,8 +32,8 @@ public class ShowOneProductActivity extends AppCompatActivity {
     RecyclerView recyclerView;
     ImageAdapter imageAdapter;
 
-    Long productId;
-    Long pupvId;
+    Long idProduct;
+    String idPupv;
 
     Category category;
     Subcategory subcategory;
@@ -46,8 +46,8 @@ public class ShowOneProductActivity extends AppCompatActivity {
         binding = ActivityShowOneProductBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
-        Long idProduct = getIntent().getLongExtra("productId", 0L);
-        String idPupv = getIntent().getStringExtra("pupvId");
+        idProduct = getIntent().getLongExtra("productId", 0L);
+        idPupv = getIntent().getStringExtra("pupvId");
         getUserPupv(idPupv).thenAccept(userPUPV -> {
             this.userPUPV = userPUPV;
         });
@@ -178,7 +178,7 @@ public class ShowOneProductActivity extends AppCompatActivity {
                                 String name = document.getString("Name");
                                 String description = document.getString("Description");
                                 Long type1 = document.getLong("Type");
-                                Subcategory subcategory = new Subcategory(idSubcategory, categoryName, name, description, type1.intValue());
+                                subcategory = new Subcategory(idSubcategory, categoryName, name, description, type1.intValue());
                                 binding.subcategoryProduct.setText(subcategory.getName());
                             } else {
                                 Log.d("Category", "No such document");
@@ -202,7 +202,7 @@ public class ShowOneProductActivity extends AppCompatActivity {
                             if (document.exists()) {
                                 String name = document.getString("Name");
                                 String description = document.getString("Description");
-                                Category category = new Category(idCategory, name, description);
+                                category = new Category(idCategory, name, description);
                                 binding.categoryProduct.setText(category.getName());
                             } else {
                                 Log.d("Category", "No such document");

@@ -3,6 +3,7 @@ package com.example.eventplanner.activities;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
 import android.widget.ArrayAdapter;
 
 import androidx.annotation.NonNull;
@@ -32,8 +33,8 @@ public class ShowOneServiceActivity extends AppCompatActivity {
     RecyclerView recyclerView;
     ImageAdapter imageAdapter;
 
-    Long productId;
-    Long pupvId;
+    Long idProduct;
+    String idPupv;
 
     Category category;
     Subcategory subcategory;
@@ -46,8 +47,8 @@ public class ShowOneServiceActivity extends AppCompatActivity {
         binding = ActivityShowOneServiceBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
-        Long idProduct = getIntent().getLongExtra("serviceId", 0L);
-        String idPupv = getIntent().getStringExtra("pupvId");
+        idProduct = getIntent().getLongExtra("serviceId", 0L);
+        idPupv = getIntent().getStringExtra("pupvId");
         getUserPupv(idPupv).thenAccept(userPUPV -> {
             this.userPUPV = userPUPV;
         });
@@ -71,6 +72,8 @@ public class ShowOneServiceActivity extends AppCompatActivity {
         String specific = getIntent().getStringExtra("specific");
         double pricePerHour = getIntent().getDoubleExtra("pricePerHour",0.0);
         double duration = getIntent().getDoubleExtra("duration", 0.0);
+        double durationMin = getIntent().getDoubleExtra("durationMin", 0.0);
+        double durationMax = getIntent().getDoubleExtra("durationMax", 0.0);
         String reservationDue = getIntent().getStringExtra("deadlineReservation");
         String cancellationDue = getIntent().getStringExtra("cancellationReservation");
         ArrayList<String> eventTypeIds = getIntent().getStringArrayListExtra("eventTypeIds");
@@ -81,7 +84,15 @@ public class ShowOneServiceActivity extends AppCompatActivity {
         binding.priceService.setText(String.valueOf(price) + " $");
         binding.discountPrice.setText(String.valueOf(discount) + " %");
         binding.pricePerHour.setText(String.valueOf(pricePerHour) + " $/hour");
-        binding.durationService.setText(String.valueOf(duration) + " hour");
+
+        if(duration != 0.0){
+            binding.durationService.setText(String.valueOf(duration) + " hour");
+            binding.durationminmaxLayout.setVisibility(View.GONE);
+        }else{
+            binding.durationMin.setText(String.valueOf(durationMin));
+            binding.durationMax.setText(String.valueOf(durationMax));
+            binding.durationLayout.setVisibility(View.GONE);
+        }
         binding.priceWithDiscount.setText(String.valueOf(price - (price * discount/100)) + " $");
         binding.specificOfService.setText(specific);
         binding.deadlineReservation.setText(reservationDue);
@@ -182,7 +193,7 @@ public class ShowOneServiceActivity extends AppCompatActivity {
                                 String name = document.getString("Name");
                                 String description = document.getString("Description");
                                 Long type1 = document.getLong("Type");
-                                Subcategory subcategory = new Subcategory(idSubcategory, categoryName, name, description, type1.intValue());
+                                subcategory = new Subcategory(idSubcategory, categoryName, name, description, type1.intValue());
                                 binding.subcategoryService.setText(subcategory.getName());
                             } else {
                                 Log.d("Category", "No such document");
@@ -206,7 +217,7 @@ public class ShowOneServiceActivity extends AppCompatActivity {
                             if (document.exists()) {
                                 String name = document.getString("Name");
                                 String description = document.getString("Description");
-                                Category category = new Category(idCategory, name, description);
+                                category = new Category(idCategory, name, description);
                                 binding.categoryService.setText(category.getName());
                             } else {
                                 Log.d("Category", "No such document");

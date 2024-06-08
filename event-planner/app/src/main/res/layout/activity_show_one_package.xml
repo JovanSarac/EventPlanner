@@ -5,7 +5,7 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".activities.ShowOneProductActivity"
+    tools:context=".activities.ShowOnePackageActivity"
     android:scrollbarStyle="outsideOverlay"
     android:background="@color/purple_dark">
 
@@ -19,7 +19,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textColor="@color/yellow"
-            android:text="@string/product"
+            android:text="@string/packagee"
             android:textAlignment="center"
             android:textSize="35dp"
             android:background="@drawable/create_event_background"/>
@@ -32,7 +32,7 @@
             android:orientation="horizontal">
 
             <TextView
-                android:id="@+id/name_productt"
+                android:id="@+id/name_package"
                 android:layout_width="0dp"
                 android:layout_weight="0.7"
                 android:layout_height="wrap_content"
@@ -51,32 +51,22 @@
                 android:text="@string/available"
                 android:textColor="@color/white"
                 android:background="@drawable/create_event_background"
-                 />
+                />
 
         </LinearLayout>
 
-
-        <androidx.constraintlayout.widget.ConstraintLayout
+        <androidx.recyclerview.widget.RecyclerView
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="10dp">
-
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/recycler"
-                android:layout_width="match_parent"
-                android:layout_height="200sp"
-                android:layout_marginTop="15sp"
-                android:textColor="@color/white"
-                app:layoutManager="com.google.android.material.carousel.CarouselLayoutManager"/>
-
-        </androidx.constraintlayout.widget.ConstraintLayout>
+            android:layout_height="200sp"
+            android:layout_marginTop="15sp"
+            android:id="@+id/recycler"
+            app:layoutManager="com.google.android.material.carousel.CarouselLayoutManager"/>
 
         <View
             android:layout_width="match_parent"
             android:layout_height="2dp"
             android:background="@android:color/white"
             android:layout_marginTop="10dp"/>
-
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -91,7 +81,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="0.3"
                 android:textSize="18sp"
-                android:text="@string/description_of_product"
+                android:text="@string/description_of_package"
                 android:textStyle="italic"
                 android:paddingStart="5dp"
                 android:textColor="@color/white"/>
@@ -101,7 +91,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1.7"
                 android:textColor="@color/white"
-                android:id="@+id/descriptionProduct"
+                android:id="@+id/descriptionPackage"
                 android:textSize="18sp"
                 />
 
@@ -129,7 +119,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1.7"
-                android:id="@+id/categoryProduct"
+                android:id="@+id/categoryPackage"
                 android:textAlignment="textStart"
                 android:textSize="18sp"
                 android:textColor="@color/white"
@@ -140,30 +130,32 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:weightSum="2"
+            android:orientation="vertical"
             android:layout_margin="7dp"
             >
 
             <TextView
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_weight="0.3"
-                android:textSize="18sp"
-                android:text="@string/subcategory_name"
-                android:textStyle="italic"
+                android:text="@string/subcategory_names"
                 android:textColor="@color/white"
+                android:textStyle="italic"
+                android:textSize="18sp"
                 android:paddingStart="5dp"/>
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="1.7"
+            <ListView
+                android:id="@+id/subcategoriesList"
+                android:layout_width="match_parent"
+                android:layout_height="100dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginBottom="10dp"
+                android:layout_marginHorizontal="10dp"
+                android:scrollbars="vertical"
                 android:textColor="@color/white"
-                android:id="@+id/subcategoryProduct"
-                android:textAlignment="textStart"
-                android:textSize="18sp"
-                />
+                android:overScrollMode="never"
+                android:nestedScrollingEnabled="true"
+                android:scrollbarStyle="insideOverlay" />
+
 
         </LinearLayout>
 
@@ -171,6 +163,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
+            android:textColor="@color/white"
             android:weightSum="2"
             android:layout_margin="7dp"
             >
@@ -190,7 +183,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="0.9"
                 android:textColor="@color/white"
-                android:id="@+id/priceProduct"
+                android:id="@+id/pricePackage"
                 android:textAlignment="textStart"
                 android:textSize="18sp"
                 />
@@ -200,8 +193,8 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="0.1"
                 android:textSize="18sp"
-                android:text="@string/discountt"
                 android:textColor="@color/white"
+                android:text="@string/discountt"
                 android:textStyle="italic"
                 android:paddingStart="5dp"/>
 
@@ -209,14 +202,13 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="0.9"
-                android:id="@+id/discountPrice"
                 android:textColor="@color/white"
+                android:id="@+id/discountPricePackage"
                 android:textAlignment="textStart"
                 android:textSize="18sp"
                 />
 
         </LinearLayout>
-
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -240,7 +232,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1.7"
-                android:id="@+id/priceWithDiscount"
+                android:id="@+id/priceWithDiscountPackage"
                 android:textAlignment="textStart"
                 android:textSize="18sp"
                 android:textColor="@color/yellow"
@@ -249,16 +241,148 @@
 
         </LinearLayout>
 
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:weightSum="2"
+            android:layout_margin="7dp"
+            >
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="0.3"
+                android:textSize="18sp"
+                android:text="@string/deadline_for_reservation"
+                android:textStyle="italic"
+                android:textColor="@color/white"
+                android:paddingStart="5dp"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1.7"
+                android:id="@+id/deadlineReservationPackage"
+                android:textAlignment="textStart"
+                android:textSize="18sp"
+                android:textColor="@color/white"
+                />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:weightSum="2"
+            android:layout_margin="7dp"
+            >
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="0.3"
+                android:textSize="18sp"
+                android:text="@string/cancellation_deadline"
+                android:textStyle="italic"
+                android:textColor="@color/white"
+                android:paddingStart="5dp"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1.7"
+                android:id="@+id/cancelationReservationPackage"
+                android:textAlignment="textStart"
+                android:textSize="18sp"
+                android:textColor="@color/white"
+
+                />
+
+        </LinearLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="2dp"
+            android:background="@android:color/white"
+            android:layout_marginTop="10dp"/>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_margin="7dp"
+            >
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="22sp"
+                android:text="@string/products"
+                android:textStyle="italic"
+                android:textColor="@color/white"
+                android:paddingStart="5dp"/>
+            <ListView
+                android:id="@+id/productList"
+                android:layout_width="match_parent"
+                android:layout_height="200dp"
+                tools:listitem="@layout/product_card"
+                android:paddingRight="10dp"
+                android:scrollbars="vertical"
+                android:overScrollMode="never"
+                android:nestedScrollingEnabled="true"
+                android:scrollbarStyle="outsideOverlay"
+                android:layout_marginTop="10dp"
+                android:visibility="visible"
+                />
 
 
+        </LinearLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="2dp"
+            android:background="@android:color/white"
+            android:layout_marginTop="10dp"/>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_margin="7dp"
+            >
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="22sp"
+                android:text="@string/services"
+                android:textStyle="italic"
+                android:textColor="@color/white"
+                android:paddingStart="5dp"/>
+            <ListView
+                android:id="@+id/serviceList"
+                android:layout_width="match_parent"
+                android:layout_height="200dp"
+                tools:listitem="@layout/service_card"
+                android:paddingRight="10dp"
+                android:scrollbars="vertical"
+                android:overScrollMode="never"
+                android:nestedScrollingEnabled="true"
+                android:scrollbarStyle="outsideOverlay"
+                android:layout_marginTop="10dp"
+                />
+
+
+        </LinearLayout>
 
 
 
         <View
             android:layout_width="match_parent"
             android:layout_height="2dp"
-            android:layout_marginTop="10dp"
-            android:background="@android:color/white" />
+            android:background="@android:color/white"
+            android:layout_marginTop="10dp"/>
+
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -267,7 +391,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/event_types_for_product"
+                android:text="@string/event_types_for_package"
                 android:textStyle="bold"
                 android:textSize="20sp"
                 android:textColor="@color/white"
@@ -283,18 +407,14 @@
             android:layout_marginTop="10dp"
             android:layout_marginBottom="10dp"
             android:scrollbars="none"
+            android:textColor="@color/white"
             android:overScrollMode="never"
             android:nestedScrollingEnabled="true"
-            android:scrollbarStyle="insideOverlay"
-            />
+            android:scrollbarStyle="insideOverlay" />
 
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="2dp"
-            android:background="@android:color/white" />
+
 
 
     </LinearLayout>
-
 
 </androidx.core.widget.NestedScrollView>
