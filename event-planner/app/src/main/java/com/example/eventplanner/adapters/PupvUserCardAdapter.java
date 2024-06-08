@@ -97,7 +97,7 @@ public class PupvUserCardAdapter extends RecyclerView.Adapter<PupvUserCardAdapte
         holder.deleteIcon.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ReasonFragment fragment = new ReasonFragment(data.getId());
+                ReasonFragment fragment = new ReasonFragment(data);
                 fragment.show(((FragmentActivity) context).getSupportFragmentManager(), "ReasonFragment");
             }
         });
