@@ -37,6 +37,17 @@
         />
 
 
+    <fragment
+        android:id="@+id/my_profile"
+        android:name="com.example.eventplanner.fragments.MyProfileFragment"
+        android:label="My profile"
+        tools:layout="@layout/fragment_my_profile"
+        app:popUpTo="@+id/my_profile"
+        app:popUpToInclusive="true"
+        />
+
+
+
 
 
 

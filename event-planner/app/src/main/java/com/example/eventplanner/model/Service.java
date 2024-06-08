@@ -224,6 +224,7 @@ public class Service implements Parcelable {
         dest.writeByte((byte) (deleted == null ? 0 : deleted ? 1 : 2));
     }
 
+
     public Long getId() {
         return id;
     }

@@ -43,6 +43,7 @@ public class CompanyViewActivity extends AppCompatActivity {
     FirebaseAuth mAuth;
     FirebaseUser user;
     UserPUPV company;
+    String pupvId;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -52,6 +53,8 @@ public class CompanyViewActivity extends AppCompatActivity {
         db = FirebaseFirestore.getInstance();
         mAuth = FirebaseAuth.getInstance();
         user = mAuth.getCurrentUser();
+
+        pupvId = getIntent().getStringExtra("pupvId");
 
         getCompany();
 
@@ -118,7 +121,7 @@ public class CompanyViewActivity extends AppCompatActivity {
 
     private void getCompany(){
         db.collection("User")
-                .document("R5H7ey40UKVS1XFsuMpY5uISwnc2")
+                .document(pupvId)
                 .get()
                 .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
                     @Override
@@ -126,11 +129,11 @@ public class CompanyViewActivity extends AppCompatActivity {
                         company = new UserPUPV(
                                 documentSnapshot.getString("FirstName"),
                                 documentSnapshot.getString("LastName"),
-                                documentSnapshot.getString("Email"),
+                                documentSnapshot.getString("E-mail"),
                                 documentSnapshot.getString("Password"),
                                 documentSnapshot.getString("Phone"),
                                 documentSnapshot.getString("Address"),
-                                documentSnapshot.getBoolean("IsValid"),
+                                true,
                                 documentSnapshot.getString("CompanyName"),
                                 documentSnapshot.getString("CompanyDescription"),
                                 documentSnapshot.getString("CompanyAddress"),

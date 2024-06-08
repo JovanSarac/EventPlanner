@@ -70,6 +70,12 @@ public class UserInfoActivity extends AppCompatActivity {
         mAuth = FirebaseAuth.getInstance();
         user = mAuth.getCurrentUser();
 
+        if (user.getDisplayName().equals("ADMIN")) {
+            binding.reportOD.setVisibility(View.GONE);
+        }
+
+        userId = getIntent().getStringExtra("userId");
+
         getUser();
 
         binding.reportOD.setOnClickListener(new View.OnClickListener() {
@@ -94,11 +100,11 @@ public class UserInfoActivity extends AppCompatActivity {
                         Long id = new Random().nextLong();
                         Map<String, Object> doc = new HashMap<>();
 
-                        doc.put("reporter", user.getUid());
-                        doc.put("reasonOfReport", report.getEditText().getText().toString());
-                        doc.put("reported", userId);
-                        doc.put("dateOfReport", LocalDate.now().toString());
-                        doc.put("status", "reported");
+                        doc.put("reporterId", user.getUid());
+                        doc.put("reason", report.getEditText().getText().toString());
+                        doc.put("reportedId", userId);
+                        doc.put("dateOfReport", System.currentTimeMillis());
+                        doc.put("status", "REPORTED");
 
                         db.collection("UserReports")
                                 .document(id.toString())
@@ -138,7 +144,7 @@ public class UserInfoActivity extends AppCompatActivity {
 
     private void getUser(){
         db.collection("User")
-                .document("vfzH3r61kWgPI9ehrS25Mdj2j2A2")
+                .document(userId)
                 .get()
                 .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
                     @Override
@@ -193,8 +199,7 @@ public class UserInfoActivity extends AppCompatActivity {
         binding.phone.getEditText().setText((reportedUser instanceof UserOD) ? ((UserOD) reportedUser).getPhone() : ((UserPUPV) reportedUser).getPhone());
         binding.address.getEditText().setText((reportedUser instanceof UserOD) ? ((UserOD) reportedUser).getAddress() : ((UserPUPV) reportedUser).getAddress());
 
-        //skloniti ovo jpg
-        StorageReference imageRef = storage.getReference().child("images/" + userId + ".jpg");
+        StorageReference imageRef = storage.getReference().child("images/" + userId);
         imageRef.getDownloadUrl()
                 .addOnSuccessListener(new OnSuccessListener<Uri>() {
                     @Override

@@ -70,16 +70,10 @@
         android:textSize="20sp"/>
 
     <Button
-        android:id="@+id/companyInfo"
+        android:id="@+id/user_reports"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/company_info"
-        android:textSize="20sp"/>
-    <Button
-        android:id="@+id/userInfo"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/user_info"
+        android:text="@string/user_reports"
         android:textSize="20sp"/>
  
     <Button
@@ -151,6 +145,17 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Owner Dashboard"
+        android:textSize="16dp"
+        android:paddingVertical="12dp"
+        app:cornerRadius="10dp"
+        android:layout_marginHorizontal="24dp"
+        />
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/reservation_view_id"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Reservation view"
         android:textSize="16dp"
         android:paddingVertical="12dp"
         app:cornerRadius="10dp"
