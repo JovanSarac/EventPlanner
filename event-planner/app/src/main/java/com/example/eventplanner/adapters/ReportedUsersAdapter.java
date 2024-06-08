@@ -27,6 +27,7 @@ import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.auth.UserInfo;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.firestore.auth.User;
 
 import java.text.SimpleDateFormat;
@@ -79,8 +80,8 @@ public class ReportedUsersAdapter extends ArrayAdapter<UserReport> {
             public void onClick(View v) {
                 report.setStatus(UserReport.Status.APPROVED);
                 notifyDataSetChanged();
-
                 updateInDb(report);
+                blockUser(report.getReportedId());
             }
         });
 
@@ -141,6 +142,140 @@ public class ReportedUsersAdapter extends ArrayAdapter<UserReport> {
         });
 
         return convertView;
+    }
+
+    private void blockUser(String userId){
+        db.collection("User")
+                .document(userId)
+                .update("IsValid", false)
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void unused) {
+                        Toast.makeText(context, "User blocked", Toast.LENGTH_LONG).show();
+                        checkUserType(userId);
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Toast.makeText(context, e.getMessage(), Toast.LENGTH_LONG).show();
+                    }
+                });
+    }
+
+    private void checkUserType(String userId){
+        db.collection("User")
+                .document(userId)
+                .get()
+                .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                    @Override
+                    public void onSuccess(DocumentSnapshot documentSnapshot) {
+                        if(documentSnapshot.getString("UserType").equals("PUPV")){
+                            changeAvailabilityOfProducts(userId);
+                            changeAvailabilityOfServices(userId);
+                            changeAvailabilityOfPackages(userId);
+                            blockPupzs(userId);
+                        }
+                        //od
+                        else{
+
+                        }
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Toast.makeText(context, e.getMessage(), Toast.LENGTH_SHORT).show();
+                    }
+                });
+    }
+
+    private void changeAvailabilityOfProducts(String ownerId){
+        db.collection("Products")
+                .whereEqualTo("pupvId", ownerId)
+                .get()
+                .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+                    @Override
+                    public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                        for(DocumentSnapshot doc : queryDocumentSnapshots){
+                            db.collection("Products")
+                                    .document(doc.getId())
+                                    .update("available", false);
+                        }
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Toast.makeText(context, e.getMessage(), Toast.LENGTH_SHORT).show();
+                    }
+                });
+    }
+
+    private void changeAvailabilityOfServices(String ownerId){
+        db.collection("Services")
+                .whereEqualTo("pupvId", ownerId)
+                .get()
+                .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+                    @Override
+                    public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                        for(DocumentSnapshot doc : queryDocumentSnapshots){
+                            db.collection("Services")
+                                    .document(doc.getId())
+                                    .update("available", false);
+                        }
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Toast.makeText(context, e.getMessage(), Toast.LENGTH_SHORT).show();
+                    }
+                });
+    }
+
+    private void changeAvailabilityOfPackages(String ownerId){
+        db.collection("Packages")
+                .whereEqualTo("pupvId", ownerId)
+                .get()
+                .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+                    @Override
+                    public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                        for(DocumentSnapshot doc : queryDocumentSnapshots){
+                            db.collection("Packages")
+                                    .document(doc.getId())
+                                    .update("available", false);
+                        }
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Toast.makeText(context, e.getMessage(), Toast.LENGTH_SHORT).show();
+                    }
+                });
+    }
+
+    private void blockPupzs(String userId){
+        db.collection("User")
+                .whereEqualTo("ownerId", userId)
+                .get()
+                .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+                    @Override
+                    public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                        for(DocumentSnapshot doc : queryDocumentSnapshots){
+                            db.collection("User")
+                                    .document(doc.getId())
+                                    .update("valid", false);
+                        }
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Toast.makeText(context, e.getMessage(), Toast.LENGTH_SHORT).show();
+                    }
+                });
     }
 
     private void updateInDb(UserReport report){
