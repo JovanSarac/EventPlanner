@@ -110,6 +110,14 @@ public class ShowOneServiceActivity extends AppCompatActivity {
         }else{
             binding.bookService.setVisibility(View.GONE);
         }
+
+        //TO DO implementirati informacije o kompaniji
+        binding.showCompanyInfo.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                System.out.println(idPupv);
+            }
+        });
     }
 
     private CompletableFuture<UserPUPV> getUserPupv(String uid) {

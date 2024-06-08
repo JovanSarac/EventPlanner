@@ -113,6 +113,14 @@ public class ShowOnePackageActivity extends AppCompatActivity {
         }else{
             binding.bookPackage.setVisibility(View.GONE);
         }
+
+        //TO DO implementirati informacije o kompaniji
+        binding.showCompanyInfo.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                System.out.println(idPupv);
+            }
+        });
     }
 
     private void getServices(ArrayList<String> serviceIds) {

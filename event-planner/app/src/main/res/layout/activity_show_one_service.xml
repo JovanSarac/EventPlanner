@@ -77,6 +77,18 @@
             android:background="@android:color/white"
             android:layout_marginTop="10dp"/>
 
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <Button
+                android:id="@+id/showCompanyInfo"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/show_company_info"
+                android:textColor="@color/white"
+                android:textSize="20dp"/>
+        </LinearLayout>
+
 
             <LinearLayout
                 android:layout_width="match_parent"

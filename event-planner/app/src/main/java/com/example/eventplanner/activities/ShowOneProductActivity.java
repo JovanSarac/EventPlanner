@@ -49,8 +49,8 @@ public class ShowOneProductActivity extends AppCompatActivity {
 
         idProduct = getIntent().getLongExtra("productId", 0L);
         idPupv = getIntent().getStringExtra("pupvId");
-        getUserPupv(idPupv).thenAccept(userPUPV -> {
-            this.userPUPV = userPUPV;
+        getUserPupv(idPupv).thenAccept(userPupv -> {
+            this.userPUPV = userPupv;
         });
         Long idCategory = getIntent().getLongExtra("categoryId", 0L);
         Long idSubcategory = getIntent().getLongExtra("subcategoryId", 0L);
@@ -93,6 +93,14 @@ public class ShowOneProductActivity extends AppCompatActivity {
         }else{
             binding.buyProduct.setVisibility(View.GONE);
         }
+
+        //TO DO implementirati informacije o kompaniji
+        binding.showCompanyInfo.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                System.out.println(idPupv);
+            }
+        });
 
 
     }

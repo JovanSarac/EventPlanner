@@ -165,4 +165,5 @@
     <string name="buy_the_product">Buy the product</string>
     <string name="book_a_service">Book a service</string>
     <string name="book_a_package">Book a package</string>
+    <string name="show_company_info">Show company info</string>
 </resources>
