@@ -1,10 +1,17 @@
 package com.example.eventplanner.activities;
 
+import static android.content.ContentValues.TAG;
+
+import android.app.AlertDialog;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -18,13 +25,19 @@ import com.example.eventplanner.model.Subcategory;
 import com.example.eventplanner.model.UserPUPV;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FieldPath;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 
 public class ShowOneProductActivity extends AppCompatActivity {
@@ -41,11 +54,16 @@ public class ShowOneProductActivity extends AppCompatActivity {
 
     UserPUPV userPUPV;
     FirebaseFirestore db = FirebaseFirestore.getInstance();
+
+    FirebaseAuth mAuth = FirebaseAuth.getInstance();
+    FirebaseUser user;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         binding = ActivityShowOneProductBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
+
+        user = mAuth.getCurrentUser();
 
         idProduct = getIntent().getLongExtra("productId", 0L);
         idPupv = getIntent().getStringExtra("pupvId");
@@ -102,6 +120,79 @@ public class ShowOneProductActivity extends AppCompatActivity {
             }
         });
 
+        if(!user.getDisplayName().equals("OD")){
+            binding.sendMessagePupv.setVisibility(View.GONE);
+        }else{
+            binding.sendMessagePupv.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+
+                    AlertDialog.Builder builder = new AlertDialog.Builder(ShowOneProductActivity.this);
+
+                    LayoutInflater inflater = getLayoutInflater();
+                    View dialogView = inflater.inflate(R.layout.dialog_send_message, null);
+
+                    EditText messageInput = dialogView.findViewById(R.id.messageInput);
+                    Button buttonSend = dialogView.findViewById(R.id.buttonSend);
+                    Button buttonClose = dialogView.findViewById(R.id.buttonClose);
+
+                    builder.setView(dialogView);
+
+                    AlertDialog dialog = builder.create();
+                    dialog.show();
+
+                    buttonSend.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            // Handle sending the message
+                            String message = messageInput.getText().toString().trim();
+                            if (!message.isEmpty()) {
+                                // Send the message to Pupv (implement your own logic here)
+                                sendMessageToPupv(message);
+                                // Dismiss the dialog
+                                dialog.dismiss();
+                            } else {
+                                Toast.makeText(ShowOneProductActivity.this, "Please enter a message", Toast.LENGTH_SHORT).show();
+                            }
+                        }
+                    });
+
+                    buttonClose.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            // Close the dialog
+                            dialog.dismiss();
+                        }
+                    });
+
+                }
+            });
+        }
+    }
+
+    private void sendMessageToPupv(String message) {
+        Map<String, Object> elememt = new HashMap<>();
+        elememt.put("senderId", user.getUid());
+        elememt.put("recipientId", idPupv);
+        elememt.put("dateOfSending", new Date());
+        elememt.put("content", message);
+        elememt.put("status", false);
+
+        // Dodajte novi dokument sa generisanim ID-om
+        db.collection("Messages").document()
+                .set(elememt)
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                        Toast.makeText(ShowOneProductActivity.this, "Send message successfully", Toast.LENGTH_SHORT).show();
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Log.e(TAG, "Error adding document", e);
+                    }
+                });
 
     }
 

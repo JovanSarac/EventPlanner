@@ -166,4 +166,5 @@
     <string name="book_a_service">Book a service</string>
     <string name="book_a_package">Book a package</string>
     <string name="show_company_info">Show company info</string>
+    <string name="sent_message_pupv">Send message to PUPV</string>
 </resources>
