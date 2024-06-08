@@ -4,7 +4,8 @@
     android:layout_height="wrap_content"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     app:cardCornerRadius="32dp"
-    android:layout_gravity="center">
+    android:layout_gravity="center"
+    android:backgroundTint="@color/white">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -25,53 +26,58 @@
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
-            <RadioGroup
+            <ScrollView
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                >
+                android:layout_height="180dp">
 
-                <RadioButton
-                    android:drawableEnd="12sp"
+                <RadioGroup
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="New"/>
+                    android:layout_height="match_parent"
+                    >
 
-                <RadioButton
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="Denied"/>
+                    <RadioButton
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="New"/>
 
-                <RadioButton
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="Approved"/>
+                    <RadioButton
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Denied"/>
 
-                <RadioButton
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="Realised"/>
+                    <RadioButton
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Approved"/>
 
-                <RadioButton
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="Denied by PUPV"/>
+                    <RadioButton
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Realised"/>
 
-                <RadioButton
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="Denied by PUPZ"/>
+                    <RadioButton
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Denied by PUPV"/>
 
-                <RadioButton
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="Denied by OD"/>
+                    <RadioButton
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Denied by PUPZ"/>
 
-                <RadioButton
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="Denied by ADMIN"/>
-                
-            </RadioGroup>
+                    <RadioButton
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Denied by OD"/>
+
+                    <RadioButton
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Denied by ADMIN"/>
+
+                </RadioGroup>
+
+            </ScrollView>
 
             <com.google.android.material.button.MaterialButton
                 android:layout_width="match_parent"
@@ -79,7 +85,7 @@
                 app:cornerRadius="12dp"
                 android:textColor="@color/purple_light"
                 android:layout_marginTop="12dp"
-                app:strokeWidth="1"
+                app:strokeWidth="1dp"
                 app:strokeColor="@color/purple_lighter"
                 app:backgroundTint="@color/transparent"
                 android:text="Refresh"/>

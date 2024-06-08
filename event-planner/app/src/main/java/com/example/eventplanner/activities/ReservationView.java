@@ -1,7 +1,10 @@
 package com.example.eventplanner.activities;
 
+import android.app.Dialog;
 import android.content.Intent;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
+import android.view.Window;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
@@ -36,5 +39,25 @@ public class ReservationView extends AppCompatActivity {
             startActivity(intent);
         });
 
+        binding.serviceFilterBtn.setOnClickListener(v -> {
+            showFilterDialog();
+        });
+
+        binding.packageFilterBtn.setOnClickListener(v -> {
+            showFilterDialog();
+        });
+
     }
+
+    void showFilterDialog(){
+
+        final Dialog dialog = new Dialog(this);
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        dialog.setCancelable(true);
+        dialog.setContentView(R.layout.dialog_reservation_filter);
+        dialog.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
+
+        dialog.show();
+
+    };
 }

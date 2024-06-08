@@ -58,6 +58,7 @@
                 android:layout_marginBottom="12dp"/>
 
                 <TextView
+                    android:id="@+id/service_filter_btn"
                     android:layout_weight="1"
                     android:textAlignment="textEnd"
                     android:layout_width="wrap_content"
@@ -363,6 +364,7 @@
                 android:layout_marginBottom="12dp"/>
 
             <TextView
+                android:id="@+id/package_filter_btn"
                 android:layout_weight="1"
                 android:textAlignment="textEnd"
                 android:layout_width="wrap_content"
