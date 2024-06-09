@@ -10,6 +10,7 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
@@ -20,6 +21,8 @@ import androidx.core.view.WindowInsetsCompat;
 import com.example.eventplanner.R;
 import com.example.eventplanner.databinding.ActivityAddCommentBinding;
 import com.example.eventplanner.databinding.ActivityOwnerDashboardBinding;
+import com.example.eventplanner.model.Comment;
+import com.example.eventplanner.model.Report;
 import com.example.eventplanner.model.ServiceReservationRequest;
 import com.example.eventplanner.model.UserPUPV;
 import com.example.eventplanner.model.UserPUPZ;
@@ -27,7 +30,9 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -64,37 +69,52 @@ public class AddCommentActivity extends AppCompatActivity {
     }
 
     private void retrieveCompaniesByLoggedUserId(String userId){
-        Set<String> companyIds = new HashSet<>();
+        Set<String> workerIds = new HashSet<>();
 
         db.collection("ServiceReservationRequest")
                 .whereEqualTo("userId", userId)
                 .get()
                 .addOnSuccessListener(queryDocumentSnapshots -> {
                     for (QueryDocumentSnapshot documentSnapshot : queryDocumentSnapshots) {
-                        companyIds.add(documentSnapshot.toObject(ServiceReservationRequest.class).getUserId());
+                        ServiceReservationRequest reservation = documentSnapshot.toObject(ServiceReservationRequest.class);
+
+                        if(reservation.getStatus().equals("APPROVED") || reservation.getStatus().contains("DENIED"))
+                            workerIds.add(reservation.getWorkerId());
                     }
 
-                    companyIds.forEach(id -> {
+                    workerIds.forEach(id -> {
                         db.collection("User")
-                                .document(id)
+                                .whereEqualTo("id", Double.parseDouble(id))
                                 .get()
-                                .addOnSuccessListener(queryDocumentSnapshot -> {
-                                    displayCompany(queryDocumentSnapshot.toObject(UserPUPV.class));
+                                .addOnSuccessListener(queryDocumentSnapshotss -> {
+                                    for (QueryDocumentSnapshot documentSnapshot : queryDocumentSnapshotss) {
+                                        db.collection("User")
+                                                .document(documentSnapshot.toObject(UserPUPZ.class).getOwnerId())
+                                                .get()
+                                                .addOnSuccessListener(document ->{
+                                                    displayCompany(
+                                                            document.getString("CompanyName"),
+                                                            document.getString("CompanyAddress"),
+                                                            document.getString("CompanyEmail"),
+                                                            document.getId());
+                                                });
+                                        break;
+                                    }
                                 });
                     });
                 });
     }
-    private void displayCompany(UserPUPV user){
+    private void displayCompany(String companyName, String companyAdress, String Email, String documentCompanyId){
         View cardView = LayoutInflater.from(this).inflate(R.layout.company_card, companiesContainer, false);
 
         TextView companyNmae = cardView.findViewById(R.id.company_name_value);
-        companyNmae.setText(user.getCompanyName());
+        companyNmae.setText(companyName);
 
         TextView companyAddress = cardView.findViewById(R.id.company_location_value);
-        companyAddress.setText(user.getCompanyAddress());
+        companyAddress.setText(companyAdress);
 
         TextView companyEmail = cardView.findViewById(R.id.company_email_value);
-        companyAddress.setText(user.getCompanyemail());
+        companyAddress.setText(Email);
 
         ImageButton showAddCommentBtn = cardView.findViewById(R.id.show_add_comment_btn);
         LinearLayout commentContainer = cardView.findViewById(R.id.comment_container);
@@ -106,7 +126,32 @@ public class AddCommentActivity extends AppCompatActivity {
         EditText description = cardView.findViewById(R.id.comment_description_value);
         EditText grade = cardView.findViewById(R.id.comment_grade_value);
         addCommentBtn.setOnClickListener(v -> {
+                Date currentDate = new Date();
+                SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");
 
+                Comment comment = new Comment(
+                        grade.getText().toString(),
+                        description.getText().toString(),
+                        dateFormat.format(currentDate),
+                        "PENDING",
+                        new Report(),
+                        mAuth.getCurrentUser().getUid(),
+                        documentCompanyId
+                );
+
+            db.collection("Comment")
+                    .add(comment)
+                    .addOnSuccessListener(documentReference -> {
+                        description.setText("");
+                        grade.setText("");
+                        commentContainer.setVisibility(View.GONE);
+                        Toast.makeText(this, "Successfuly sent comment!", Toast.LENGTH_SHORT).show();
+                    })
+                    .addOnFailureListener(e -> {
+                        Toast.makeText(this, "Error adding comment: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                    });
         });
+
+        companiesContainer.addView(cardView);
     }
 }

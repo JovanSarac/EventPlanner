@@ -58,6 +58,7 @@
     </LinearLayout>
 
     <LinearLayout
+        android:visibility="gone"
         android:id="@+id/comment_container"
         android:paddingHorizontal="24dp"
         android:layout_marginVertical="12dp"
@@ -125,7 +126,7 @@
         android:paddingTop="4dp"
         android:layout_width="match_parent"
         android:layout_height="2dp"
-        android:background="@color/purple_light"
+        android:background="@color/purple_lighter"
         android:layout_marginBottom="8dp"/>
 
 </LinearLayout>

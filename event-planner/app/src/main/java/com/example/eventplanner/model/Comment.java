@@ -7,17 +7,19 @@ public class Comment {
     private String status;
     private Report report;
     private String userODId;
+    private String companyId;
 
     public Comment() {
     }
 
-    public Comment(String grade, String description, String occurenceDate, String status, Report report, String userODId) {
+    public Comment(String grade, String description, String occurenceDate, String status, Report report, String userODId, String companyId) {
         this.grade = grade;
         this.description = description;
         this.occurenceDate = occurenceDate;
         this.status = status;
         this.report = report;
         this.userODId = userODId;
+        this.companyId = companyId;
     }
 
     public String getGrade() {
@@ -66,5 +68,13 @@ public class Comment {
 
     public void setUserODId(String userODId) {
         this.userODId = userODId;
+    }
+
+    public String getCompanyId() {
+        return companyId;
+    }
+
+    public void setCompanyId(String companyId) {
+        this.companyId = companyId;
     }
 }

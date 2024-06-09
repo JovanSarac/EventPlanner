@@ -3,15 +3,13 @@ package com.example.eventplanner.model;
 public class Report {
     private String status;
     private String description;
-    private String reporterPUPVId;
 
     public Report() {
     }
 
-    public Report(String status, String description, String reporterPUPVId) {
+    public Report(String status, String description) {
         this.status = status;
         this.description = description;
-        this.reporterPUPVId = reporterPUPVId;
     }
 
     public String getStatus() {
@@ -30,11 +28,4 @@ public class Report {
         this.description = description;
     }
 
-    public String getReporterPUPVId() {
-        return reporterPUPVId;
-    }
-
-    public void setReporterPUPVId(String reporterPUPVId) {
-        this.reporterPUPVId = reporterPUPVId;
-    }
 }
