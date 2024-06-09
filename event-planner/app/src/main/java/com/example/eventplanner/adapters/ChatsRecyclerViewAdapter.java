@@ -1,6 +1,7 @@
 package com.example.eventplanner.adapters;
 
 import android.annotation.SuppressLint;
+import android.content.Intent;
 import android.net.Uri;
 import android.os.Handler;
 import android.util.Log;
@@ -16,6 +17,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.example.eventplanner.R;
+import com.example.eventplanner.activities.ShowOneChatActivity;
 import com.example.eventplanner.model.Message;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -30,7 +32,7 @@ import java.util.Date;
 import java.util.Locale;
 
 public class ChatsRecyclerViewAdapter extends RecyclerView.Adapter<ChatsRecyclerViewAdapter.ChatsViewHolder>{
-    private ArrayList<Message> messages;
+    private static ArrayList<Message> messages;
 
     public ChatsRecyclerViewAdapter(ArrayList<Message> messages) {
         this.messages = messages;
@@ -85,6 +87,18 @@ public class ChatsRecyclerViewAdapter extends RecyclerView.Adapter<ChatsRecycler
                             openChat.setAlpha(1.0f);
                         }
                     }, 100);
+
+                    int position = getAdapterPosition();
+                    if (position != RecyclerView.NO_POSITION) {
+                        Message message = messages.get(position);
+
+                        Intent intent = new Intent(itemView.getContext(), ShowOneChatActivity.class);
+                        intent.putExtra("senderId", message.getSenderId());
+                        intent.putExtra("recipientId", message.getRecipientId());
+                        intent.putExtra("recipientFullname", message.getRecipientFullName());
+
+                        itemView.getContext().startActivity(intent);
+                    }
 
                 }
             });
