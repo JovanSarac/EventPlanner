@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -15,17 +16,21 @@ import com.example.eventplanner.R;
 import com.example.eventplanner.adapters.ImageAdapter;
 import com.example.eventplanner.databinding.ActivityShowOneProductBinding;
 import com.example.eventplanner.model.Category;
+import com.example.eventplanner.model.Product;
 import com.example.eventplanner.model.Subcategory;
 import com.example.eventplanner.model.UserPUPV;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FieldPath;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 
 public class ShowOneProductActivity extends AppCompatActivity {
@@ -84,11 +89,10 @@ public class ShowOneProductActivity extends AppCompatActivity {
         if(available){
             binding.availability.setChecked(true);
 
-            //TO DO implementirati kupovinu proizovda
             binding.buyProduct.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-
+                    getProduct();
                 }
             });
         }else{
@@ -108,7 +112,50 @@ public class ShowOneProductActivity extends AppCompatActivity {
 
 
     }
+    private void getProduct(){
+        db.collection("Products")
+                .document(idProduct.toString())
+                .get()
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        DocumentSnapshot doc = task.getResult();
+                        Product product = new Product(
+                                Long.parseLong(doc.getId()),
+                                doc.getString("pupvId"),
+                                Long.parseLong(doc.getString("categoryId")),
+                                Long.parseLong(doc.getString("subcategoryId")),
+                                doc.getString("name"),
+                                doc.getString("description"),
+                                doc.getDouble("price"),
+                                doc.getDouble("discount"),
+                                new ArrayList<>(),
+                                new ArrayList<>(), //convertStringArrayToLong((ArrayList<String>) doc.get("eventTypeIds")),
+                                doc.getBoolean("available"),
+                                doc.getBoolean("visible"),
+                                doc.getBoolean("pending"),
+                                doc.getBoolean("deleted")
+                        );
+                        reserveProduct(product);
+                    } else {
+                        Toast.makeText(this, "Failed to get data", Toast.LENGTH_SHORT).show();
+                    }
+                });
+    }
+    private void reserveProduct(Product product){
+        Map<String,Object> map= new HashMap<>();
+        map.put("product",product);
+        map.put("userId", FirebaseAuth.getInstance().getCurrentUser().getUid());
 
+
+        db.collection("ProductReservation").add(map)
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        Toast.makeText(this, "Data added successfully", Toast.LENGTH_SHORT).show();
+                    } else {
+                        Toast.makeText(this, "Failed to add data", Toast.LENGTH_SHORT).show();
+                    }
+                });
+    }
     private CompletableFuture<UserPUPV> getUserPupv(String uid) {
         CompletableFuture<UserPUPV> future = new CompletableFuture<>();
 

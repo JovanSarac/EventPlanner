@@ -94,19 +94,9 @@ public class LoginActivity extends AppCompatActivity {
             startActivity(intent);
             String s=mAuth.getCurrentUser().getDisplayName();
             Toast.makeText(LoginActivity.this,s,Toast.LENGTH_SHORT).show();
+
             if(mAuth.getCurrentUser()!=null && mAuth.getCurrentUser().getDisplayName().equals("PUPV")){
-                FirebaseMessaging.getInstance().subscribeToTopic("PUPV")
-                        .addOnCompleteListener(new OnCompleteListener<Void>() {
-                            @Override
-                            public void onComplete(@NonNull Task<Void> task) {
-                                String msg = "Poruka";
-                                if (!task.isSuccessful()) {
-                                    msg = "Greska";
-                                }
-                                Log.d("NestoSeDesilo", msg);
-                                //Toast.makeText(LoginActivity.this, msg, Toast.LENGTH_SHORT).show();
-                            }
-                        });
+                FirebaseMessaging.getInstance().subscribeToTopic("PUPV");
                 FirebaseMessaging.getInstance().subscribeToTopic(mAuth.getCurrentUser().getUid() + "Topic");
             }
 
@@ -116,6 +106,9 @@ public class LoginActivity extends AppCompatActivity {
 
             if(mAuth.getCurrentUser()!=null && mAuth.getCurrentUser().getDisplayName().equals("OD")) {
                 FirebaseMessaging.getInstance().subscribeToTopic(mAuth.getCurrentUser().getUid() + "Topic");
+            }
+            if(mAuth.getCurrentUser()!=null && mAuth.getCurrentUser().getDisplayName().equals("PUPZ")) {
+                FirebaseMessaging.getInstance().subscribeToTopic(mAuth.getCurrentUser().getUid() + "PUPZTopic");
             }
         } else {
             mAuth.signOut();
