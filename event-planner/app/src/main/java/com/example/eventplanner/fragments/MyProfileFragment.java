@@ -366,7 +366,11 @@ public class MyProfileFragment extends Fragment {
 
     private void updatePasswordInFirestore(String userId, String newPassword) {
         Map<String, Object> passwordUpdate = new HashMap<>();
-        passwordUpdate.put("Password", newPassword);
+        if(user.getDisplayName().equals("PUPZ")){
+            passwordUpdate.put("password", newPassword);
+        }else{
+            passwordUpdate.put("Password", newPassword);
+        }
 
         db.collection("User").document(userId)
                 .update(passwordUpdate)

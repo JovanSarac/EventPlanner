@@ -177,4 +177,6 @@
     <string name="notifications">Notifications</string>
     <string name="send_message">Send message</string>
     <string name="pupz_employess">These are employees who provide services:</string>
+    <string name="like">Like</string>
+    <string name="unlike">Unlike</string>
 </resources>

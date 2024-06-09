@@ -71,6 +71,18 @@
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/likeUnlikeButton"
+            android:layout_gravity="end"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:backgroundTint="@color/yellow"
+            android:text="@string/like"
+            android:textColor="@color/white"
+            android:visibility="gone"
+            app:icon="@drawable/ic_like"
+            android:textSize="20dp"/>
+
         <View
             android:layout_width="match_parent"
             android:layout_height="2dp"

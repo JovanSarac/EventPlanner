@@ -5,7 +5,6 @@ import static android.content.ContentValues.TAG;
 
 import android.app.AlertDialog;
 import android.content.Intent;
-
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
@@ -33,6 +32,7 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FieldPath;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -61,6 +61,8 @@ public class ShowOneProductActivity extends AppCompatActivity {
     UserPUPV userPUPV;
     String fullnamePupv;
     String fullnameSender;
+
+    ArrayList<String> productIds = new ArrayList<>();
     FirebaseFirestore db = FirebaseFirestore.getInstance();
 
     FirebaseAuth mAuth = FirebaseAuth.getInstance();
@@ -135,9 +137,11 @@ public class ShowOneProductActivity extends AppCompatActivity {
         if(user!= null){
             if(!user.getDisplayName().equals("OD")){
                 binding.sendMessagePupv.setVisibility(View.GONE);
+                binding.likeUnlikeButton.setVisibility(View.GONE);
             }else {
                 getUserOd(user.getUid()).thenAccept(userOD -> {
                     binding.sendMessagePupv.setVisibility(View.VISIBLE);
+                    binding.likeUnlikeButton.setVisibility(View.VISIBLE);
                     binding.sendMessagePupv.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
@@ -183,12 +187,118 @@ public class ShowOneProductActivity extends AppCompatActivity {
                         }
                     });
 
-                        });
+                    updateLikeButtonState(idProduct);
+                    binding.likeUnlikeButton.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            if(binding.likeUnlikeButton.getText().toString().equals("Like")){
+                                productIds.add(idProduct.toString());
+                                addProductToFavourite(productIds);
+                                binding.likeUnlikeButton.setText(R.string.unlike);
+                                binding.likeUnlikeButton.setIcon(getDrawable(R.drawable.ic_unlike));
+                                binding.likeUnlikeButton.setBackgroundColor(getColor(R.color.purple_light));
+                            }else if(binding.likeUnlikeButton.getText().toString().equals("Unlike")){
+                                productIds.remove(idProduct.toString());
+                                removeFromFavourite(productIds);
+                                binding.likeUnlikeButton.setText(R.string.like);
+                                binding.likeUnlikeButton.setIcon(getDrawable(R.drawable.ic_like));
+                                binding.likeUnlikeButton.setBackgroundColor(getColor(R.color.yellow));
+                            }
+                        }
+                    });
+
+
+                });
 
             }
         }
 
 
+
+    }
+
+    private void updateLikeButtonState(Long idProduct) {
+        DocumentReference userFavoritesRef = db.collection("FavouritesPsp").document(user.getUid());
+
+        userFavoritesRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                if (task.isSuccessful()) {
+                    DocumentSnapshot document = task.getResult();
+                    if (document.exists()) {
+                        productIds = (ArrayList<String>) document.get("productIds");
+
+                        if (productIds != null && productIds.contains(idProduct.toString())) {
+                            binding.likeUnlikeButton.setText(R.string.unlike);
+                            binding.likeUnlikeButton.setIcon(getDrawable(R.drawable.ic_unlike));
+                            binding.likeUnlikeButton.setBackgroundColor(getColor(R.color.purple_light));
+                        } else {
+                            binding.likeUnlikeButton.setText(R.string.like);
+                            binding.likeUnlikeButton.setIcon(getDrawable(R.drawable.ic_like));
+                            binding.likeUnlikeButton.setBackgroundColor(getColor(R.color.yellow));
+                        }
+                    }
+                } else {
+                    Log.e(TAG, "Error getting document", task.getException());
+                }
+            }
+        });
+    }
+
+    private void removeFromFavourite(ArrayList<String> productIds) {
+        DocumentReference userFavoritesRef = db.collection("FavouritesPsp").document(user.getUid());
+
+        userFavoritesRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                if (task.isSuccessful()) {
+                    DocumentSnapshot document = task.getResult();
+                    if (document.exists()) {
+
+
+                        userFavoritesRef.update("productIds", productIds)
+                                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                    @Override
+                                    public void onSuccess(Void aVoid) {
+                                        // Uspješno uklonjen proizvod iz liste omiljenih
+                                        Toast.makeText(ShowOneProductActivity.this, "Removed from favourites", Toast.LENGTH_SHORT).show();
+                                    }
+                                })
+                                .addOnFailureListener(new OnFailureListener() {
+                                    @Override
+                                    public void onFailure(@NonNull Exception e) {
+                                        Log.e(TAG, "Error updating document", e);
+                                    }
+                                });
+
+                    }
+                } else {
+                    Log.e(TAG, "Error getting document", task.getException());
+                }
+            }
+        });
+    }
+
+    private void addProductToFavourite(ArrayList<String> productIds) {
+
+        Map<String, Object> elememt = new HashMap<>();
+        elememt.put("productIds", productIds);
+        elememt.put("serviceIds", new ArrayList<>());
+        elememt.put("packageIds", new ArrayList<>());
+        db.collection("FavouritesPsp").document(user.getUid())
+                .set(elememt)
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                        Toast.makeText(ShowOneProductActivity.this, "Add to favourite", Toast.LENGTH_SHORT).show();
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Log.e(TAG, "Error adding document", e);
+                    }
+                });
 
     }
 
