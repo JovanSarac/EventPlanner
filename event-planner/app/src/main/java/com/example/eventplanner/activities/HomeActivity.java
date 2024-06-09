@@ -74,7 +74,7 @@ public class HomeActivity extends AppCompatActivity {
             NotificationManager notificationManager =
                     getSystemService(NotificationManager.class);
             notificationManager.createNotificationChannel(new NotificationChannel(channelId,
-                    channelName, NotificationManager.IMPORTANCE_LOW));
+                    channelName, NotificationManager.IMPORTANCE_DEFAULT));
         }
         askNotificationPermission();
 
@@ -158,8 +158,8 @@ public class HomeActivity extends AppCompatActivity {
             startActivity(intent);
         });
         binding.approveRegistration.setOnClickListener(v->{
-            Intent intent = new Intent(HomeActivity.this, ApproveRegistrationActivity.class);
-            startActivity(intent);
+//            Intent intent = new Intent(HomeActivity.this, ApproveRegistrationActivity.class);
+//            startActivity(intent);
         });
         binding.signOut.setOnClickListener(v->{
             FirebaseAuth.getInstance().signOut();

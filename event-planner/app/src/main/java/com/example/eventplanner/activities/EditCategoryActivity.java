@@ -98,7 +98,12 @@ public class EditCategoryActivity extends AppCompatActivity {
                     @Override
                     public void onComplete(@NonNull Task<Void> task) {
                         Toast.makeText(v.getContext(), "Product created", Toast.LENGTH_SHORT).show();
-                        String jsonPayload = "{\"data\":{\"title\":\"New category!\",\"body\":\""+item.get("Name").toString()+"\"},\"to\":\"/topics/" + "PUPV" + "\"}";
+                        String jsonPayload = "{\"data\":{" +
+                                "\"title\":\"New category!\"," +
+                                "\"body\":\"" + item.get("Name").toString() + "\"," +
+                                "\"topic\":\"PUPV_Category\"" +
+                                "}," +
+                                "\"to\":\"/topics/" + "PUPV" + "\"}";
                         sendMessage(serverKey,jsonPayload);
                         finish();
                     }
