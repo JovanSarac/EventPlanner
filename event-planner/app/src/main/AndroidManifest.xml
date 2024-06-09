@@ -10,6 +10,7 @@
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.VIBRATE"/>
+
     <application
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
@@ -25,6 +26,12 @@
             android:exported="false" />
         <activity
             android:name=".activities.NotificationsViewActivity"
+            android:exported="false" />
+        <activity
+            android:name=".activities.CommentPreviewActivity"
+            android:exported="false" />
+        <activity
+            android:name=".activities.AddCommentActivity"
             android:exported="false" />
         <activity
             android:name=".activities.ReservationView"

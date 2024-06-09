@@ -108,6 +108,11 @@ public class HomeActivity extends AppCompatActivity {
             startActivity(intent);
         });*/
 
+        binding.addCommentBtn.setOnClickListener(v -> {
+            Intent intent = new Intent(HomeActivity.this, AddCommentActivity.class);
+            startActivity(intent);
+        });
+
         binding.pricelist.setOnClickListener(v -> {
             Intent intent = new Intent(HomeActivity.this, PricelistActivity.class);
             startActivity(intent);
@@ -156,12 +161,19 @@ public class HomeActivity extends AppCompatActivity {
             Intent intent = new Intent(HomeActivity.this, ApproveRegistrationActivity.class);
             startActivity(intent);
         });
+
+        binding.viewCompanyComments.setOnClickListener(v->{
+            Intent intent = new Intent(HomeActivity.this, CommentPreviewActivity.class);
+            startActivity(intent);
+        });
+
         binding.signOut.setOnClickListener(v->{
             FirebaseMessaging.getInstance().unsubscribeFromTopic("PUPV");
             FirebaseMessaging.getInstance().unsubscribeFromTopic("AdminTopic");
             FirebaseMessaging.getInstance().unsubscribeFromTopic(mAuth.getCurrentUser().getUid() + "Topic");
             FirebaseMessaging.getInstance().unsubscribeFromTopic(mAuth.getCurrentUser().getUid() + "PUPZTopic");
             FirebaseMessaging.getInstance().unsubscribeFromTopic(mAuth.getCurrentUser().getUid() + "Message");
+            FirebaseMessaging.getInstance().unsubscribeFromTopic("PUPZ");
             FirebaseAuth.getInstance().signOut();
             Toast.makeText(this, "SingedOut", Toast.LENGTH_SHORT).show();
             this.onResume();
@@ -190,6 +202,8 @@ public class HomeActivity extends AppCompatActivity {
         binding.typesOfEventsButton.setVisibility(View.GONE);
         binding.approveRegistration.setVisibility(View.GONE);
         binding.notifications.setVisibility(View.GONE);
+        binding.addCommentBtn.setVisibility(View.GONE);
+        binding.viewCompanyComments.setVisibility(View.GONE);
 
         if(user==null){
             binding.registerButton.setVisibility(View.VISIBLE);
@@ -202,6 +216,7 @@ public class HomeActivity extends AppCompatActivity {
         }
 
         if(user.getDisplayName().equals("OD")){
+            binding.addCommentBtn.setVisibility(View.VISIBLE);
             binding.homeact.setVisibility(View.VISIBLE);
             binding.pricelist.setVisibility(View.VISIBLE);
             binding.reservationViewId.setVisibility(View.VISIBLE);
@@ -213,6 +228,7 @@ public class HomeActivity extends AppCompatActivity {
         }else if(user.getDisplayName().equals("PUPV")){
             binding.pricelist.setVisibility(View.VISIBLE);
             binding.reservationViewId.setVisibility(View.VISIBLE);
+            binding.viewCompanyComments.setVisibility(View.VISIBLE);
         }else if(user.getDisplayName().equals("PUPZ")){
 
         }

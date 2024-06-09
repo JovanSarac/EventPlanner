@@ -73,10 +73,36 @@ public class NotificationService extends FirebaseMessagingService {
                 builder.setSound(defaultSoundUri);
 
                 NotificationManager notificationManager =
-                        (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-
+                (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
                 notificationManager.notify(0, builder.build());
             }
+            else if(messageTopic.equals("PUPV_Comment")){
+                NotificationCompat.Builder notificationBuilder;
+                notificationBuilder = new NotificationCompat.Builder(this, "123")
+                        .setSmallIcon(R.drawable.ic_add)
+                        .setContentTitle(messageTitle)
+                        .setContentText(messageBody)
+                        .setAutoCancel(true)
+                        .setSound(defaultSoundUri)
+                        .setContentIntent(pendingIntent);
+
+                NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+                notificationManager.notify(0 , notificationBuilder.build());
+            }
+            else if(messageTopic.equals("PUPZ_Reservation")){
+                NotificationCompat.Builder notificationBuilder;
+                notificationBuilder = new NotificationCompat.Builder(this, "123")
+                        .setSmallIcon(R.drawable.ic_add)
+                        .setContentTitle(messageTitle)
+                        .setContentText(messageBody)
+                        .setAutoCancel(true)
+                        .setSound(defaultSoundUri)
+                        .setContentIntent(pendingIntent);
+
+                NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+                notificationManager.notify(0 , notificationBuilder.build());
+            }
+
             else if(messageTopic.equals(user.getUid()+"Topic")){
                 NotificationCompat.Builder builder = new NotificationCompat.Builder(this, "123");
                 builder.setContentTitle(messageTitle);
