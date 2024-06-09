@@ -17,20 +17,26 @@ import com.example.eventplanner.R;
 import com.example.eventplanner.databinding.ActivityHomeBinding;
 import com.example.eventplanner.databinding.ActivityLoginBinding;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.messaging.FirebaseMessaging;
 
 public class LoginActivity extends AppCompatActivity {
     FirebaseAuth mAuth= FirebaseAuth.getInstance();
     ActivityLoginBinding binding;
+    private FirebaseFirestore db;
     @Override
     public void onStart() {
         super.onStart();
         FirebaseUser currentUser = mAuth.getCurrentUser();
+        db = FirebaseFirestore.getInstance();
         if(currentUser != null){
             finish();
         }
@@ -68,36 +74,7 @@ public class LoginActivity extends AppCompatActivity {
                         public void onComplete(@NonNull Task<AuthResult> task) {
                             if (task.isSuccessful()) {
                                 FirebaseUser user = mAuth.getCurrentUser();
-                                if (user.isEmailVerified()) {
-                                    Intent intent = new Intent(LoginActivity.this, HomeActivity.class);
-                                    startActivity(intent);
-                                    String s=mAuth.getCurrentUser().getDisplayName();
-                                    Toast.makeText(LoginActivity.this,s,Toast.LENGTH_SHORT).show();
-                                    if(mAuth.getCurrentUser()!=null && mAuth.getCurrentUser().getDisplayName().equals("PUPV")){
-                                        FirebaseMessaging.getInstance().subscribeToTopic("PUPV")
-                                                .addOnCompleteListener(new OnCompleteListener<Void>() {
-                                                    @Override
-                                                    public void onComplete(@NonNull Task<Void> task) {
-                                                        String msg = "Poruka";
-                                                        if (!task.isSuccessful()) {
-                                                            msg = "Greska";
-                                                        }
-                                                        Log.d("NestoSeDesilo", msg);
-                                                        //Toast.makeText(LoginActivity.this, msg, Toast.LENGTH_SHORT).show();
-                                                    }
-                                                });
-                                    }
-
-                                    if(mAuth.getCurrentUser()!=null && mAuth.getCurrentUser().getDisplayName().equals("ADMIN")){
-                                        FirebaseMessaging.getInstance().subscribeToTopic("AdminTopic");
-                                    }
-
-                                } else {
-                                    mAuth.signOut();
-                                    Toast.makeText(LoginActivity.this, "Please verify your email before logging in", Toast.LENGTH_SHORT).show();
-                                }
-
-
+                                getUser(user);
                             } else {
 
                                 Toast.makeText(LoginActivity.this, "Wrong email or password",
@@ -109,6 +86,76 @@ public class LoginActivity extends AppCompatActivity {
 
         });
 
+    }
+
+    private void logIn(FirebaseUser user) {
+        if (user.isEmailVerified()) {
+            Intent intent = new Intent(LoginActivity.this, HomeActivity.class);
+            startActivity(intent);
+            String s=mAuth.getCurrentUser().getDisplayName();
+            Toast.makeText(LoginActivity.this,s,Toast.LENGTH_SHORT).show();
+            if(mAuth.getCurrentUser()!=null && mAuth.getCurrentUser().getDisplayName().equals("PUPV")){
+                FirebaseMessaging.getInstance().subscribeToTopic("PUPV")
+                        .addOnCompleteListener(new OnCompleteListener<Void>() {
+                            @Override
+                            public void onComplete(@NonNull Task<Void> task) {
+                                String msg = "Poruka";
+                                if (!task.isSuccessful()) {
+                                    msg = "Greska";
+                                }
+                                Log.d("NestoSeDesilo", msg);
+                                //Toast.makeText(LoginActivity.this, msg, Toast.LENGTH_SHORT).show();
+                            }
+                        });
+                FirebaseMessaging.getInstance().subscribeToTopic(mAuth.getCurrentUser().getUid() + "Topic");
+            }
+
+            if(mAuth.getCurrentUser()!=null && mAuth.getCurrentUser().getDisplayName().equals("ADMIN")){
+                FirebaseMessaging.getInstance().subscribeToTopic("AdminTopic");
+            }
+
+            if(mAuth.getCurrentUser()!=null && mAuth.getCurrentUser().getDisplayName().equals("OD")) {
+                FirebaseMessaging.getInstance().subscribeToTopic(mAuth.getCurrentUser().getUid() + "Topic");
+            }
+        } else {
+            mAuth.signOut();
+            Toast.makeText(LoginActivity.this, "Please verify your email before logging in", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    private void getUser(FirebaseUser user){
+        db.collection("User")
+                .document(user.getUid())
+                .get()
+                .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                    @Override
+                    public void onSuccess(DocumentSnapshot documentSnapshot) {
+                        //pupv, od i admin
+                        if(documentSnapshot.getString("UserType") != null){
+                            if(documentSnapshot.getBoolean("IsValid")){
+                                logIn(user);
+                            }
+                            else{
+                                Toast.makeText(LoginActivity.this, "You cannot log in on this account", Toast.LENGTH_SHORT).show();
+                            }
+                        }
+                        //pupz
+                        else{
+                            if(documentSnapshot.getBoolean("valid")){
+                                logIn(user);
+                            }
+                            else{
+                                Toast.makeText(LoginActivity.this, "You cannot log in on this account", Toast.LENGTH_SHORT).show();
+                            }
+                        }
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Toast.makeText(LoginActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show();
+                    }
+                });
     }
     private boolean validateInput(){
         TextInputEditText emailTextField= binding.emailTextField;

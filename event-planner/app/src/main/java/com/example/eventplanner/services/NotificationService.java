@@ -38,6 +38,7 @@ public class NotificationService extends FirebaseMessagingService {
 
         String title="";
         String body="";
+        String topic="";
 
         Bundle bundle = remoteMessage.toIntent().getExtras();
         for (String key : bundle.keySet()) {
@@ -51,17 +52,27 @@ public class NotificationService extends FirebaseMessagingService {
                 if(value==null)return;
                 body=value.toString();
             }
+            else if (key.equals("to")) {
+                Object value = bundle.get(key);
+                if (value == null) return;
+                topic = value.toString();
+                if (topic.startsWith("/topics/")) {
+                    topic = topic.substring(8);
+                }
+            }
         }
+
         Log.d(TAG, "Message Notification Body: " + body);
         String notificationTitle = title;
         String notificationBody = body;
+        String notifictionTopic = topic;
 
-        sendNotification(notificationTitle, notificationBody);
+        sendNotification(notificationTitle, notificationBody, notifictionTopic);
         Log.d(TAG, "Usao u if");
 
 
     }
-    private void sendNotification(String messageTitle, String messageBody) {
+    private void sendNotification(String messageTitle, String messageBody, String messageTopic) {
         FirebaseAuth mAuth=FirebaseAuth.getInstance();
         FirebaseUser user=mAuth.getCurrentUser();
 
@@ -74,21 +85,33 @@ public class NotificationService extends FirebaseMessagingService {
                         PendingIntent.FLAG_IMMUTABLE);
                 String channelId = user.getUid();
                 Uri defaultSoundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
-                NotificationCompat.Builder notificationBuilder =
-                        new NotificationCompat.Builder(this, channelId)
-                                .setSmallIcon(R.drawable.ic_add)
-                                .setContentTitle("New category!")
-                                .setContentText(messageBody)
-                                .setAutoCancel(true)
-                                .setSound(defaultSoundUri)
-                                .setContentIntent(pendingIntent);
+
+                NotificationCompat.Builder notificationBuilder;
+                if(messageTitle.equals("Update on your report") || messageTitle.equals("Reservation update")){
+                    notificationBuilder = new NotificationCompat.Builder(this, channelId + "Topic");
+                    notificationBuilder.setContentTitle(messageTitle);
+                    notificationBuilder.setContentText(messageBody);
+                    notificationBuilder.setSmallIcon(R.drawable.ic_android);
+                    notificationBuilder.setAutoCancel(true);
+                    notificationBuilder.setSound(defaultSoundUri);
+                }
+                else{
+                    notificationBuilder = new NotificationCompat.Builder(this, channelId)
+                                    .setSmallIcon(R.drawable.ic_add)
+                                    .setContentTitle(messageTitle)
+                                    .setContentText(messageBody)
+                                    .setAutoCancel(true)
+                                    .setSound(defaultSoundUri)
+                                    .setContentIntent(pendingIntent);
+                }
+
 
                 NotificationManager notificationManager =
                         (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
 
                 // Since android Oreo notification channel is needed.
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                    NotificationChannel channel = new NotificationChannel(channelId,
+                    NotificationChannel channel = new NotificationChannel(channelId + "Topic",
                             "Channel human readable title",
                             NotificationManager.IMPORTANCE_DEFAULT);
                     notificationManager.createNotificationChannel(channel);
@@ -97,7 +120,32 @@ public class NotificationService extends FirebaseMessagingService {
                 notificationManager.notify(0 /* ID of notification */, notificationBuilder.build());
             }
             else if(user.getDisplayName().equals("ADMIN")){
-                String channelId = "AdminChannel";
+                if(messageTitle.equals("New company report") || messageTitle.equals("New user report")) {
+                    String channelId = "AdminChannel";
+                    Uri defaultSoundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
+
+                    NotificationCompat.Builder builder = new NotificationCompat.Builder(this, channelId);
+                    builder.setContentTitle(messageTitle);
+                    builder.setContentText(messageBody);
+                    builder.setSmallIcon(R.drawable.ic_android);
+                    builder.setAutoCancel(true);
+                    builder.setSound(defaultSoundUri);
+
+                    NotificationManagerCompat managerCompat = NotificationManagerCompat.from(this);
+
+                    NotificationManager notificationManager =
+                            (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                        NotificationChannel channel = new NotificationChannel(channelId, "AdminChannel", NotificationManager.IMPORTANCE_DEFAULT);
+                        notificationManager.createNotificationChannel(channel);
+                    }
+
+                    notificationManager.notify(0, builder.build());
+                }
+            }
+            else if(user.getDisplayName().equals("OD")){
+                String channelId = user.getUid() + "Topic";
                 Uri defaultSoundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
 
                 NotificationCompat.Builder builder = new NotificationCompat.Builder(this, channelId);
@@ -113,7 +161,7 @@ public class NotificationService extends FirebaseMessagingService {
                         (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
 
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                    NotificationChannel channel = new NotificationChannel("AdminChannel", "AdminChannel", NotificationManager.IMPORTANCE_DEFAULT);
+                    NotificationChannel channel = new NotificationChannel(channelId, "OD channel", NotificationManager.IMPORTANCE_DEFAULT);
                     notificationManager.createNotificationChannel(channel);
                 }
 

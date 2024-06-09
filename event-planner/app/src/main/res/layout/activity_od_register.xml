@@ -46,12 +46,13 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal">
+
             <RadioButton
                 android:id="@+id/ODRadio"
                 android:layout_width="0dp"
-                android:layout_weight="1"
                 android:layout_height="match_parent"
-                android:text="OD"/>
+                android:layout_weight="1"
+                android:text="OD" />
             <RadioButton
                 android:id="@+id/PUPVRadio"
                 android:layout_width="0dp"

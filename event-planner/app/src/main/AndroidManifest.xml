@@ -7,7 +7,9 @@
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.MANAGE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
-
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.VIBRATE"/>
     <application
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
@@ -22,6 +24,12 @@
             android:name=".activities.ShowOneChatActivity"
             android:exported="false" />
         <activity
+            android:name=".activities.NotificationsViewActivity"
+            android:exported="false" />
+        <activity
+            android:name=".activities.ReservationView"
+            android:exported="false" />
+        <activity
             android:name=".activities.ShowOnePackageActivity"
             android:exported="false" />
         <activity
@@ -34,7 +42,22 @@
             android:name=".activities.UserInfoActivity"
             android:exported="false" />
         <activity
-            android:name=".ReportCompanyActivity"
+            android:name=".activities.ReserveServiceActivity"
+            android:exported="false" />
+        <activity
+            android:name=".activities.ReservePackageActivity"
+            android:exported="false" />
+        <activity
+            android:name=".activities.UserDetailsActivity"
+            android:exported="false" />
+        <activity
+            android:name=".activities.ApproveRegistrationActivity"
+            android:exported="false" />
+        <activity
+            android:name=".activities.UserReportsViewActivity"
+            android:exported="false" />
+        <activity
+            android:name=".activities.UserInfoActivity"
             android:exported="false" />
         <activity
             android:name=".activities.CompanyViewActivity"

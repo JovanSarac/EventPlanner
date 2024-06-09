@@ -9,7 +9,8 @@
 <LinearLayout
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    tools:ignore="MissingConstraints">
 
     <Button
         android:id="@+id/homeact"
@@ -69,16 +70,17 @@
         android:textSize="20sp"/>
 
     <Button
-        android:id="@+id/companyInfo"
+        android:id="@+id/notifications"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/company_info"
+        android:text="@string/notifications"
         android:textSize="20sp"/>
+
     <Button
-        android:id="@+id/userInfo"
+        android:id="@+id/user_reports"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/user_info"
+        android:text="@string/user_reports"
         android:textSize="20sp"/>
  
     <Button
@@ -116,12 +118,51 @@
         android:text="SingOut"
         android:layout_gravity="center"
         />
+    <Button
+        android:id="@+id/approveRegistration"
+        android:layout_width="300dp"
+        android:layout_height="50dp"
+        android:text="Registration requests"
+        android:layout_gravity="center"
+        />
+    <Button
+        android:id="@+id/reserveService"
+        android:layout_width="300dp"
+        android:layout_height="50dp"
+        android:text="Reserve Service"
+        android:layout_gravity="center"
+        />
+    <Button
+        android:id="@+id/reservePackage"
+        android:layout_width="300dp"
+        android:layout_height="50dp"
+        android:text="Reserve Package"
+        android:layout_gravity="center"
+        />
 
+    <Button
+        android:id="@+id/reserveProduct"
+        android:layout_width="300dp"
+        android:layout_height="50dp"
+        android:text="Reserve Product"
+        android:layout_gravity="center"
+        />
     <com.google.android.material.button.MaterialButton
         android:id="@+id/owner_dashboard_btn"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Owner Dashboard"
+        android:textSize="16dp"
+        android:paddingVertical="12dp"
+        app:cornerRadius="10dp"
+        android:layout_marginHorizontal="24dp"
+        />
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/reservation_view_id"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Reservation view"
         android:textSize="16dp"
         android:paddingVertical="12dp"
         app:cornerRadius="10dp"

@@ -17,7 +17,7 @@ public class Event {
     public Date DateEvent;
 
     public boolean Availble; //dostupno true, ne false
-
+    public Event() {}
     public Event(Long id, String userODId, String typeEvent, String name, String description, int maxPeople, String locationPlace, int maxDistance, Date dateEvent, boolean availble) {
         Id = id;
         TypeEvent = typeEvent;

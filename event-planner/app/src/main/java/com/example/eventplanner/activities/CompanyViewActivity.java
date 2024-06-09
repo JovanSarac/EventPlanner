@@ -43,6 +43,7 @@ public class CompanyViewActivity extends AppCompatActivity {
     FirebaseAuth mAuth;
     FirebaseUser user;
     UserPUPV company;
+    String pupvId;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -52,6 +53,8 @@ public class CompanyViewActivity extends AppCompatActivity {
         db = FirebaseFirestore.getInstance();
         mAuth = FirebaseAuth.getInstance();
         user = mAuth.getCurrentUser();
+
+        pupvId = getIntent().getStringExtra("pupvId");
 
         getCompany();
 
@@ -77,10 +80,14 @@ public class CompanyViewActivity extends AppCompatActivity {
                         Long id = new Random().nextLong();
                         Map<String, Object> doc = new HashMap<>();
 
-                        doc.put("pupvId", "R5H7ey40UKVS1XFsuMpY5uISwnc2");
-                        doc.put("reasonOfReport", report.getEditText().getText().toString());
-                        doc.put("ODId", user.getUid());
-                        doc.put("dateOfReport", LocalDate.now().toString());
+                        String reasonOfReport = report.getEditText().getText().toString();
+                        String ODId = user.getUid();
+                        String dateOfReport = LocalDate.now().toString();
+
+                        doc.put("pupvId", pupvId);
+                        doc.put("reasonOfReport", reasonOfReport);
+                        doc.put("ODId", ODId);
+                        doc.put("dateOfReport", dateOfReport);
                         doc.put("status", "reported");
 
                         db.collection("CompanyReports")
@@ -90,7 +97,7 @@ public class CompanyViewActivity extends AppCompatActivity {
                                     @Override
                                     public void onComplete(@NonNull Task<Void> task) {
                                         popupWindow.dismiss();
-                                        sendNotification();
+                                        createNotification(ODId);
                                         Toast.makeText(CompanyViewActivity.this, "Report sent successfully", Toast.LENGTH_SHORT).show();
                                     }
                                 })
@@ -106,6 +113,31 @@ public class CompanyViewActivity extends AppCompatActivity {
         });
     }
 
+    private void createNotification(String ODId){
+        Long id = new Random().nextLong();
+        Map<String, Object> doc = new HashMap<>();
+
+        doc.put("title", "New company report");
+        doc.put("body", "Company " + company.getCompanyName() + " has been reported");
+        doc.put("read", false);
+        doc.put("userId", "e1ktzSoZY9ZdfEuL7PyShaRWI522");
+
+        db.collection("Notifications")
+                .document(id.toString())
+                .set(doc)
+                .addOnCompleteListener(new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                        sendNotification();
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Toast.makeText(CompanyViewActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show();
+                    }
+                });
+    }
     private void sendNotification(){
         String serverKey="AAAA8GYmoZ8:APA91bHsjyzOSa2JtO_cQWFO-X1p9nMuHRO8DTfD1zhcY4mnqZ-2EZmIn8tMf1ISmnM31WB68Mzn2soeUgEISXlSc9WjRvcRhyYbmBgi7whJuYXX-24wkODByasquofLaMZydpg78esK";
         String jsonPayload = "{\"data\":{\"title\":\"New company report\",\"body\":\"Company "
@@ -118,7 +150,7 @@ public class CompanyViewActivity extends AppCompatActivity {
 
     private void getCompany(){
         db.collection("User")
-                .document("R5H7ey40UKVS1XFsuMpY5uISwnc2")
+                .document(pupvId)
                 .get()
                 .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
                     @Override
@@ -126,11 +158,11 @@ public class CompanyViewActivity extends AppCompatActivity {
                         company = new UserPUPV(
                                 documentSnapshot.getString("FirstName"),
                                 documentSnapshot.getString("LastName"),
-                                documentSnapshot.getString("Email"),
+                                documentSnapshot.getString("E-mail"),
                                 documentSnapshot.getString("Password"),
                                 documentSnapshot.getString("Phone"),
                                 documentSnapshot.getString("Address"),
-                                documentSnapshot.getBoolean("IsValid"),
+                                true,
                                 documentSnapshot.getString("CompanyName"),
                                 documentSnapshot.getString("CompanyDescription"),
                                 documentSnapshot.getString("CompanyAddress"),

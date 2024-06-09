@@ -1,8 +1,11 @@
 package com.example.eventplanner.activities;
 
+
 import static android.content.ContentValues.TAG;
 
 import android.app.AlertDialog;
+import android.content.Intent;
+
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
@@ -116,11 +119,15 @@ public class ShowOneProductActivity extends AppCompatActivity {
             binding.buyProduct.setVisibility(View.GONE);
         }
 
-        //TO DO implementirati informacije o kompaniji
+
+
         binding.showCompanyInfo.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                System.out.println(idPupv);
+
+                Intent intent = new Intent(ShowOneProductActivity.this, CompanyViewActivity.class);
+                intent.putExtra("pupvId", idPupv);
+                startActivity(intent);
             }
         });
 

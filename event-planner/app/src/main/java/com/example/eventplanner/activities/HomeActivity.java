@@ -22,8 +22,20 @@ import androidx.core.view.WindowInsetsCompat;
 
 import com.example.eventplanner.R;
 import com.example.eventplanner.databinding.ActivityHomeBinding;
+import com.example.eventplanner.fragments.ReserveServiceFragment;
+import com.example.eventplanner.model.Product;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.auth.User;
+import com.google.firebase.messaging.FirebaseMessaging;
+import com.google.android.gms.tasks.OnCompleteListener;
+
+import java.util.HashMap;
+import java.util.Map;
+
 public class HomeActivity extends AppCompatActivity {
 
     private Button buttonCreateEventOD;
@@ -111,17 +123,17 @@ public class HomeActivity extends AppCompatActivity {
             startActivity(intent);
         });
 
-        binding.companyInfo.setOnClickListener(v -> {
-            Intent intent = new Intent(HomeActivity.this, CompanyViewActivity.class);
+        binding.notifications.setOnClickListener(v -> {
+            Intent intent = new Intent(HomeActivity.this, NotificationsViewActivity.class);
             startActivity(intent);
         });
 
-        binding.userInfo.setOnClickListener(v -> {
-            Intent intent = new Intent(HomeActivity.this, UserInfoActivity.class);
+        binding.userReports.setOnClickListener(v ->{
+            Intent intent = new Intent(HomeActivity.this, UserReportsViewActivity.class);
             startActivity(intent);
         });
 
-        binding.registerButton.setOnClickListener(v -> {
+        binding.registerButton.setOnClickListener(v->{
             Intent intent = new Intent(HomeActivity.this, OD_RegisterActivity.class);
             startActivity(intent);
         });
@@ -150,12 +162,49 @@ public class HomeActivity extends AppCompatActivity {
             Intent intent = new Intent(HomeActivity.this, OwnerDashboard.class);
             startActivity(intent);
         });
-        binding.signOut.setOnClickListener(v -> {
+        binding.approveRegistration.setOnClickListener(v->{
+            Intent intent = new Intent(HomeActivity.this, ApproveRegistrationActivity.class);
+            startActivity(intent);
+        });
+        binding.reserveService.setOnClickListener(v->{
+            ReserveServiceFragment fragment = new ReserveServiceFragment(2L,true,null);
+            fragment.show(getSupportFragmentManager(), "ReserveServiceFragment");
+        });
+        binding.reserveProduct.setOnClickListener(v->{
+            reserveProduct();
+        });
+        binding.reservePackage.setOnClickListener(v->{
+            Intent intent = new Intent(HomeActivity.this, ReservePackageActivity.class);
+            startActivity(intent);
+        });
+        binding.signOut.setOnClickListener(v->{
             FirebaseAuth.getInstance().signOut();
             Toast.makeText(this, "SingedOut", Toast.LENGTH_SHORT).show();
             this.onResume();
         });
 
+        binding.reservationViewId.setOnClickListener(v->{
+            Intent intent = new Intent(HomeActivity.this, ReservationView.class);
+            startActivity(intent);
+        });
+
+    }
+    FirebaseFirestore db = FirebaseFirestore.getInstance();
+    private void reserveProduct(){
+        Product product=new Product();
+        Map<String,Object> map= new HashMap<>();
+        map.put("product",product);
+        map.put("userId",mAuth.getCurrentUser().getUid());
+
+
+        db.collection("ProductReservation").add(map)
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        Toast.makeText(this, "Data added successfully", Toast.LENGTH_SHORT).show();
+                    } else {
+                        Toast.makeText(this, "Failed to add data", Toast.LENGTH_SHORT).show();
+                    }
+                });
     }
 
     @Override
@@ -166,8 +215,8 @@ public class HomeActivity extends AppCompatActivity {
         if (user == null) {
             binding.signOut.setVisibility(View.GONE);
             binding.pricelist.setVisibility(View.GONE);
-            binding.userInfo.setVisibility(View.GONE);
-            binding.companyInfo.setVisibility(View.GONE);
+            binding.userReports.setVisibility(View.GONE);
+            binding.notifications.setVisibility(View.GONE);
 
 
             binding.registerButton.setVisibility(View.VISIBLE);
@@ -176,34 +225,31 @@ public class HomeActivity extends AppCompatActivity {
 
         } else {
             binding.signOut.setVisibility(View.VISIBLE);
+            binding.notifications.setVisibility(View.VISIBLE);
 
             binding.registerButton.setVisibility(View.GONE);
             binding.loginButton.setVisibility(View.GONE);
-
-            if (!user.getDisplayName().equals("ADMIN")) {
-                binding.pricelist.setVisibility(View.GONE);
-                binding.companyInfo.setVisibility(View.GONE);
-                binding.userInfo.setVisibility(View.GONE);
-                if (user.getDisplayName().equals("OD")) {
-                    binding.homeact.setVisibility(View.VISIBLE);
-                    binding.companyInfo.setVisibility(View.VISIBLE);
-                } else if (user.getDisplayName().equals("PUPV")) {
-                    binding.userInfo.setVisibility(View.VISIBLE);
-                    binding.pricelist.setVisibility(View.VISIBLE);
-                }
-                //pupv i pupz
-                else if (!user.getDisplayName().equals("ADMIN")) {
-                    binding.categoriesButton.setVisibility(View.GONE);
-                    binding.typesOfEventsButton.setVisibility(View.GONE);
-                    binding.pricelist.setVisibility(View.VISIBLE);
-                }
-                //admin
-                else {
-                    binding.categoriesButton.setVisibility(View.VISIBLE);
-                    binding.typesOfEventsButton.setVisibility(View.VISIBLE);
-                }
+            binding.pricelist.setVisibility(View.GONE);
+            binding.userReports.setVisibility(View.GONE);
+            if(user.getDisplayName().equals("OD")){
+                binding.homeact.setVisibility(View.VISIBLE);
+            }
+            //pupv i pupz i OD
+            else if(!user.getDisplayName().equals("ADMIN")){
+                binding.categoriesButton.setVisibility(View.GONE);
+                binding.typesOfEventsButton.setVisibility(View.GONE);
+                binding.pricelist.setVisibility(View.VISIBLE);
+                binding.reservationViewId.setVisibility(View.VISIBLE);
+            }
+            //admin
+            else{
+                binding.categoriesButton.setVisibility(View.VISIBLE);
+                binding.typesOfEventsButton.setVisibility(View.VISIBLE);
+                binding.userReports.setVisibility(View.VISIBLE);
             }
 
+            if(user.getDisplayName().equals("PUPV")) {
+            }
 
         }
     }
