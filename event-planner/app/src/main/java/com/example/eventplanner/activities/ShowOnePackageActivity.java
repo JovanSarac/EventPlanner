@@ -122,6 +122,9 @@ public class ShowOnePackageActivity extends AppCompatActivity {
         binding.priceWithDiscountPackage.setText(String.valueOf(price - (price * discount/100)) + " $");
         binding.deadlineReservationPackage.setText(reservationDue);
         binding.cancelationReservationPackage.setText(cancellationDue);
+        if(!user.getDisplayName().equals("OD")){
+            binding.bookPackage.setVisibility(View.GONE);
+        }
         if(available){
             binding.availability.setChecked(true);
             binding.bookPackage.setOnClickListener(new View.OnClickListener() {

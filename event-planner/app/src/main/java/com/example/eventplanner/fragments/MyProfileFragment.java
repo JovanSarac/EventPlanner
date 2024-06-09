@@ -455,7 +455,7 @@ public class MyProfileFragment extends Fragment {
             userUpdates.put("address", binding.addressInput.getText().toString());
             userUpdates.put("email", binding.emailInput.getText().toString());
             userUpdates.put("firstName", binding.firstNameInput.getText().toString());
-            userUpdates.put("valid", false);
+            userUpdates.put("valid", true);
             userUpdates.put("lastName", binding.lastNameInput.getText().toString());
             userUpdates.put("phone", binding.phoneInput.getText().toString());
 
@@ -463,7 +463,7 @@ public class MyProfileFragment extends Fragment {
             userUpdates.put("Address", binding.addressInput.getText().toString());
             userUpdates.put("E-mail", binding.emailInput.getText().toString());
             userUpdates.put("FirstName", binding.firstNameInput.getText().toString());
-            userUpdates.put("IsValid", false);
+            userUpdates.put("IsValid", true);
             userUpdates.put("LastName", binding.lastNameInput.getText().toString());
             userUpdates.put("Phone", binding.phoneInput.getText().toString());
 
