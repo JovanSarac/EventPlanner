@@ -1,5 +1,7 @@
 package com.example.eventplanner.activities;
 
+import static android.content.ContentValues.TAG;
+
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -25,6 +27,9 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FieldPath;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -34,7 +39,9 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 
 public class ShowOnePackageActivity extends AppCompatActivity {
@@ -44,7 +51,7 @@ public class ShowOnePackageActivity extends AppCompatActivity {
     RecyclerView recyclerView;
     ImageAdapter imageAdapter;
 
-    Long idProduct;
+    Long idPackage;
     String idPupv;
 
     Category category;
@@ -54,16 +61,25 @@ public class ShowOnePackageActivity extends AppCompatActivity {
 
     ArrayList<Product> products;
     ArrayList<Service> services;
+
+    ArrayList<String> productIdsss = new ArrayList<>();
+
+    ArrayList<String> serviceIdsss = new ArrayList<>();
+    ArrayList<String> packageIdsss = new ArrayList<>();
     FirebaseFirestore db = FirebaseFirestore.getInstance();
 
     FirebaseStorage storage = FirebaseStorage.getInstance();
+
+    FirebaseAuth mAuth = FirebaseAuth.getInstance();
+
+    FirebaseUser user = mAuth.getCurrentUser();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         binding = ActivityShowOnePackageBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
-        idProduct = getIntent().getLongExtra("packageId", 0L);
+        idPackage = getIntent().getLongExtra("packageId", 0L);
         idPupv = getIntent().getStringExtra("pupvId");
         getUserPupv(idPupv).thenAccept(userPUPV -> {
             this.userPUPV = userPUPV;
@@ -124,6 +140,117 @@ public class ShowOnePackageActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
+
+        if(user != null && user.getDisplayName().equals("OD")) {
+            binding.likeUnlikeButtonPackage.setVisibility(View.VISIBLE);
+
+            updateLikeButtonState(idPackage);
+            binding.likeUnlikeButtonPackage.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if(binding.likeUnlikeButtonPackage.getText().toString().equals("Like")){
+                        packageIdsss.add(idPackage.toString());
+                        addPackageToFavourite(productIdsss, serviceIdsss, packageIdsss);
+                        binding.likeUnlikeButtonPackage.setText(R.string.unlike);
+                        binding.likeUnlikeButtonPackage.setIcon(getDrawable(R.drawable.ic_unlike));
+                        binding.likeUnlikeButtonPackage.setBackgroundColor(getColor(R.color.purple_light));
+                    }else if(binding.likeUnlikeButtonPackage.getText().toString().equals("Unlike")){
+                        packageIdsss.remove(idPackage.toString());
+                        removeFromFavourite(packageIdsss);
+                        binding.likeUnlikeButtonPackage.setText(R.string.like);
+                        binding.likeUnlikeButtonPackage.setIcon(getDrawable(R.drawable.ic_like));
+                        binding.likeUnlikeButtonPackage.setBackgroundColor(getColor(R.color.yellow));
+                    }
+                }
+            });
+        }
+    }
+
+    private void updateLikeButtonState(Long idPackage) {
+        DocumentReference userFavoritesRef = db.collection("FavouritesPsp").document(user.getUid());
+
+        userFavoritesRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                if (task.isSuccessful()) {
+                    DocumentSnapshot document = task.getResult();
+                    if (document.exists()) {
+                        productIdsss = (ArrayList<String>) document.get("productIds");
+                        serviceIdsss = (ArrayList<String>) document.get("serviceIds");
+                        packageIdsss = (ArrayList<String>) document.get("packageIds");
+
+                        if (packageIdsss != null && packageIdsss.contains(idPackage.toString())) {
+                            binding.likeUnlikeButtonPackage.setText(R.string.unlike);
+                            binding.likeUnlikeButtonPackage.setIcon(getDrawable(R.drawable.ic_unlike));
+                            binding.likeUnlikeButtonPackage.setBackgroundColor(getColor(R.color.purple_light));
+                        } else {
+                            binding.likeUnlikeButtonPackage.setText(R.string.like);
+                            binding.likeUnlikeButtonPackage.setIcon(getDrawable(R.drawable.ic_like));
+                            binding.likeUnlikeButtonPackage.setBackgroundColor(getColor(R.color.yellow));
+                        }
+                    }
+                } else {
+                    Log.e(TAG, "Error getting document", task.getException());
+                }
+            }
+        });
+    }
+
+    private void removeFromFavourite(ArrayList<String> packageIdss) {
+        DocumentReference userFavoritesRef = db.collection("FavouritesPsp").document(user.getUid());
+
+        userFavoritesRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                if (task.isSuccessful()) {
+                    DocumentSnapshot document = task.getResult();
+                    if (document.exists()) {
+
+
+                        userFavoritesRef.update("packageIds", packageIdss)
+                                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                    @Override
+                                    public void onSuccess(Void aVoid) {
+                                        // Uspješno uklonjen proizvod iz liste omiljenih
+                                        Toast.makeText(ShowOnePackageActivity.this, "Removed from favourites", Toast.LENGTH_SHORT).show();
+                                    }
+                                })
+                                .addOnFailureListener(new OnFailureListener() {
+                                    @Override
+                                    public void onFailure(@NonNull Exception e) {
+                                        Log.e(TAG, "Error updating document", e);
+                                    }
+                                });
+
+                    }
+                } else {
+                    Log.e(TAG, "Error getting document", task.getException());
+                }
+            }
+        });
+    }
+
+    private void addPackageToFavourite(ArrayList<String> productIdss,ArrayList<String> serviceIdss,ArrayList<String> packageIdss) {
+
+        Map<String, Object> elememt = new HashMap<>();
+        elememt.put("productIds", productIdss);
+        elememt.put("serviceIds", serviceIdss);
+        elememt.put("packageIds", packageIdss);
+        db.collection("FavouritesPsp").document(user.getUid())
+                .set(elememt)
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                        Toast.makeText(ShowOnePackageActivity.this, "Add to favourite", Toast.LENGTH_SHORT).show();
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Log.e(TAG, "Error adding document", e);
+                    }
+                });
+
     }
 
     private void getServices(ArrayList<String> serviceIds) {
