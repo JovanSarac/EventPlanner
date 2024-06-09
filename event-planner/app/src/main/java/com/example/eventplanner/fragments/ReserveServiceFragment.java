@@ -359,6 +359,9 @@ public class ReserveServiceFragment extends BottomSheetDialogFragment {
         TableLayout tableLayout = view.findViewById(R.id.tableLayout);
         //dayOfWeek="Friday";
 
+        if(busyDates.isEmpty()){
+            return;
+        }
         Collections.sort(busyDates.get(dayOfWeek.toUpperCase()), new Comparator<EventPUPZ>() {
             @Override
             public int compare(EventPUPZ o1, EventPUPZ o2) {
@@ -407,19 +410,21 @@ public class ReserveServiceFragment extends BottomSheetDialogFragment {
                 service,
                 mAuth.getCurrentUser().getUid().toString()
         );
+        if(!busyDates.isEmpty()){
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm");
+            LocalTime start = LocalTime.parse(from.getText().toString(), formatter);
+            LocalTime end = LocalTime.parse(to.getText().toString(), formatter);
 
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm");
-        LocalTime start = LocalTime.parse(from.getText().toString(), formatter);
-        LocalTime end = LocalTime.parse(to.getText().toString(), formatter);
-
-        for (EventPUPZ time:busyDates.get(dayOfWeek.toUpperCase())) {
-            LocalTime startBusy = LocalTime.parse(time.getStartHours(), formatter);
-            LocalTime endBusy = LocalTime.parse(time.getEndHours(), formatter);
-            if(!(start.isAfter(endBusy) || end.isBefore(startBusy))){
-                Toast.makeText(getContext(), "Please select valid dates!", Toast.LENGTH_SHORT).show();
-                return;
+            for (EventPUPZ time:busyDates.get(dayOfWeek.toUpperCase())) {
+                LocalTime startBusy = LocalTime.parse(time.getStartHours(), formatter);
+                LocalTime endBusy = LocalTime.parse(time.getEndHours(), formatter);
+                if(!(start.isAfter(endBusy) || end.isBefore(startBusy))){
+                    Toast.makeText(getContext(), "Please select valid dates!", Toast.LENGTH_SHORT).show();
+                    return;
+                }
             }
         }
+
 
         db.collection("ServiceReservationRequest").add(event)
                 .addOnCompleteListener(task -> {
