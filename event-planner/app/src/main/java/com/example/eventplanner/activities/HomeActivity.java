@@ -7,7 +7,6 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
@@ -15,7 +14,6 @@ import android.widget.Toast;
 import androidx.activity.EdgeToEdge;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 import androidx.core.graphics.Insets;
@@ -30,6 +28,7 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.FirebaseFirestore;
+
 import com.google.firebase.firestore.auth.User;
 import com.google.firebase.messaging.FirebaseMessaging;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -45,11 +44,11 @@ public class HomeActivity extends AppCompatActivity {
 
     private Button buttonHome;
     ActivityHomeBinding binding;
-    FirebaseAuth mAuth=FirebaseAuth.getInstance();
+    FirebaseAuth mAuth = FirebaseAuth.getInstance();
     private final ActivityResultLauncher<String> requestPermissionLauncher =
             registerForActivityResult(new ActivityResultContracts.RequestPermission(), isGranted -> {
                 if (isGranted) {
-                    Toast.makeText(this, "Notifications permission granted",Toast.LENGTH_SHORT)
+                    Toast.makeText(this, "Notifications permission granted", Toast.LENGTH_SHORT)
                             .show();
                 } else {
                     Toast.makeText(this, "FCM can't post notifications without POST_NOTIFICATIONS permission",
@@ -70,18 +69,17 @@ public class HomeActivity extends AppCompatActivity {
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             // Create channel to show notifications.
-            String channelId  = "123";
+            String channelId = "123";
             String channelName = "Ime";
             NotificationManager notificationManager =
                     getSystemService(NotificationManager.class);
             notificationManager.createNotificationChannel(new NotificationChannel(channelId,
-                    channelName, NotificationManager.IMPORTANCE_LOW));
+                    channelName, NotificationManager.IMPORTANCE_DEFAULT));
         }
         askNotificationPermission();
 
 
-
-        binding= ActivityHomeBinding.inflate(getLayoutInflater());
+        binding = ActivityHomeBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
         /*binding.productsManagmentPUPV.setOnClickListener(v ->{
@@ -120,18 +118,13 @@ public class HomeActivity extends AppCompatActivity {
             startActivity(intent);
         });*/
 
-        binding.pricelist.setOnClickListener(v ->{
+        binding.pricelist.setOnClickListener(v -> {
             Intent intent = new Intent(HomeActivity.this, PricelistActivity.class);
             startActivity(intent);
         });
 
-        binding.companyInfo.setOnClickListener(v ->{
-            Intent intent = new Intent(HomeActivity.this, CompanyViewActivity.class);
-            startActivity(intent);
-        });
-
-        binding.userInfo.setOnClickListener(v ->{
-            Intent intent = new Intent(HomeActivity.this, UserInfoActivity.class);
+        binding.userReports.setOnClickListener(v ->{
+            Intent intent = new Intent(HomeActivity.this, UserReportsViewActivity.class);
             startActivity(intent);
         });
 
@@ -140,27 +133,27 @@ public class HomeActivity extends AppCompatActivity {
             startActivity(intent);
         });
 
-        binding.loginButton.setOnClickListener(v->{
+        binding.loginButton.setOnClickListener(v -> {
             Intent intent = new Intent(HomeActivity.this, LoginActivity.class);
             startActivity(intent);
         });
 
-        binding.categoriesButton.setOnClickListener(v->{
+        binding.categoriesButton.setOnClickListener(v -> {
             Intent intent = new Intent(HomeActivity.this, CategoryActivity.class);
             startActivity(intent);
         });
 
-        binding.typesOfEventsButton.setOnClickListener(v->{
+        binding.typesOfEventsButton.setOnClickListener(v -> {
             Intent intent = new Intent(HomeActivity.this, EventTypesActivity.class);
             startActivity(intent);
 
         });
 
-        binding.homeact.setOnClickListener(v->{
-            Intent intent = new Intent(HomeActivity.this,HomeTwoActivity.class);
+        binding.homeact.setOnClickListener(v -> {
+            Intent intent = new Intent(HomeActivity.this, HomeTwoActivity.class);
             startActivity(intent);
         });
-        binding.ownerDashboardBtn.setOnClickListener(v->{
+        binding.ownerDashboardBtn.setOnClickListener(v -> {
             Intent intent = new Intent(HomeActivity.this, OwnerDashboard.class);
             startActivity(intent);
         });
@@ -168,18 +161,11 @@ public class HomeActivity extends AppCompatActivity {
             Intent intent = new Intent(HomeActivity.this, ApproveRegistrationActivity.class);
             startActivity(intent);
         });
-        binding.reserveService.setOnClickListener(v->{
-            ReserveServiceFragment fragment = new ReserveServiceFragment(2L,true,null);
-            fragment.show(getSupportFragmentManager(), "ReserveServiceFragment");
-        });
-        binding.reserveProduct.setOnClickListener(v->{
-            reserveProduct();
-        });
-        binding.reservePackage.setOnClickListener(v->{
-            Intent intent = new Intent(HomeActivity.this, ReservePackageActivity.class);
-            startActivity(intent);
-        });
         binding.signOut.setOnClickListener(v->{
+            FirebaseMessaging.getInstance().unsubscribeFromTopic("PUPV");
+            FirebaseMessaging.getInstance().unsubscribeFromTopic("AdminTopic");
+            FirebaseMessaging.getInstance().unsubscribeFromTopic(mAuth.getCurrentUser().getUid() + "Topic");
+            FirebaseMessaging.getInstance().unsubscribeFromTopic(mAuth.getCurrentUser().getUid() + "PUPZTopic");
             FirebaseAuth.getInstance().signOut();
             Toast.makeText(this, "SingedOut", Toast.LENGTH_SHORT).show();
             this.onResume();
@@ -191,75 +177,52 @@ public class HomeActivity extends AppCompatActivity {
         });
 
     }
-    FirebaseFirestore db = FirebaseFirestore.getInstance();
-    private void reserveProduct(){
-        Product product=new Product();
-        Map<String,Object> map= new HashMap<>();
-        map.put("product",product);
-        map.put("userId",mAuth.getCurrentUser().getUid());
 
-
-        db.collection("ProductReservation").add(map)
-                .addOnCompleteListener(task -> {
-                    if (task.isSuccessful()) {
-                        Toast.makeText(this, "Data added successfully", Toast.LENGTH_SHORT).show();
-                    } else {
-                        Toast.makeText(this, "Failed to add data", Toast.LENGTH_SHORT).show();
-                    }
-                });
-    }
 
     @Override
     protected void onResume() {
 
         super.onResume();
-        FirebaseUser user= mAuth.getCurrentUser();
+        FirebaseUser user = mAuth.getCurrentUser();
+
+        binding.signOut.setVisibility(View.GONE);
+        binding.pricelist.setVisibility(View.GONE);
+        binding.userReports.setVisibility(View.GONE);
+        binding.registerButton.setVisibility(View.GONE);
+        binding.loginButton.setVisibility(View.GONE);
+        binding.categoriesButton.setVisibility(View.GONE);
+        binding.typesOfEventsButton.setVisibility(View.GONE);
+        binding.approveRegistration.setVisibility(View.GONE);
+
         if(user==null){
-            binding.signOut.setVisibility(View.GONE);
-            binding.pricelist.setVisibility(View.GONE);
-            binding.userInfo.setVisibility(View.GONE);
-            binding.companyInfo.setVisibility(View.GONE);
-
-
             binding.registerButton.setVisibility(View.VISIBLE);
             binding.loginButton.setVisibility(View.VISIBLE);
             binding.homeact.setVisibility(View.INVISIBLE);
-
+            return;
         }else{
             binding.signOut.setVisibility(View.VISIBLE);
+        }
 
-            binding.registerButton.setVisibility(View.GONE);
-            binding.loginButton.setVisibility(View.GONE);
-            binding.pricelist.setVisibility(View.GONE);
-            binding.companyInfo.setVisibility(View.GONE);
-            binding.userInfo.setVisibility(View.GONE);
-            if(user.getDisplayName().equals("OD")){
-                binding.homeact.setVisibility(View.VISIBLE);
-                binding.companyInfo.setVisibility(View.VISIBLE);
-                binding.userInfo.setVisibility(View.VISIBLE);
-            }
-            //pupv i pupz i OD
-            else if(!user.getDisplayName().equals("ADMIN")){
-                binding.categoriesButton.setVisibility(View.GONE);
-                binding.typesOfEventsButton.setVisibility(View.GONE);
-                binding.pricelist.setVisibility(View.VISIBLE);
-                binding.reservationViewId.setVisibility(View.VISIBLE);
-            }
-            //admin
-            else{
-                binding.categoriesButton.setVisibility(View.VISIBLE);
-                binding.typesOfEventsButton.setVisibility(View.VISIBLE);
-            }
-
-            if(user.getDisplayName().equals("PUPV")) {
-                binding.userInfo.setVisibility(View.VISIBLE);
-            }
+        if(user.getDisplayName().equals("OD")){
+            binding.homeact.setVisibility(View.VISIBLE);
+            binding.pricelist.setVisibility(View.VISIBLE);
+            binding.reservationViewId.setVisibility(View.VISIBLE);
+        }else if(user.getDisplayName().equals("ADMIN")){
+            binding.categoriesButton.setVisibility(View.VISIBLE);
+            binding.typesOfEventsButton.setVisibility(View.VISIBLE);
+            binding.userReports.setVisibility(View.VISIBLE);
+            binding.approveRegistration.setVisibility(View.VISIBLE);
+        }else if(user.getDisplayName().equals("PUPV")){
+            binding.pricelist.setVisibility(View.VISIBLE);
+            binding.reservationViewId.setVisibility(View.VISIBLE);
+        }else if(user.getDisplayName().equals("PUPZ")){
 
         }
 
 
     }
-    private void askNotificationPermission() {
+
+    private void askNotificationPermission () {
         // This is only necessary for API Level > 33 (TIRAMISU)
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             if (ContextCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS) ==

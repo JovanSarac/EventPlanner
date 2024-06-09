@@ -54,6 +54,7 @@ public class ReservePackageActivity extends AppCompatActivity implements Reserve
     List<Product> products=new ArrayList<>();
 
     List<ServiceReservationRequest> reservations=new ArrayList<>();
+    String packageId;
     @Override
     public void onDataPass(ServiceReservationRequest data) {
         reservations.add(data);
@@ -68,6 +69,9 @@ public class ReservePackageActivity extends AppCompatActivity implements Reserve
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
+
+        packageId = getIntent().getStringExtra("id");
+
         findViewById(R.id.reservePackage).setOnClickListener(v->{
            createPackageRequest();
         });
@@ -123,7 +127,7 @@ public class ReservePackageActivity extends AppCompatActivity implements Reserve
     }
     private void getPackage(){
         db.collection("Packages")
-                .document("1")
+                .document(packageId)
                 .get()
                 .addOnSuccessListener(doc -> {
                     if (doc.exists()) {
