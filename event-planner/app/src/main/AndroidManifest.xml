@@ -22,9 +22,6 @@
             android:name=".activities.ReservationView"
             android:exported="false" />
         <activity
-            android:name=".activities.ReserveServiceActivity"
-            android:exported="false" />
-        <activity
             android:name=".activities.ShowOnePackageActivity"
             android:exported="false" />
         <activity
