@@ -1,31 +1,20 @@
 package com.example.eventplanner.services;
 
-import android.Manifest;
-import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
-import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.media.RingtoneManager;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
-import android.os.IBinder;
-import android.util.Log;
 
 import androidx.annotation.NonNull;
-import androidx.core.app.ActivityCompat;
 import androidx.core.app.NotificationCompat;
-import androidx.core.app.NotificationManagerCompat;
 
 import com.example.eventplanner.R;
 import com.example.eventplanner.activities.HomeActivity;
-import com.example.eventplanner.activities.UserInfoActivity;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.messaging.FirebaseMessaging;
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
 
@@ -89,6 +78,19 @@ public class NotificationService extends FirebaseMessagingService {
                 notificationManager.notify(0, builder.build());
             }
             else if(messageTopic.equals(user.getUid()+"Topic")){
+                NotificationCompat.Builder builder = new NotificationCompat.Builder(this, "123");
+                builder.setContentTitle(messageTitle);
+                builder.setContentText(messageBody);
+                builder.setSmallIcon(R.drawable.ic_android);
+                builder.setAutoCancel(true);
+                builder.setSound(defaultSoundUri);
+
+                NotificationManager notificationManager =
+                        (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+
+                notificationManager.notify(0, builder.build());
+            }
+            else if(messageTopic.equals("Message")){
                 NotificationCompat.Builder builder = new NotificationCompat.Builder(this, "123");
                 builder.setContentTitle(messageTitle);
                 builder.setContentText(messageBody);

@@ -21,6 +21,7 @@ import com.example.eventplanner.R;
 import com.example.eventplanner.adapters.ChatRecyclerAdapter;
 import com.example.eventplanner.databinding.ActivityShowOneChatBinding;
 import com.example.eventplanner.model.Message;
+import com.example.eventplanner.services.FCMHttpClient;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -155,7 +156,13 @@ public class ShowOneChatActivity extends AppCompatActivity {
                     @Override
                     public void onComplete(@NonNull Task<Void> task) {
 
-                        //sendNotification();
+                        String jsonPayload = "{\"data\":{" +
+                                "\"title\":\"Message from " + fullnameSender + "\"," +
+                                "\"body\":\"" + message + "\"," +
+                                "\"topic\":\"Message\"" +
+                                "}," +
+                                "\"to\":\"/topics/" + userId + "Message" + "\"}";
+                        sendMessage(serverKey,jsonPayload);
                     }
                 })
                 .addOnFailureListener(new OnFailureListener() {
@@ -164,6 +171,12 @@ public class ShowOneChatActivity extends AppCompatActivity {
                         Toast.makeText(ShowOneChatActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show();
                     }
                 });
+    }
+
+    String serverKey="AAAA8GYmoZ8:APA91bHsjyzOSa2JtO_cQWFO-X1p9nMuHRO8DTfD1zhcY4mnqZ-2EZmIn8tMf1ISmnM31WB68Mzn2soeUgEISXlSc9WjRvcRhyYbmBgi7whJuYXX-24wkODByasquofLaMZydpg78esK";
+    public static void sendMessage(String serverKey, String jsonPayload) {
+        FCMHttpClient httpClient = new FCMHttpClient();
+        httpClient.sendMessageToTopic(serverKey, "PUPV", jsonPayload);
     }
 
     private void setupSnapshotListener(String senderId, String recipientId) {

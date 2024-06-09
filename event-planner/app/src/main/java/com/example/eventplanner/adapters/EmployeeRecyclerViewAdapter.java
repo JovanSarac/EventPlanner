@@ -19,6 +19,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.eventplanner.R;
 import com.example.eventplanner.model.UserPUPZ;
+import com.example.eventplanner.services.FCMHttpClient;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -174,7 +175,13 @@ public class EmployeeRecyclerViewAdapter extends RecyclerView.Adapter<EmployeeRe
                         @Override
                         public void onComplete(@NonNull Task<Void> task) {
 
-                            //sendNotification();
+                            String jsonPayload = "{\"data\":{" +
+                                    "\"title\":\"Message from " + fullnameSender + "\"," +
+                                    "\"body\":\"" + message + "\"," +
+                                    "\"topic\":\"Message\"" +
+                                    "}," +
+                                    "\"to\":\"/topics/" + userId + "Message" + "\"}";
+                            sendMessage(serverKey,jsonPayload);
                         }
                     })
                     .addOnFailureListener(new OnFailureListener() {
@@ -183,6 +190,12 @@ public class EmployeeRecyclerViewAdapter extends RecyclerView.Adapter<EmployeeRe
                             Toast.makeText(itemView.getContext(), e.getMessage(), Toast.LENGTH_SHORT).show();
                         }
                     });
+        }
+
+        String serverKey="AAAA8GYmoZ8:APA91bHsjyzOSa2JtO_cQWFO-X1p9nMuHRO8DTfD1zhcY4mnqZ-2EZmIn8tMf1ISmnM31WB68Mzn2soeUgEISXlSc9WjRvcRhyYbmBgi7whJuYXX-24wkODByasquofLaMZydpg78esK";
+        public static void sendMessage(String serverKey, String jsonPayload) {
+            FCMHttpClient httpClient = new FCMHttpClient();
+            httpClient.sendMessageToTopic(serverKey, "PUPV", jsonPayload);
         }
 
 

@@ -27,6 +27,7 @@ import com.example.eventplanner.model.Product;
 import com.example.eventplanner.model.Subcategory;
 import com.example.eventplanner.model.UserOD;
 import com.example.eventplanner.model.UserPUPV;
+import com.example.eventplanner.services.FCMHttpClient;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -352,7 +353,13 @@ public class ShowOneProductActivity extends AppCompatActivity {
                     @Override
                     public void onComplete(@NonNull Task<Void> task) {
 
-                        //sendNotification();
+                        String jsonPayload = "{\"data\":{" +
+                                "\"title\":\"Message from " + fullnameSender + "\"," +
+                                "\"body\":\"" + message + "\"," +
+                                "\"topic\":\"Message\"" +
+                                "}," +
+                                "\"to\":\"/topics/" + userId + "Message" + "\"}";
+                        sendMessage(serverKey,jsonPayload);
                     }
                 })
                 .addOnFailureListener(new OnFailureListener() {
@@ -362,6 +369,13 @@ public class ShowOneProductActivity extends AppCompatActivity {
                     }
                 });
     }
+
+    String serverKey="AAAA8GYmoZ8:APA91bHsjyzOSa2JtO_cQWFO-X1p9nMuHRO8DTfD1zhcY4mnqZ-2EZmIn8tMf1ISmnM31WB68Mzn2soeUgEISXlSc9WjRvcRhyYbmBgi7whJuYXX-24wkODByasquofLaMZydpg78esK";
+    public static void sendMessage(String serverKey, String jsonPayload) {
+        FCMHttpClient httpClient = new FCMHttpClient();
+        httpClient.sendMessageToTopic(serverKey, "PUPV", jsonPayload);
+    }
+
 
     private CompletableFuture<UserOD> getUserOd(String uid) {
         CompletableFuture<UserOD> future = new CompletableFuture<>();

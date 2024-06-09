@@ -3,7 +3,6 @@ package com.example.eventplanner.activities;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
-import android.util.Log;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
@@ -109,6 +108,12 @@ public class LoginActivity extends AppCompatActivity {
             if(mAuth.getCurrentUser()!=null && mAuth.getCurrentUser().getDisplayName().equals("PUPZ")) {
                 FirebaseMessaging.getInstance().subscribeToTopic(mAuth.getCurrentUser().getUid() + "PUPZTopic");
             }
+
+            if(mAuth.getCurrentUser()!= null){
+                FirebaseMessaging.getInstance().subscribeToTopic(mAuth.getCurrentUser().getUid() + "Message");
+            }
+
+
         } else {
             mAuth.signOut();
             Toast.makeText(LoginActivity.this, "Please verify your email before logging in", Toast.LENGTH_SHORT).show();
