@@ -113,7 +113,8 @@ public class ReserveServiceFragment extends BottomSheetDialogFragment {
                     if(service.getDuration()!=null){
                         time=time.plusMinutes((int)(service.getDuration()*60));
                     }
-                    String endtime=dateScheule.getSchedule().get(dayOfWeek.toUpperCase()).getEndTime().split(" ")[0];
+                    String endtime=timeString;
+                    if(dateScheule!=null)endtime=dateScheule.getSchedule().get(dayOfWeek.toUpperCase()).getEndTime().split(" ")[0];
                     LocalTime endTime=LocalTime.parse(endtime, formatter);
                     if(time.isBefore(endTime)){
                         to.setText(time.toString());

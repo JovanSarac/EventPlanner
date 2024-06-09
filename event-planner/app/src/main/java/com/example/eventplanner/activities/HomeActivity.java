@@ -161,17 +161,6 @@ public class HomeActivity extends AppCompatActivity {
             Intent intent = new Intent(HomeActivity.this, ApproveRegistrationActivity.class);
             startActivity(intent);
         });
-        binding.reserveService.setOnClickListener(v->{
-            ReserveServiceFragment fragment = new ReserveServiceFragment(2L,true,null);
-            fragment.show(getSupportFragmentManager(), "ReserveServiceFragment");
-        });
-        binding.reserveProduct.setOnClickListener(v->{
-            reserveProduct();
-        });
-        binding.reservePackage.setOnClickListener(v->{
-            Intent intent = new Intent(HomeActivity.this, ReservePackageActivity.class);
-            startActivity(intent);
-        });
         binding.signOut.setOnClickListener(v->{
             FirebaseAuth.getInstance().signOut();
             Toast.makeText(this, "SingedOut", Toast.LENGTH_SHORT).show();
@@ -184,23 +173,7 @@ public class HomeActivity extends AppCompatActivity {
         });
 
     }
-    FirebaseFirestore db = FirebaseFirestore.getInstance();
-    private void reserveProduct(){
-        Product product=new Product();
-        Map<String,Object> map= new HashMap<>();
-        map.put("product",product);
-        map.put("userId",mAuth.getCurrentUser().getUid());
 
-
-        db.collection("ProductReservation").add(map)
-                .addOnCompleteListener(task -> {
-                    if (task.isSuccessful()) {
-                        Toast.makeText(this, "Data added successfully", Toast.LENGTH_SHORT).show();
-                    } else {
-                        Toast.makeText(this, "Failed to add data", Toast.LENGTH_SHORT).show();
-                    }
-                });
-    }
 
     @Override
     protected void onResume() {
