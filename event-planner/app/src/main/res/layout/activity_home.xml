@@ -140,6 +140,17 @@
         app:cornerRadius="10dp"
         android:layout_marginHorizontal="24dp"
         />
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/add_comment_btn"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Add a comment"
+        android:textSize="16dp"
+        android:paddingVertical="12dp"
+        app:cornerRadius="10dp"
+        android:layout_marginHorizontal="24dp"
+        />
 </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

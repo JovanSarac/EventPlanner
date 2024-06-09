@@ -118,6 +118,11 @@ public class HomeActivity extends AppCompatActivity {
             startActivity(intent);
         });*/
 
+        binding.addCommentBtn.setOnClickListener(v -> {
+            Intent intent = new Intent(HomeActivity.this, AddCommentActivity.class);
+            startActivity(intent);
+        });
+
         binding.pricelist.setOnClickListener(v -> {
             Intent intent = new Intent(HomeActivity.this, PricelistActivity.class);
             startActivity(intent);
@@ -193,6 +198,7 @@ public class HomeActivity extends AppCompatActivity {
         binding.categoriesButton.setVisibility(View.GONE);
         binding.typesOfEventsButton.setVisibility(View.GONE);
         binding.approveRegistration.setVisibility(View.GONE);
+        binding.addCommentBtn.setVisibility(View.GONE);
 
         if(user==null){
             binding.registerButton.setVisibility(View.VISIBLE);
@@ -204,6 +210,7 @@ public class HomeActivity extends AppCompatActivity {
         }
 
         if(user.getDisplayName().equals("OD")){
+            binding.addCommentBtn.setVisibility(View.VISIBLE);
             binding.homeact.setVisibility(View.VISIBLE);
             binding.pricelist.setVisibility(View.VISIBLE);
             binding.reservationViewId.setVisibility(View.VISIBLE);
