@@ -7,9 +7,9 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -19,14 +19,15 @@ import com.example.eventplanner.R;
 import com.example.eventplanner.adapters.ChatRecyclerAdapter;
 import com.example.eventplanner.databinding.ActivityShowOneChatBinding;
 import com.example.eventplanner.model.Message;
-import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreException;
+import com.google.firebase.firestore.ListenerRegistration;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
@@ -53,6 +54,8 @@ public class ShowOneChatActivity extends AppCompatActivity {
     String senderFullname;
     ArrayList<Message> messages;
     RecyclerView recyclerView;
+    private ListenerRegistration listenerRegistration;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -62,7 +65,7 @@ public class ShowOneChatActivity extends AppCompatActivity {
         user = mAuth.getCurrentUser();
 
         recipientId = getIntent().getStringExtra("recipientId");
-        loadImage(recipientId,binding.imageRecipientProfile);
+        loadImage(recipientId, binding.imageRecipientProfile);
         senderId = getIntent().getStringExtra("senderId");
 
         recipientFullname = getIntent().getStringExtra("recipientFullname");
@@ -74,7 +77,8 @@ public class ShowOneChatActivity extends AppCompatActivity {
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(ShowOneChatActivity.this);
         recyclerView.setLayoutManager(layoutManager);
 
-        getAllMessages(senderId,recipientId);
+        // Postavljanje snapshot listener-a
+        setupSnapshotListener(senderId, recipientId);
 
         binding.sendMessage.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -85,27 +89,31 @@ public class ShowOneChatActivity extends AppCompatActivity {
         });
     }
 
-    private void sendMessage(String message) {
-        Map<String, Object> elememt = new HashMap<>();
-        elememt.put("senderId", senderId);
-        elememt.put("senderFullName", senderFullname);
-        elememt.put("recipientId", recipientId);
-        elememt.put("fullnameRecipientId", recipientFullname);
-        elememt.put("dateOfSending", new Date());
-        elememt.put("content", message);
-        elememt.put("status", false);
-        elememt.put("participants", Arrays.asList(senderId, recipientId));
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (listenerRegistration != null) {
+            listenerRegistration.remove();
+        }
+    }
 
-        // Dodajte novi dokument sa generisanim ID-om
+    private void sendMessage(String message) {
+        Map<String, Object> element = new HashMap<>();
+        element.put("senderId", senderId);
+        element.put("senderFullName", senderFullname);
+        element.put("recipientId", recipientId);
+        element.put("fullnameRecipientId", recipientFullname);
+        element.put("dateOfSending", new Date());
+        element.put("content", message);
+        element.put("status", false);
+        element.put("participants", Arrays.asList(senderId, recipientId));
+
         db.collection("Messages").document()
-                .set(elememt)
+                .set(element)
                 .addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
                     public void onSuccess(Void aVoid) {
-                        Log.d("ShowOneChatActivity", "Message send successfully");
-                        getAllMessages(senderId,recipientId);
-
-                        recyclerView.scrollToPosition(messages.size() - 1);
+                        Log.d("ShowOneChatActivity", "Message sent successfully");
                     }
                 })
                 .addOnFailureListener(new OnFailureListener() {
@@ -114,69 +122,53 @@ public class ShowOneChatActivity extends AppCompatActivity {
                         Log.e(TAG, "Error adding document", e);
                     }
                 });
-
     }
 
-    private void getAllMessages(String senderId, String recipientId) {
+    private void setupSnapshotListener(String senderId, String recipientId) {
         messages = new ArrayList<>();
 
-        // Kreiramo listu sa svim mogućim kombinacijama participants niza
         List<List<String>> participantsCombinations = new ArrayList<>();
         participantsCombinations.add(Arrays.asList(senderId, recipientId));
         participantsCombinations.add(Arrays.asList(recipientId, senderId));
 
-        db.collection("Messages")
+        listenerRegistration = db.collection("Messages")
                 .whereIn("participants", participantsCombinations)
-                .get()
-                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                .addSnapshotListener(new EventListener<QuerySnapshot>() {
                     @Override
-                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                        if (task.isSuccessful()) {
-
-                            for (DocumentSnapshot doc : task.getResult()) {
-                                String senderId = doc.getString("senderId");
-                                String senderFullaname = doc.getString("senderFullName");
-                                String recipientId = doc.getString("recipientId");
-                                String recipientFullname = doc.getString("fullnameRecipientId");
-                                Date dateOfSending = doc.getDate("dateOfSending");
-                                String content = doc.getString("content");
-                                boolean status = doc.getBoolean("status");
-
-
-                                Message message = new Message(senderId, senderFullaname, recipientId, recipientFullname, dateOfSending, content, status);
-
-                                messages.add(message);
-                            }
-
-                            // Sortiranje poruka po datumu od najstarije ka najnovijoj
-                            Collections.sort(messages, new Comparator<Message>() {
-                                @Override
-                                public int compare(Message m1, Message m2) {
-                                    return m1.getDateOfSending().compareTo(m2.getDateOfSending());
-                                }
-                            });
-
-                            // Inicijalizacija adaptera nakon sortiranja
-                            ChatRecyclerAdapter adapterChats = new ChatRecyclerAdapter(messages);
-                            recyclerView.setAdapter(adapterChats);
-
-                            recyclerView.scrollToPosition(messages.size() - 1);
-
-
-
-                        } else {
-                            Toast.makeText(ShowOneChatActivity.this, "Error getting documents: " + task.getException(), Toast.LENGTH_LONG).show();
+                    public void onEvent(@Nullable QuerySnapshot value, @Nullable FirebaseFirestoreException error) {
+                        if (error != null) {
+                            Log.w(TAG, "Listen failed.", error);
+                            return;
                         }
-                    }
-                })
-                .addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        Toast.makeText(ShowOneChatActivity.this, e.getMessage(), Toast.LENGTH_LONG).show();
+
+                        messages.clear();
+                        for (DocumentSnapshot doc : value.getDocuments()) {
+                            String senderId = doc.getString("senderId");
+                            String senderFullaname = doc.getString("senderFullName");
+                            String recipientId = doc.getString("recipientId");
+                            String recipientFullname = doc.getString("fullnameRecipientId");
+                            Date dateOfSending = doc.getDate("dateOfSending");
+                            String content = doc.getString("content");
+                            boolean status = doc.getBoolean("status");
+
+                            Message message = new Message(senderId, senderFullaname, recipientId, recipientFullname, dateOfSending, content, status);
+                            messages.add(message);
+                        }
+
+                        Collections.sort(messages, new Comparator<Message>() {
+                            @Override
+                            public int compare(Message m1, Message m2) {
+                                return m1.getDateOfSending().compareTo(m2.getDateOfSending());
+                            }
+                        });
+
+                        ChatRecyclerAdapter adapterChats = new ChatRecyclerAdapter(messages);
+                        recyclerView.setAdapter(adapterChats);
+
+                        recyclerView.scrollToPosition(messages.size() - 1);
                     }
                 });
     }
-
 
     private void loadImage(String userId, ImageView imageView) {
         FirebaseStorage storage = FirebaseStorage.getInstance();
@@ -191,7 +183,6 @@ public class ShowOneChatActivity extends AppCompatActivity {
                 Glide.with(imageView.getContext())
                         .load(uri)
                         .into(imageView);
-
             }
         }).addOnFailureListener(new OnFailureListener() {
             @Override
