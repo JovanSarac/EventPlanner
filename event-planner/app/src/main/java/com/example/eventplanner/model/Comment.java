@@ -8,4 +8,63 @@ public class Comment {
     private Report report;
     private String userODId;
 
+    public Comment() {
+    }
+
+    public Comment(String grade, String description, String occurenceDate, String status, Report report, String userODId) {
+        this.grade = grade;
+        this.description = description;
+        this.occurenceDate = occurenceDate;
+        this.status = status;
+        this.report = report;
+        this.userODId = userODId;
+    }
+
+    public String getGrade() {
+        return grade;
+    }
+
+    public void setGrade(String grade) {
+        this.grade = grade;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public String getOccurenceDate() {
+        return occurenceDate;
+    }
+
+    public void setOccurenceDate(String occurenceDate) {
+        this.occurenceDate = occurenceDate;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
+    public Report getReport() {
+        return report;
+    }
+
+    public void setReport(Report report) {
+        this.report = report;
+    }
+
+    public String getUserODId() {
+        return userODId;
+    }
+
+    public void setUserODId(String userODId) {
+        this.userODId = userODId;
+    }
 }
