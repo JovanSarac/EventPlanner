@@ -109,6 +109,7 @@ public class LoginActivity extends AppCompatActivity {
             }
             if(mAuth.getCurrentUser()!=null && mAuth.getCurrentUser().getDisplayName().equals("PUPZ")) {
                 FirebaseMessaging.getInstance().subscribeToTopic(mAuth.getCurrentUser().getUid() + "PUPZTopic");
+                FirebaseMessaging.getInstance().subscribeToTopic("PUPZ");
             }
         } else {
             mAuth.signOut();

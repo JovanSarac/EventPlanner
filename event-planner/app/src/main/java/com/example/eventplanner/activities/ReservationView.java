@@ -33,6 +33,7 @@ import com.example.eventplanner.model.Service;
 import com.example.eventplanner.model.ServiceReservationRequest;
 import com.example.eventplanner.model.UserOD;
 import com.example.eventplanner.model.UserPUPZ;
+import com.example.eventplanner.services.FCMHttpClient;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.Task;
@@ -52,8 +53,11 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
+import java.util.Random;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Future;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -65,6 +69,12 @@ public class ReservationView extends AppCompatActivity {
     FirebaseAuth mAuth= FirebaseAuth.getInstance();
     List<ServiceReservationRequest> serviceReservations;
     private LinearLayout serviceReservationsContainer;
+
+    String serverKey="AAAA8GYmoZ8:APA91bHsjyzOSa2JtO_cQWFO-X1p9nMuHRO8DTfD1zhcY4mnqZ-2EZmIn8tMf1ISmnM31WB68Mzn2soeUgEISXlSc9WjRvcRhyYbmBgi7whJuYXX-24wkODByasquofLaMZydpg78esK";
+    public static void sendMessage(String serverKey, String jsonPayload) {
+        FCMHttpClient httpClient = new FCMHttpClient();
+        httpClient.sendMessageToTopic(serverKey, "PUPV", jsonPayload);
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -241,7 +251,7 @@ public class ReservationView extends AppCompatActivity {
         TextView serviceName = view.findViewById(R.id.service_name);
         LinearLayout btnLayout = view.findViewById(R.id.reservation_btns_layout);
 
-        if(!document.getString("status").equals("NEW"))
+        if(!document.getString("status").equals("NEW") || mAuth.getCurrentUser().getDisplayName().equals("OD"))
             btnLayout.setVisibility(View.GONE);
 
         com.example.eventplanner.model.Service service = document.get("service", Service.class);
@@ -320,6 +330,14 @@ public class ReservationView extends AppCompatActivity {
                             serviceReservationsContainer.removeAllViews();
                             serviceReservations.clear();
 
+                            String jsonPayload = "{\"data\":{" +
+                                    "\"title\":\"Denied reservation!\"," +
+                                    "\"body\":\"" + "Some reservation has been rejected, check your calendar for more info!" + "\"," +
+                                    "\"topic\":\"PUPZ_Reservation\"" +
+                                    "}," +
+                                    "\"to\":\"/topics/" + "PUPZ" + "\"}";
+
+                            sendMessage(serverKey,jsonPayload);
                             retrieveAllServiceReservationRequests();
                         })
                         .addOnFailureListener(e -> {
@@ -426,5 +444,33 @@ public class ReservationView extends AppCompatActivity {
                     }
                 });
         return future;
+    }
+
+    private void addNotification(){
+        db.collection("User").whereEqualTo("userType","PUPZ").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                if (task.isSuccessful()) {
+                    QuerySnapshot querySnapshot = task.getResult();
+                    if (querySnapshot != null) {
+                        for (DocumentSnapshot document : querySnapshot.getDocuments()) {
+                            Long id = new Random().nextLong();
+                            Map<String,Object> map=new HashMap<>();
+                            map.put("body","Some reservation has been rejected, check your calendar for more info!");
+                            map.put("title","Denied reservation!");
+                            map.put("read",false);
+                            map.put("userId",document.getId());
+
+                            db.collection("Notifications")
+                                    .document(id.toString())
+                                    .set(map);
+                        }
+                    }
+                } else {
+                    System.out.println("Error getting documents: " + task.getException());
+                }
+            }
+        });
+
     }
 }

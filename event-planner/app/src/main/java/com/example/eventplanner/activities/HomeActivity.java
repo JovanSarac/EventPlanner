@@ -177,6 +177,7 @@ public class HomeActivity extends AppCompatActivity {
             FirebaseMessaging.getInstance().unsubscribeFromTopic("AdminTopic");
             FirebaseMessaging.getInstance().unsubscribeFromTopic(mAuth.getCurrentUser().getUid() + "Topic");
             FirebaseMessaging.getInstance().unsubscribeFromTopic(mAuth.getCurrentUser().getUid() + "PUPZTopic");
+            FirebaseMessaging.getInstance().unsubscribeFromTopic("PUPZ");
             FirebaseAuth.getInstance().signOut();
             Toast.makeText(this, "SingedOut", Toast.LENGTH_SHORT).show();
             this.onResume();
