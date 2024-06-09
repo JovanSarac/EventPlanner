@@ -1,6 +1,7 @@
 package com.example.eventplanner.fragments;
 
 import static android.app.Activity.RESULT_OK;
+import static android.content.ContentValues.TAG;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
@@ -33,6 +34,8 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.AuthCredential;
+import com.google.firebase.auth.EmailAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentSnapshot;
@@ -90,7 +93,7 @@ public class MyProfileFragment extends Fragment {
             loadImage(user.getUid(),binding.imageProfile);
         }
 
-        if(user!= null && user.getDisplayName().equals("OD")){
+        if(user!= null && (user.getDisplayName().equals("OD") || user.getDisplayName().equals("ADMIN"))){
             getUserOd(user.getUid()).thenAccept(userOD -> {
                 this.userOd = userOD;
 
@@ -136,72 +139,6 @@ public class MyProfileFragment extends Fragment {
                 binding.companyPhone.setText(this.userPupv.getCompanyPhone());
                 binding.companyEmail.setText(this.userPupv.getCompanyemail());
 
-                /*binding.worktimeCompany.titleWorkTime.setText("Work time company:");
-                binding.worktimeCompany.titleWorkTime.setTextColor(Color.WHITE);
-                binding.worktimeCompany.mondayText.setTextColor(Color.WHITE);
-                binding.worktimeCompany.tuesdayText.setTextColor(Color.WHITE);
-                binding.worktimeCompany.wednesdayText.setTextColor(Color.WHITE);
-                binding.worktimeCompany.thursdayText.setTextColor(Color.WHITE);
-                binding.worktimeCompany.fridayText.setTextColor(Color.WHITE);
-                binding.worktimeCompany.saturdayText.setTextColor(Color.WHITE);
-                binding.worktimeCompany.sundayText.setTextColor(Color.WHITE);
-                String[] workTimeArray = this.userPupv.getWorkTime().split("\\?");
-
-                if(workTimeArray[0].equals("free")){
-                    binding.worktimeCompany.mondayCheckbox.isChecked();
-                }else{
-                    String[] time = workTimeArray[0].split("-");
-                    binding.worktimeCompany.startMonday.setText(time[0]);
-                    binding.worktimeCompany.endMonday.setText(time[1]);
-                }
-
-                if(workTimeArray[1].equals("free")){
-                    binding.worktimeCompany.tuesdayCheckbox.isChecked();
-                }else{
-                    String[] time = workTimeArray[1].split("-");
-                    binding.worktimeCompany.startTuesday.setText(time[0]);
-                    binding.worktimeCompany.endTuesday.setText(time[1]);
-                }
-
-                if(workTimeArray[2].equals("free")){
-                    binding.worktimeCompany.wednesdayCheckbox.isChecked();
-                }else{
-                    String[] time = workTimeArray[2].split("-");
-                    binding.worktimeCompany.startWednesday.setText(time[0]);
-                    binding.worktimeCompany.endWednesday.setText(time[1]);
-                }
-
-                if(workTimeArray[3].equals("free")){
-                    binding.worktimeCompany.thursdayCheckbox.isChecked();
-                }else{
-                    String[] time = workTimeArray[3].split("-");
-                    binding.worktimeCompany.startThursday.setText(time[0]);
-                    binding.worktimeCompany.endThursday.setText(time[1]);
-                }
-
-                if(workTimeArray[4].equals("free")){
-                    binding.worktimeCompany.fridayCheckbox.isChecked();
-                }else{
-                    String[] time = workTimeArray[4].split("-");
-                    binding.worktimeCompany.startFriday.setText(time[0]);
-                    binding.worktimeCompany.endFriday.setText(time[1]);
-                }
-
-                if(workTimeArray[5].equals("free")){
-                    binding.worktimeCompany.saturdayCheckbox.isChecked();
-                }else{
-                    String[] time = workTimeArray[5].split("-");
-                    binding.worktimeCompany.startSaturday.setText(time[0]);
-                    binding.worktimeCompany.endSaturday.setText(time[1]);
-                }
-
-                if(workTimeArray[6].equals("free")){
-                    binding.worktimeCompany.sundayCheckbox.isChecked();
-                }else{
-                    String[] time = workTimeArray[6].split("-");
-                    binding.worktimeCompany.startSunday.setText(time[0]);
-                    binding.worktimeCompany.endSunday.setText(time[1]);
-                }*/
 
 
             });
@@ -217,20 +154,7 @@ public class MyProfileFragment extends Fragment {
         binding.companyAddress.setEnabled(false);
         binding.companyPhone.setEnabled(false);
         binding.companyEmail.setEnabled(false);
-        /*binding.worktimeCompany.startMonday.setEnabled(false);
-        binding.worktimeCompany.endMonday.setEnabled(false);
-        binding.worktimeCompany.startTuesday.setEnabled(false);
-        binding.worktimeCompany.endTuesday.setEnabled(false);
-        binding.worktimeCompany.startWednesday.setEnabled(false);
-        binding.worktimeCompany.endWednesday.setEnabled(false);
-        binding.worktimeCompany.startThursday.setEnabled(false);
-        binding.worktimeCompany.endThursday.setEnabled(false);
-        binding.worktimeCompany.startFriday.setEnabled(false);
-        binding.worktimeCompany.endFriday.setEnabled(false);
-        binding.worktimeCompany.startSunday.setEnabled(false);
-        binding.worktimeCompany.endSunday.setEnabled(false);
-        binding.worktimeCompany.startSaturday.setEnabled(false);
-        binding.worktimeCompany.endSaturday.setEnabled(false);*/
+
         binding.firstNameInput.setTextColor(ContextCompat.getColor(requireContext(), R.color.grey));
         binding.lastNameInput.setTextColor(ContextCompat.getColor(requireContext(), R.color.grey));
         binding.emailInput.setTextColor(ContextCompat.getColor(requireContext(), R.color.grey));
@@ -242,20 +166,6 @@ public class MyProfileFragment extends Fragment {
         binding.companyPhone.setTextColor(ContextCompat.getColor(requireContext(), R.color.grey));
         binding.companyEmail.setTextColor(ContextCompat.getColor(requireContext(), R.color.grey));
 
-        /*binding.worktimeCompany.startMonday.setTextColor(ContextCompat.getColor(requireContext(), R.color.grey));
-        binding.worktimeCompany.endMonday.setTextColor(ContextCompat.getColor(requireContext(), R.color.grey));
-        binding.worktimeCompany.startTuesday.setTextColor(ContextCompat.getColor(requireContext(), R.color.grey));
-        binding.worktimeCompany.endTuesday.setTextColor(ContextCompat.getColor(requireContext(), R.color.grey));
-        binding.worktimeCompany.startWednesday.setTextColor(ContextCompat.getColor(requireContext(), R.color.grey));
-        binding.worktimeCompany.endWednesday.setTextColor(ContextCompat.getColor(requireContext(), R.color.grey));
-        binding.worktimeCompany.startThursday.setTextColor(ContextCompat.getColor(requireContext(), R.color.grey));
-        binding.worktimeCompany.endThursday.setTextColor(ContextCompat.getColor(requireContext(), R.color.grey));
-        binding.worktimeCompany.startFriday.setTextColor(ContextCompat.getColor(requireContext(), R.color.grey));
-        binding.worktimeCompany.endFriday.setTextColor(ContextCompat.getColor(requireContext(), R.color.grey));
-        binding.worktimeCompany.startSunday.setTextColor(ContextCompat.getColor(requireContext(), R.color.grey));
-        binding.worktimeCompany.endSunday.setTextColor(ContextCompat.getColor(requireContext(), R.color.grey));
-        binding.worktimeCompany.startSaturday.setTextColor(ContextCompat.getColor(requireContext(), R.color.grey));
-        binding.worktimeCompany.endSaturday.setTextColor(ContextCompat.getColor(requireContext(), R.color.grey));*/
 
         binding.editMyProfile.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -303,39 +213,12 @@ public class MyProfileFragment extends Fragment {
                     binding.companyDescription.setEnabled(true);
                     binding.companyAddress.setEnabled(true);
                     binding.companyPhone.setEnabled(true);
-                    /*binding.worktimeCompany.startMonday.setEnabled(true);
-                    binding.worktimeCompany.endMonday.setEnabled(true);
-                    binding.worktimeCompany.startTuesday.setEnabled(true);
-                    binding.worktimeCompany.endTuesday.setEnabled(true);
-                    binding.worktimeCompany.startWednesday.setEnabled(true);
-                    binding.worktimeCompany.endWednesday.setEnabled(true);
-                    binding.worktimeCompany.startThursday.setEnabled(true);
-                    binding.worktimeCompany.endThursday.setEnabled(true);
-                    binding.worktimeCompany.startFriday.setEnabled(true);
-                    binding.worktimeCompany.endFriday.setEnabled(true);
-                    binding.worktimeCompany.startSunday.setEnabled(true);
-                    binding.worktimeCompany.endSunday.setEnabled(true);
-                    binding.worktimeCompany.startSaturday.setEnabled(true);
-                    binding.worktimeCompany.endSaturday.setEnabled(true);*/
 
                     binding.companyDescription.setTextColor(ContextCompat.getColor(requireContext(), R.color.white));
                     binding.companyAddress.setTextColor(ContextCompat.getColor(requireContext(), R.color.white));
                     binding.companyPhone.setTextColor(ContextCompat.getColor(requireContext(), R.color.white));
 
-                    /*binding.worktimeCompany.startMonday.setTextColor(ContextCompat.getColor(requireContext(), R.color.white));
-                    binding.worktimeCompany.endMonday.setTextColor(ContextCompat.getColor(requireContext(), R.color.white));
-                    binding.worktimeCompany.startTuesday.setTextColor(ContextCompat.getColor(requireContext(), R.color.white));
-                    binding.worktimeCompany.endTuesday.setTextColor(ContextCompat.getColor(requireContext(), R.color.white));
-                    binding.worktimeCompany.startWednesday.setTextColor(ContextCompat.getColor(requireContext(), R.color.white));
-                    binding.worktimeCompany.endWednesday.setTextColor(ContextCompat.getColor(requireContext(), R.color.white));
-                    binding.worktimeCompany.startThursday.setTextColor(ContextCompat.getColor(requireContext(), R.color.white));
-                    binding.worktimeCompany.endThursday.setTextColor(ContextCompat.getColor(requireContext(), R.color.white));
-                    binding.worktimeCompany.startFriday.setTextColor(ContextCompat.getColor(requireContext(), R.color.white));
-                    binding.worktimeCompany.endFriday.setTextColor(ContextCompat.getColor(requireContext(), R.color.white));
-                    binding.worktimeCompany.startSunday.setTextColor(ContextCompat.getColor(requireContext(), R.color.white));
-                    binding.worktimeCompany.endSunday.setTextColor(ContextCompat.getColor(requireContext(), R.color.white));
-                    binding.worktimeCompany.startSaturday.setTextColor(ContextCompat.getColor(requireContext(), R.color.white));
-                    binding.worktimeCompany.endSaturday.setTextColor(ContextCompat.getColor(requireContext(), R.color.white));*/
+
 
                     binding.editCompany.setText("Update company");
                     checkUpdateCompany = true;
@@ -346,41 +229,9 @@ public class MyProfileFragment extends Fragment {
                     binding.companyAddress.setEnabled(false);
                     binding.companyPhone.setEnabled(false);
 
-                    /*binding.worktimeCompany.startMonday.setEnabled(false);
-                    binding.worktimeCompany.endMonday.setEnabled(false);
-                    binding.worktimeCompany.startTuesday.setEnabled(false);
-                    binding.worktimeCompany.endTuesday.setEnabled(false);
-                    binding.worktimeCompany.startWednesday.setEnabled(false);
-                    binding.worktimeCompany.endWednesday.setEnabled(false);
-                    binding.worktimeCompany.startThursday.setEnabled(false);
-                    binding.worktimeCompany.endThursday.setEnabled(false);
-                    binding.worktimeCompany.startFriday.setEnabled(false);
-                    binding.worktimeCompany.endFriday.setEnabled(false);
-                    binding.worktimeCompany.startSunday.setEnabled(false);
-                    binding.worktimeCompany.endSunday.setEnabled(false);
-                    binding.worktimeCompany.startSaturday.setEnabled(false);
-                    binding.worktimeCompany.endSaturday.setEnabled(false);*/
-
                     binding.companyDescription.setTextColor(ContextCompat.getColor(requireContext(), R.color.grey));
                     binding.companyAddress.setTextColor(ContextCompat.getColor(requireContext(), R.color.grey));
                     binding.companyPhone.setTextColor(ContextCompat.getColor(requireContext(), R.color.grey));
-
-                    /*binding.worktimeCompany.startMonday.setTextColor(ContextCompat.getColor(requireContext(), R.color.grey));
-                    binding.worktimeCompany.endMonday.setTextColor(ContextCompat.getColor(requireContext(), R.color.grey));
-                    binding.worktimeCompany.startTuesday.setTextColor(ContextCompat.getColor(requireContext(), R.color.grey));
-                    binding.worktimeCompany.endTuesday.setTextColor(ContextCompat.getColor(requireContext(), R.color.grey));
-                    binding.worktimeCompany.startWednesday.setTextColor(ContextCompat.getColor(requireContext(), R.color.grey));
-                    binding.worktimeCompany.endWednesday.setTextColor(ContextCompat.getColor(requireContext(), R.color.grey));
-                    binding.worktimeCompany.startThursday.setTextColor(ContextCompat.getColor(requireContext(), R.color.grey));
-                    binding.worktimeCompany.endThursday.setTextColor(ContextCompat.getColor(requireContext(), R.color.grey));
-                    binding.worktimeCompany.startFriday.setTextColor(ContextCompat.getColor(requireContext(), R.color.grey));
-                    binding.worktimeCompany.endFriday.setTextColor(ContextCompat.getColor(requireContext(), R.color.grey));
-                    binding.worktimeCompany.startSunday.setTextColor(ContextCompat.getColor(requireContext(), R.color.grey));
-                    binding.worktimeCompany.endSunday.setTextColor(ContextCompat.getColor(requireContext(), R.color.grey));
-                    binding.worktimeCompany.startSaturday.setTextColor(ContextCompat.getColor(requireContext(), R.color.grey));
-                    binding.worktimeCompany.endSaturday.setTextColor(ContextCompat.getColor(requireContext(), R.color.grey));*/
-
-
 
                     binding.editCompany.setText("Edit company");
 
@@ -465,21 +316,14 @@ public class MyProfileFragment extends Fragment {
                         String newPassword = ((EditText) dialogView.findViewById(R.id.newPasswordInput)).getText().toString();
                         String confirmNewPassword = ((EditText) dialogView.findViewById(R.id.confirmNewPasswordInput)).getText().toString();
 
-                        if (oldPassword.equals(pass)) {
-                            if(newPassword.equals("") || confirmNewPassword.equals("")){
-                                Toast.makeText(getContext(), "New password dont be empty.", Toast.LENGTH_SHORT).show();
-                            }else{
-                                if (newPassword.equals(confirmNewPassword)) {
-                                    changePassword(oldPassword, newPassword);
-                                    changePasswordDialog.dismiss();
-                                } else {
-                                    Toast.makeText(getContext(), "New passwords do not match", Toast.LENGTH_SHORT).show();
-                                }
-
-                            }
-
+                        if (newPassword.equals("") || confirmNewPassword.equals("")) {
+                            Toast.makeText(getContext(), "New password cannot be empty.", Toast.LENGTH_SHORT).show();
                         } else {
-                            Toast.makeText(getContext(), "Old password is not correct!", Toast.LENGTH_SHORT).show();
+                            if (newPassword.equals(confirmNewPassword)) {
+                                reauthenticateAndChangePassword(oldPassword, newPassword);
+                            } else {
+                                Toast.makeText(getContext(), "New passwords do not match", Toast.LENGTH_SHORT).show();
+                            }
                         }
                     }
                 });
@@ -489,35 +333,68 @@ public class MyProfileFragment extends Fragment {
         changePasswordDialog.show();
     }
 
-    private void changePassword(String oldPassword, String newPassword) {
+    private void reauthenticateAndChangePassword(String oldPassword, String newPassword) {
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+
+        if (user != null) {
+            AuthCredential credential = EmailAuthProvider.getCredential(user.getEmail(), oldPassword);
+
+            user.reauthenticate(credential)
+                    .addOnCompleteListener(new OnCompleteListener<Void>() {
+                        @Override
+                        public void onComplete(@NonNull Task<Void> task) {
+                            if (task.isSuccessful()) {
+                                // Reauthentication successful, update password
+                                user.updatePassword(newPassword).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                    @Override
+                                    public void onComplete(@NonNull Task<Void> task) {
+                                        if (task.isSuccessful()) {
+                                            updatePasswordInFirestore(user.getUid(), newPassword);
+                                        } else {
+                                            Log.e(TAG, "Error changing password in Firebase Authentication: ", task.getException());
+                                            Toast.makeText(getContext(), "Error changing password", Toast.LENGTH_SHORT).show();
+                                        }
+                                    }
+                                });
+                            } else {
+                                Toast.makeText(getContext(), "Old password is not correct", Toast.LENGTH_SHORT).show();
+                            }
+                        }
+                    });
+        }
+    }
+
+    private void updatePasswordInFirestore(String userId, String newPassword) {
         Map<String, Object> passwordUpdate = new HashMap<>();
         passwordUpdate.put("Password", newPassword);
-        db.collection("User").document(user.getUid())
+
+        db.collection("User").document(userId)
                 .update(passwordUpdate)
                 .addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
                     public void onSuccess(Void aVoid) {
-                        Toast.makeText(getContext(), "Password changed successfully", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getContext(), "Password changed successfully in Firestore", Toast.LENGTH_SHORT).show();
 
-                        if(user.getDisplayName().equals("OD")){
+                        if (user.getDisplayName().equals("OD")) {
                             getUserOd(user.getUid());
-                        }else if(user.getDisplayName().equals("PUPZ")){
+                        } else if (user.getDisplayName().equals("PUPZ")) {
                             getUserPupz(user.getUid());
-                        }else if(user.getDisplayName().equals("PUPV")){
+                        } else if (user.getDisplayName().equals("PUPV")) {
                             getUserPupv(user.getUid());
                         }
 
-
+                        changePasswordDialog.dismiss();
                     }
                 })
                 .addOnFailureListener(new OnFailureListener() {
                     @Override
                     public void onFailure(@NonNull Exception e) {
-                        Toast.makeText(requireContext(), "Error while changing password.", Toast.LENGTH_LONG).show();
-
+                        Toast.makeText(requireContext(), "Error while changing password in Firestore.", Toast.LENGTH_LONG).show();
                     }
                 });
     }
+
+
 
 
 
@@ -570,12 +447,23 @@ public class MyProfileFragment extends Fragment {
 
     private void updateUser() {
         Map<String, Object> userUpdates = new HashMap<>();
-        userUpdates.put("Address", binding.addressInput.getText().toString());
-        userUpdates.put("E-mail", binding.emailInput.getText().toString());
-        userUpdates.put("FirstName", binding.firstNameInput.getText().toString());
-        userUpdates.put("IsValid", false);
-        userUpdates.put("LastName", binding.lastNameInput.getText().toString());
-        userUpdates.put("Phone", binding.phoneInput.getText().toString());
+        if(user.getDisplayName().equals("PUPZ")){
+            userUpdates.put("address", binding.addressInput.getText().toString());
+            userUpdates.put("email", binding.emailInput.getText().toString());
+            userUpdates.put("firstName", binding.firstNameInput.getText().toString());
+            userUpdates.put("valid", false);
+            userUpdates.put("lastName", binding.lastNameInput.getText().toString());
+            userUpdates.put("phone", binding.phoneInput.getText().toString());
+
+        }else{
+            userUpdates.put("Address", binding.addressInput.getText().toString());
+            userUpdates.put("E-mail", binding.emailInput.getText().toString());
+            userUpdates.put("FirstName", binding.firstNameInput.getText().toString());
+            userUpdates.put("IsValid", false);
+            userUpdates.put("LastName", binding.lastNameInput.getText().toString());
+            userUpdates.put("Phone", binding.phoneInput.getText().toString());
+
+        }
 
         db.collection("User").document(user.getUid())
                 .update(userUpdates)
