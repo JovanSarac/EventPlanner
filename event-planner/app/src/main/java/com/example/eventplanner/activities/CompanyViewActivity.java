@@ -58,6 +58,10 @@ public class CompanyViewActivity extends AppCompatActivity {
 
         getCompany();
 
+        if(!user.getDisplayName().equals("OD")){
+            binding.reportCompany.setVisibility(View.GONE);
+        }
+
         binding.reportCompany.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
