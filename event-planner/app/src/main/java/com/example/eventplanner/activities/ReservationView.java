@@ -5,6 +5,8 @@ import android.content.Intent;
 import android.graphics.drawable.ColorDrawable;
 import android.nfc.Tag;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -35,6 +37,7 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.button.MaterialButton;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
@@ -42,20 +45,24 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.firestore.SetOptions;
+import com.google.type.DateTime;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Future;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 public class ReservationView extends AppCompatActivity {
 
     ActivityReservationViewBinding binding;
     FirebaseFirestore db;
+    FirebaseAuth mAuth= FirebaseAuth.getInstance();
     List<ServiceReservationRequest> serviceReservations;
     private LinearLayout serviceReservationsContainer;
 
@@ -88,6 +95,64 @@ public class ReservationView extends AppCompatActivity {
 
         binding.packageFilterBtn.setOnClickListener(v -> {
             showFilterDialog();
+        });
+
+        binding.searchServiceReservationsInput.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                String newText = s.toString();
+
+                serviceReservationsContainer.removeAllViews();
+                serviceReservations.clear();
+                if(newText.isEmpty())
+                    retrieveAllServiceReservationRequests();
+                else{
+                    db.collection("ServiceReservationRequest")
+                            .get()
+                            .addOnCompleteListener(task -> {
+                                if (task.isSuccessful()) {
+                                    QuerySnapshot querySnapshot = task.getResult();
+                                    if (querySnapshot != null) {
+                                        for (QueryDocumentSnapshot document : querySnapshot) {
+                                            final boolean[] viewAdded = {false};
+
+                                            getUserDocument(document.getString("userId")).thenAccept(fullName -> {
+                                                if (!viewAdded[0] && fullName.contains(newText)) {
+                                                    addDocumentToView(document);
+                                                    serviceReservations.add(document.toObject(ServiceReservationRequest.class));
+                                                    viewAdded[0] = true;
+                                                    Log.d("ServiceReservation", document.getId() + " => " + document.getData());
+                                                }
+                                            });
+
+                                            getUserById(Double.parseDouble(document.getString("workerId"))).thenAccept(full -> {
+                                                if (!viewAdded[0] && full.contains(newText)) {
+                                                    addDocumentToView(document);
+                                                    serviceReservations.add(document.toObject(ServiceReservationRequest.class));
+                                                    viewAdded[0] = true;
+                                                    Log.d("ServiceReservation", document.getId() + " => " + document.getData());
+                                                }
+                                            });
+                                        }
+                                    } else {
+                                        Log.d("ServiceReservation", "No documents found in the collection.");
+                                    }
+                                } else {
+                                    Log.w("ServiceReservation", "Error getting documents.", task.getException());
+                                }
+                            });
+                }
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+            }
         });
 
         db = FirebaseFirestore.getInstance();
@@ -215,6 +280,52 @@ public class ReservationView extends AppCompatActivity {
         });
 
         denyButton.setOnClickListener(v -> {
+
+            String userType = mAuth.getCurrentUser().getDisplayName();
+            String dateString = parseDate(document.getString("occurenceDate"));
+
+            if (dateString == null) {
+                Toast.makeText(this, "Failed to parse the date.", Toast.LENGTH_SHORT).show();
+                return;
+            }
+            SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy", Locale.ENGLISH);
+            Date date = null;
+
+            try {
+                date = dateFormat.parse(dateString);
+            } catch (ParseException e) {
+                e.printStackTrace();
+                Toast.makeText(this, "Failed to parse the date.", Toast.LENGTH_SHORT).show();
+                return;
+            }
+
+
+            Calendar calendar = Calendar.getInstance();
+            calendar.setTime(date);
+            calendar.add(Calendar.DAY_OF_MONTH, -Integer.parseInt(service.getCancelationDue()));
+            Date dateMinusOneDay = calendar.getTime();
+
+            Date currentDate = new Date();
+
+            if (currentDate.before(dateMinusOneDay)) {
+                ServiceReservationRequest reservation = document.toObject(ServiceReservationRequest.class);
+                reservation.setStatus("DENIEDBY".concat(userType));
+
+                db.collection("ServiceReservationRequest")
+                        .document(document.getId())
+                        .set(reservation, SetOptions.merge())
+                        .addOnSuccessListener(aVoid -> {
+                            Log.d("Firestore", "Reservation updated successfully!");
+
+                            serviceReservationsContainer.removeAllViews();
+                            serviceReservations.clear();
+
+                            retrieveAllServiceReservationRequests();
+                        })
+                        .addOnFailureListener(e -> {
+                            Log.w("Firestore", "Error updating reservation", e);
+                        });
+            }
         });
 
         serviceReservationsContainer.addView(view);
