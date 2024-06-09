@@ -134,9 +134,12 @@ public class UserInfoActivity extends AppCompatActivity {
 
         String firstName = (reportedUser instanceof UserOD) ? ((UserOD) reportedUser).getFirstName() : ((UserPUPV) reportedUser).getFirstName();
         String lastName = (reportedUser instanceof UserOD) ? ((UserOD) reportedUser).getLastName() : ((UserPUPV) reportedUser).getLastName();
-        String jsonPayload = "{\"data\":{\"title\":\"New user report\",\"body\":\"User "
-                + firstName + " " + lastName +
-                " has been reported\"},\"to\":\"/topics/" + "AdminTopic" + "\"}";
+        String jsonPayload = "{\"data\":{" +
+                "\"title\":\"New user report\"," +
+                "\"body\":\"User " + firstName + " " + lastName + " has been reported\"," +
+                "\"topic\":\"AdminTopic\"" +
+                "}," +
+                "\"to\":\"/topics/" + "AdminTopic" + "\"}";
 
         FCMHttpClient httpClient = new FCMHttpClient();
         httpClient.sendMessageToTopic(serverKey, "AdminTopic", jsonPayload);

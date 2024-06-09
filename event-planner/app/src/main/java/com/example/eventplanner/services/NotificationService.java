@@ -75,7 +75,32 @@ public class NotificationService extends FirebaseMessagingService {
                 notificationManager.notify(0 , notificationBuilder.build());
 
             }
+            else if(messageTopic.equals("AdminTopic")){
+                NotificationCompat.Builder builder = new NotificationCompat.Builder(this, "123");
+                builder.setContentTitle(messageTitle);
+                builder.setContentText(messageBody);
+                builder.setSmallIcon(R.drawable.ic_android);
+                builder.setAutoCancel(true);
+                builder.setSound(defaultSoundUri);
 
+                NotificationManager notificationManager =
+                        (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+
+                notificationManager.notify(0, builder.build());
+            }
+            else if(messageTopic.equals(user.getUid()+"Topic")){
+                NotificationCompat.Builder builder = new NotificationCompat.Builder(this, "123");
+                builder.setContentTitle(messageTitle);
+                builder.setContentText(messageBody);
+                builder.setSmallIcon(R.drawable.ic_android);
+                builder.setAutoCancel(true);
+                builder.setSound(defaultSoundUri);
+
+                NotificationManager notificationManager =
+                        (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+
+                notificationManager.notify(0, builder.build());
+            }
         }
 
 //        if (user != null) {
