@@ -110,6 +110,10 @@ public class ShowOnePackageActivity extends AppCompatActivity {
         ArrayList<String> serviceIds = getIntent().getStringArrayListExtra("serviceIds");
         getServices(serviceIds);
 
+        if(user!=null){
+            binding.showCompanyInfo.setVisibility(View.VISIBLE);
+        }
+
 
         binding.namePackage.setText(name);
         binding.descriptionPackage.setText(description);

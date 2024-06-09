@@ -208,7 +208,6 @@ public class HomeActivity extends AppCompatActivity {
         if(user==null){
             binding.registerButton.setVisibility(View.VISIBLE);
             binding.loginButton.setVisibility(View.VISIBLE);
-            binding.homeact.setVisibility(View.INVISIBLE);
             return;
         }else{
             binding.signOut.setVisibility(View.VISIBLE);

@@ -138,6 +138,7 @@ public class ShowOneProductActivity extends AppCompatActivity {
         });
 
         if(user!= null){
+            binding.showCompanyInfo.setVisibility(View.VISIBLE);
             if(!user.getDisplayName().equals("OD")){
                 binding.sendMessagePupv.setVisibility(View.GONE);
                 binding.likeUnlikeButton.setVisibility(View.GONE);

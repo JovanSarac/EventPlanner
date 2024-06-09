@@ -151,6 +151,10 @@ public class ShowOneServiceActivity extends AppCompatActivity {
             }
         });
 
+        if(user != null){
+            binding.showCompanyInfo.setVisibility(View.VISIBLE);
+        }
+
 
         if(user != null && user.getDisplayName().equals("OD")){
             getUserOd(user.getUid()).thenAccept(userOD -> {
