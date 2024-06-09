@@ -34,6 +34,14 @@ public class Message {
         this.status = status;
     }
 
+    public String getSenderFullName() {
+        return SenderFullName;
+    }
+
+    public void setSenderFullName(String senderFullName) {
+        SenderFullName = senderFullName;
+    }
+
     public String getRecipientFullName() {
         return RecipientFullName;
     }

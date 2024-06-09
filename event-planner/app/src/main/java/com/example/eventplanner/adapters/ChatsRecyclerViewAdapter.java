@@ -94,6 +94,7 @@ public class ChatsRecyclerViewAdapter extends RecyclerView.Adapter<ChatsRecycler
 
                         Intent intent = new Intent(itemView.getContext(), ShowOneChatActivity.class);
                         intent.putExtra("senderId", message.getSenderId());
+                        intent.putExtra("senderFullname", message.getSenderFullName());
                         intent.putExtra("recipientId", message.getRecipientId());
                         intent.putExtra("recipientFullname", message.getRecipientFullName());
 
