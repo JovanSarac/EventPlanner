@@ -22,6 +22,7 @@ import com.example.eventplanner.adapters.ImageAdapter;
 import com.example.eventplanner.databinding.ActivityShowOneProductBinding;
 import com.example.eventplanner.model.Category;
 import com.example.eventplanner.model.Subcategory;
+import com.example.eventplanner.model.UserOD;
 import com.example.eventplanner.model.UserPUPV;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -35,6 +36,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -53,6 +55,8 @@ public class ShowOneProductActivity extends AppCompatActivity {
     Subcategory subcategory;
 
     UserPUPV userPUPV;
+    String fullnamePupv;
+    String fullnameSender;
     FirebaseFirestore db = FirebaseFirestore.getInstance();
 
     FirebaseAuth mAuth = FirebaseAuth.getInstance();
@@ -120,63 +124,76 @@ public class ShowOneProductActivity extends AppCompatActivity {
             }
         });
 
-        if(!user.getDisplayName().equals("OD")){
-            binding.sendMessagePupv.setVisibility(View.GONE);
-        }else{
-            binding.sendMessagePupv.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-
-                    AlertDialog.Builder builder = new AlertDialog.Builder(ShowOneProductActivity.this);
-
-                    LayoutInflater inflater = getLayoutInflater();
-                    View dialogView = inflater.inflate(R.layout.dialog_send_message, null);
-
-                    EditText messageInput = dialogView.findViewById(R.id.messageInput);
-                    Button buttonSend = dialogView.findViewById(R.id.buttonSend);
-                    Button buttonClose = dialogView.findViewById(R.id.buttonClose);
-
-                    builder.setView(dialogView);
-
-                    AlertDialog dialog = builder.create();
-                    dialog.show();
-
-                    buttonSend.setOnClickListener(new View.OnClickListener() {
+        if(user!= null){
+            if(!user.getDisplayName().equals("OD")){
+                binding.sendMessagePupv.setVisibility(View.GONE);
+            }else {
+                getUserOd(user.getUid()).thenAccept(userOD -> {
+                    binding.sendMessagePupv.setVisibility(View.VISIBLE);
+                    binding.sendMessagePupv.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            // Handle sending the message
-                            String message = messageInput.getText().toString().trim();
-                            if (!message.isEmpty()) {
-                                // Send the message to Pupv (implement your own logic here)
-                                sendMessageToPupv(message);
-                                // Dismiss the dialog
-                                dialog.dismiss();
-                            } else {
-                                Toast.makeText(ShowOneProductActivity.this, "Please enter a message", Toast.LENGTH_SHORT).show();
-                            }
+
+                            AlertDialog.Builder builder = new AlertDialog.Builder(ShowOneProductActivity.this);
+
+                            LayoutInflater inflater = getLayoutInflater();
+                            View dialogView = inflater.inflate(R.layout.dialog_send_message, null);
+
+                            EditText messageInput = dialogView.findViewById(R.id.messageInput);
+                            Button buttonSend = dialogView.findViewById(R.id.buttonSend);
+                            Button buttonClose = dialogView.findViewById(R.id.buttonClose);
+
+                            builder.setView(dialogView);
+
+                            AlertDialog dialog = builder.create();
+                            dialog.show();
+
+                            buttonSend.setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View v) {
+                                    // Handle sending the message
+                                    String message = messageInput.getText().toString().trim();
+                                    if (!message.isEmpty()) {
+                                        // Send the message to Pupv (implement your own logic here)
+                                        sendMessageToPupv(message);
+                                        // Dismiss the dialog
+                                        dialog.dismiss();
+                                    } else {
+                                        Toast.makeText(ShowOneProductActivity.this, "Please enter a message", Toast.LENGTH_SHORT).show();
+                                    }
+                                }
+                            });
+
+                            buttonClose.setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View v) {
+                                    // Close the dialog
+                                    dialog.dismiss();
+                                }
+                            });
+
                         }
                     });
 
-                    buttonClose.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            // Close the dialog
-                            dialog.dismiss();
-                        }
-                    });
+                        });
 
-                }
-            });
+            }
         }
+
+
+
     }
 
     private void sendMessageToPupv(String message) {
         Map<String, Object> elememt = new HashMap<>();
         elememt.put("senderId", user.getUid());
+        elememt.put("senderFullName", fullnameSender);
         elememt.put("recipientId", idPupv);
+        elememt.put("fullnameRecipientId", fullnamePupv);
         elememt.put("dateOfSending", new Date());
         elememt.put("content", message);
         elememt.put("status", false);
+        elememt.put("participants", Arrays.asList(user.getUid(), idPupv));
 
         // Dodajte novi dokument sa generisanim ID-om
         db.collection("Messages").document()
@@ -194,6 +211,50 @@ public class ShowOneProductActivity extends AppCompatActivity {
                     }
                 });
 
+    }
+
+    private CompletableFuture<UserOD> getUserOd(String uid) {
+        CompletableFuture<UserOD> future = new CompletableFuture<>();
+
+        db.collection("User").document(uid)
+                .get()
+                .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                        if (task.isSuccessful()) {
+                            DocumentSnapshot document = task.getResult();
+                            if (document.exists()) {
+                                Log.d("HomeTwoActivity", "DocumentSnapshot data: " + document.getData());
+                                UserOD userOdd = new UserOD();
+                                userOdd.setFirstName((String) document.get("FirstName"));
+                                userOdd.setLastName((String) document.get("LastName"));
+                                userOdd.setEmail((String) document.get("E-mail"));
+                                userOdd.setPassword((String) document.get("Password"));
+                                userOdd.setPhone((String) document.get("Phone"));
+                                userOdd.setAddress((String) document.get("Address"));
+                                userOdd.setValid((Boolean) document.get("IsValid"));
+
+                                fullnameSender = userOdd.getFirstName() + " " + userOdd.getLastName();
+                                future.complete(userOdd);
+                            } else {
+                                Log.e("HomeTwoActivity", "No such document");
+                                future.completeExceptionally(new Exception("No such document"));
+                            }
+                        } else {
+                            Log.e("HomeTwoActivity", "Error getting document", task.getException());
+                            future.completeExceptionally(task.getException());
+                        }
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Log.e("HomeTwoActivity", "Error getting document", e);
+                        future.completeExceptionally(e);
+                    }
+                });
+
+        return future;
     }
 
     private CompletableFuture<UserPUPV> getUserPupv(String uid) {
@@ -223,6 +284,8 @@ public class ShowOneProductActivity extends AppCompatActivity {
                                 userPupvv.setWorkTime((String) document.get("WorkTime"));
 
                                 userPUPV = userPupvv;
+
+                                fullnamePupv = userPupvv.getFirstName() + " " + userPupvv.getLastName();
 
                                 future.complete(userPupvv);
                             } else {

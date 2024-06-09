@@ -24,10 +24,6 @@ import com.example.eventplanner.R;
 import com.example.eventplanner.databinding.ActivityHomeBinding;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-
-import com.google.firebase.firestore.auth.User;
-import com.google.firebase.messaging.FirebaseMessaging;
-import com.google.android.gms.tasks.OnCompleteListener;
 public class HomeActivity extends AppCompatActivity {
 
     private Button buttonCreateEventOD;
@@ -176,7 +172,7 @@ public class HomeActivity extends AppCompatActivity {
 
             binding.registerButton.setVisibility(View.VISIBLE);
             binding.loginButton.setVisibility(View.VISIBLE);
-            binding.homeact.setVisibility(View.INVISIBLE);
+            //binding.homeact.setVisibility(View.INVISIBLE);
 
         } else {
             binding.signOut.setVisibility(View.VISIBLE);

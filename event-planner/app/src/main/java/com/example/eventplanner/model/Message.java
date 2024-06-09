@@ -5,18 +5,41 @@ import java.util.Date;
 public class Message {
     public Long Id;
     public String SenderId;
+    public String SenderFullName;
     public String RecipientId;
+
+    public String RecipientFullName;
     public Date DateOfSending;
     public String Content;
     public boolean status;
 
-    public Message(Long id, String senderId, String recipientId, Date dateOfSending, String content, boolean status) {
+    public Message(Long id, String senderId, String senderFullName, String recipientId, String recipientFullName, Date dateOfSending, String content, boolean status) {
         Id = id;
         SenderId = senderId;
+        SenderFullName = senderFullName;
         RecipientId = recipientId;
+        RecipientFullName = recipientFullName;
         DateOfSending = dateOfSending;
         Content = content;
         this.status = status;
+    }
+
+    public Message(String senderId, String senderFullName, String recipientId, String recipientFullName, Date dateOfSending, String content, boolean status) {
+        SenderId = senderId;
+        SenderFullName = senderFullName;
+        RecipientId = recipientId;
+        RecipientFullName = recipientFullName;
+        DateOfSending = dateOfSending;
+        Content = content;
+        this.status = status;
+    }
+
+    public String getRecipientFullName() {
+        return RecipientFullName;
+    }
+
+    public void setRecipientFullName(String recipientFullName) {
+        RecipientFullName = recipientFullName;
     }
 
     public Long getId() {

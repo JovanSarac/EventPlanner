@@ -85,6 +85,7 @@ public class HomeTwoActivity extends AppCompatActivity {
 
         if(user!= null){
             navigationView.getMenu().findItem(R.id.my_profile).setVisible(true);
+            navigationView.getMenu().findItem(R.id.chats).setVisible(true);
             userImage.setVisibility(View.VISIBLE);
             userName.setVisibility(View.VISIBLE);
             loadImage(user.getUid(),userImage);
