@@ -5,6 +5,8 @@ import android.content.Intent;
 import android.graphics.drawable.ColorDrawable;
 import android.nfc.Tag;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -51,6 +53,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Future;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 public class ReservationView extends AppCompatActivity {
 
@@ -88,6 +91,64 @@ public class ReservationView extends AppCompatActivity {
 
         binding.packageFilterBtn.setOnClickListener(v -> {
             showFilterDialog();
+        });
+
+        binding.searchServiceReservationsInput.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                String newText = s.toString();
+
+                serviceReservationsContainer.removeAllViews();
+                serviceReservations.clear();
+                if(newText.isEmpty())
+                    retrieveAllServiceReservationRequests();
+                else{
+                    db.collection("ServiceReservationRequest")
+                            .get()
+                            .addOnCompleteListener(task -> {
+                                if (task.isSuccessful()) {
+                                    QuerySnapshot querySnapshot = task.getResult();
+                                    if (querySnapshot != null) {
+                                        for (QueryDocumentSnapshot document : querySnapshot) {
+                                            final boolean[] viewAdded = {false};
+
+                                            getUserDocument(document.getString("userId")).thenAccept(fullName -> {
+                                                if (!viewAdded[0] && fullName.contains(newText)) {
+                                                    addDocumentToView(document);
+                                                    serviceReservations.add(document.toObject(ServiceReservationRequest.class));
+                                                    viewAdded[0] = true;
+                                                    Log.d("ServiceReservation", document.getId() + " => " + document.getData());
+                                                }
+                                            });
+
+                                            getUserById(Double.parseDouble(document.getString("workerId"))).thenAccept(full -> {
+                                                if (!viewAdded[0] && full.contains(newText)) {
+                                                    addDocumentToView(document);
+                                                    serviceReservations.add(document.toObject(ServiceReservationRequest.class));
+                                                    viewAdded[0] = true;
+                                                    Log.d("ServiceReservation", document.getId() + " => " + document.getData());
+                                                }
+                                            });
+                                        }
+                                    } else {
+                                        Log.d("ServiceReservation", "No documents found in the collection.");
+                                    }
+                                } else {
+                                    Log.w("ServiceReservation", "Error getting documents.", task.getException());
+                                }
+                            });
+                }
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+            }
         });
 
         db = FirebaseFirestore.getInstance();
