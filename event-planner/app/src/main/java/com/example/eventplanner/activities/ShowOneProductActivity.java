@@ -63,6 +63,8 @@ public class ShowOneProductActivity extends AppCompatActivity {
     String fullnameSender;
 
     ArrayList<String> productIds = new ArrayList<>();
+    ArrayList<String> serviceIds = new ArrayList<>();
+    ArrayList<String> packageIds = new ArrayList<>();
     FirebaseFirestore db = FirebaseFirestore.getInstance();
 
     FirebaseAuth mAuth = FirebaseAuth.getInstance();
@@ -193,7 +195,7 @@ public class ShowOneProductActivity extends AppCompatActivity {
                         public void onClick(View v) {
                             if(binding.likeUnlikeButton.getText().toString().equals("Like")){
                                 productIds.add(idProduct.toString());
-                                addProductToFavourite(productIds);
+                                addProductToFavourite(productIds,serviceIds,packageIds);
                                 binding.likeUnlikeButton.setText(R.string.unlike);
                                 binding.likeUnlikeButton.setIcon(getDrawable(R.drawable.ic_unlike));
                                 binding.likeUnlikeButton.setBackgroundColor(getColor(R.color.purple_light));
@@ -227,6 +229,8 @@ public class ShowOneProductActivity extends AppCompatActivity {
                     DocumentSnapshot document = task.getResult();
                     if (document.exists()) {
                         productIds = (ArrayList<String>) document.get("productIds");
+                        serviceIds = (ArrayList<String>) document.get("serviceIds");
+                        packageIds = (ArrayList<String>) document.get("packageIds");
 
                         if (productIds != null && productIds.contains(idProduct.toString())) {
                             binding.likeUnlikeButton.setText(R.string.unlike);
@@ -279,12 +283,12 @@ public class ShowOneProductActivity extends AppCompatActivity {
         });
     }
 
-    private void addProductToFavourite(ArrayList<String> productIds) {
+    private void addProductToFavourite(ArrayList<String> productIds,ArrayList<String> serviceIds,ArrayList<String> packageIds) {
 
         Map<String, Object> elememt = new HashMap<>();
         elememt.put("productIds", productIds);
-        elememt.put("serviceIds", new ArrayList<>());
-        elememt.put("packageIds", new ArrayList<>());
+        elememt.put("serviceIds", serviceIds);
+        elememt.put("packageIds", packageIds);
         db.collection("FavouritesPsp").document(user.getUid())
                 .set(elememt)
                 .addOnSuccessListener(new OnSuccessListener<Void>() {

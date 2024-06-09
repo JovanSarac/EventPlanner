@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -25,10 +26,12 @@ import com.example.eventplanner.model.UserPUPV;
 import com.example.eventplanner.model.UserPUPZ;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.gms.tasks.Tasks;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FieldPath;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -48,7 +51,7 @@ public class ShowOneServiceActivity extends AppCompatActivity {
     RecyclerView recyclerViewForPupz;
     ImageAdapter imageAdapter;
 
-    Long idProduct;
+    Long idService;
     String idPupv;
 
     Category category;
@@ -58,6 +61,11 @@ public class ShowOneServiceActivity extends AppCompatActivity {
 
     String fullnameSender;
     ArrayList<UserPUPZ> pupzs;
+
+    ArrayList<String> productIds = new ArrayList<>();
+
+    ArrayList<String> serviceIds = new ArrayList<>();
+    ArrayList<String> packageIds = new ArrayList<>();
     FirebaseFirestore db = FirebaseFirestore.getInstance();
     FirebaseAuth mAuth = FirebaseAuth.getInstance();
 
@@ -68,7 +76,7 @@ public class ShowOneServiceActivity extends AppCompatActivity {
         binding = ActivityShowOneServiceBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
-        idProduct = getIntent().getLongExtra("serviceId", 0L);
+        idService = getIntent().getLongExtra("serviceId", 0L);
         idPupv = getIntent().getStringExtra("pupvId");
         getUserPupv(idPupv).thenAccept(userPUPV -> {
             this.userPUPV = userPUPV;
@@ -151,9 +159,119 @@ public class ShowOneServiceActivity extends AppCompatActivity {
                 recyclerViewForPupz.setLayoutManager(layoutManager);
 
                 findAllPupz(pupIds);
+
+                binding.likeUnlikeButtonService.setVisibility(View.VISIBLE);
+
+                updateLikeButtonState(idService);
+                binding.likeUnlikeButtonService.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        if(binding.likeUnlikeButtonService.getText().toString().equals("Like")){
+                            serviceIds.add(idService.toString());
+                            addServiceToFavourite(productIds, serviceIds, packageIds);
+                            binding.likeUnlikeButtonService.setText(R.string.unlike);
+                            binding.likeUnlikeButtonService.setIcon(getDrawable(R.drawable.ic_unlike));
+                            binding.likeUnlikeButtonService.setBackgroundColor(getColor(R.color.purple_light));
+                        }else if(binding.likeUnlikeButtonService.getText().toString().equals("Unlike")){
+                            serviceIds.remove(idService.toString());
+                            removeFromFavourite(serviceIds);
+                            binding.likeUnlikeButtonService.setText(R.string.like);
+                            binding.likeUnlikeButtonService.setIcon(getDrawable(R.drawable.ic_like));
+                            binding.likeUnlikeButtonService.setBackgroundColor(getColor(R.color.yellow));
+                        }
+                    }
+                });
+
             });
 
         }
+    }
+
+    private void updateLikeButtonState(Long idService) {
+        DocumentReference userFavoritesRef = db.collection("FavouritesPsp").document(user.getUid());
+
+        userFavoritesRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                if (task.isSuccessful()) {
+                    DocumentSnapshot document = task.getResult();
+                    if (document.exists()) {
+                        productIds = (ArrayList<String>) document.get("productIds");
+                        serviceIds = (ArrayList<String>) document.get("serviceIds");
+                        packageIds = (ArrayList<String>) document.get("packageIds");
+
+                        if (serviceIds != null && serviceIds.contains(idService.toString())) {
+                            binding.likeUnlikeButtonService.setText(R.string.unlike);
+                            binding.likeUnlikeButtonService.setIcon(getDrawable(R.drawable.ic_unlike));
+                            binding.likeUnlikeButtonService.setBackgroundColor(getColor(R.color.purple_light));
+                        } else {
+                            binding.likeUnlikeButtonService.setText(R.string.like);
+                            binding.likeUnlikeButtonService.setIcon(getDrawable(R.drawable.ic_like));
+                            binding.likeUnlikeButtonService.setBackgroundColor(getColor(R.color.yellow));
+                        }
+                    }
+                } else {
+                    Log.e(TAG, "Error getting document", task.getException());
+                }
+            }
+        });
+    }
+
+    private void removeFromFavourite(ArrayList<String> serviceIds) {
+        DocumentReference userFavoritesRef = db.collection("FavouritesPsp").document(user.getUid());
+
+        userFavoritesRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                if (task.isSuccessful()) {
+                    DocumentSnapshot document = task.getResult();
+                    if (document.exists()) {
+
+
+                        userFavoritesRef.update("serviceIds", serviceIds)
+                                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                    @Override
+                                    public void onSuccess(Void aVoid) {
+                                        // Uspješno uklonjen proizvod iz liste omiljenih
+                                        Toast.makeText(ShowOneServiceActivity.this, "Removed from favourites", Toast.LENGTH_SHORT).show();
+                                    }
+                                })
+                                .addOnFailureListener(new OnFailureListener() {
+                                    @Override
+                                    public void onFailure(@NonNull Exception e) {
+                                        Log.e(TAG, "Error updating document", e);
+                                    }
+                                });
+
+                    }
+                } else {
+                    Log.e(TAG, "Error getting document", task.getException());
+                }
+            }
+        });
+    }
+
+    private void addServiceToFavourite(ArrayList<String> productIds,ArrayList<String> serviceIds,ArrayList<String> packageIds) {
+
+        Map<String, Object> elememt = new HashMap<>();
+        elememt.put("productIds", productIds);
+        elememt.put("serviceIds", serviceIds);
+        elememt.put("packageIds", packageIds);
+        db.collection("FavouritesPsp").document(user.getUid())
+                .set(elememt)
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                        Toast.makeText(ShowOneServiceActivity.this, "Add to favourite", Toast.LENGTH_SHORT).show();
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Log.e(TAG, "Error adding document", e);
+                    }
+                });
+
     }
 
     private void findAllPupz(ArrayList<String> pupIds) {
