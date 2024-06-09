@@ -16,13 +16,16 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.example.eventplanner.R;
+import com.example.eventplanner.activities.CompanyViewActivity;
 import com.example.eventplanner.activities.UserInfoActivity;
 import com.example.eventplanner.model.UserOD;
 import com.example.eventplanner.model.UserPUPV;
 import com.example.eventplanner.model.UserReport;
 import com.example.eventplanner.services.FCMHttpClient;
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.auth.UserInfo;
 import com.google.firebase.firestore.DocumentSnapshot;
@@ -33,7 +36,10 @@ import com.google.firebase.firestore.auth.User;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Locale;
+import java.util.Map;
+import java.util.Random;
 
 public class ReportedUsersAdapter extends ArrayAdapter<UserReport> {
 
@@ -261,11 +267,10 @@ public class ReportedUsersAdapter extends ArrayAdapter<UserReport> {
                     }
                 });
     }
-
     private void cancelReservations(Long id, String pupvId, String type){
         switch (type){
             case "product":
-                db.collection("ProductReservation")
+                /*db.collection("ProductReservation")
                         .whereEqualTo("product.id", id)
                         .get()
                         .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
@@ -275,15 +280,19 @@ public class ReportedUsersAdapter extends ArrayAdapter<UserReport> {
                                 String ODId = "";
 
                                 for(DocumentSnapshot doc : queryDocumentSnapshots) {
-                                    db.collection("ServiceReservationRequest")
-                                            .document(doc.getId())
-                                            .update("status", "DENIEDBYADMIN");
-                                    sendNotification = true;
-                                    ODId = doc.getString("userId");
+                                    if(doc.getString("status").equals("NEW")) {
+                                        db.collection("ProductReservation")
+                                                .document(doc.getId())
+                                                .update("status", "DENIEDBYADMIN");
+                                        sendNotification = true;
+                                        ODId = doc.getString("userId");
+                                    }
                                 }
 
                                 if(sendNotification){
-                                    sendNotificationToOD(ODId, "product");
+                                    String title = "Reservation update";
+                                    String body = "Your reservation on product has been canceled by admin. \nCompany you've reserved it from is no longer in function.";
+                                    createNotificationOD(ODId, "product", title, body);
                                 }
                             }
                         })
@@ -292,7 +301,7 @@ public class ReportedUsersAdapter extends ArrayAdapter<UserReport> {
                             public void onFailure(@NonNull Exception e) {
                                 Toast.makeText(context, e.getMessage(), Toast.LENGTH_SHORT).show();
                             }
-                        });
+                        });*/
                 break;
             case "service":
                 db.collection("ServiceReservationRequest")
@@ -305,15 +314,19 @@ public class ReportedUsersAdapter extends ArrayAdapter<UserReport> {
                                 String ODId = "";
 
                                 for(DocumentSnapshot doc : queryDocumentSnapshots) {
-                                    db.collection("ServiceReservationRequest")
-                                            .document(doc.getId())
-                                            .update("status", "DENIEDBYADMIN");
-                                    sendNotification = true;
-                                    ODId = doc.getString("userId");
+                                    if(doc.getString("status").equals("NEW")) {
+                                        db.collection("ServiceReservationRequest")
+                                                .document(doc.getId())
+                                                .update("status", "DENIEDBYADMIN");
+                                        sendNotification = true;
+                                        ODId = doc.getString("userId");
+                                    }
                                 }
 
                                 if(sendNotification){
-                                    sendNotificationToOD(ODId, "service");
+                                    String title = "Reservation update";
+                                    String body = "Your reservation on service has been canceled by admin. \nCompany you've reserved it from is no longer in function.";
+                                    createNotificationOD(ODId, "service", title, body);
                                 }
                             }
                         })
@@ -335,15 +348,19 @@ public class ReportedUsersAdapter extends ArrayAdapter<UserReport> {
                                 String ODId = "";
 
                                 for(DocumentSnapshot doc : queryDocumentSnapshots) {
-                                    db.collection("PackageReservationRequest")
-                                            .document(doc.getId())
-                                            .update("status", "DENIEDBYADMIN");
-                                    sendNotification = true;
-                                    ODId = doc.getString("userId");
+                                    if(doc.getString("status").equals("NEW")) {
+                                        db.collection("PackageReservationRequest")
+                                                .document(doc.getId())
+                                                .update("status", "DENIEDBYADMIN");
+                                        sendNotification = true;
+                                        ODId = doc.getString("userId");
+                                    }
                                 }
 
                                 if(sendNotification){
-                                    sendNotificationToOD(ODId, "package");
+                                    String title = "Reservation update";
+                                    String body = "Your reservation on package has been canceled by admin. \nCompany you've reserved it from is no longer in function.";
+                                    createNotificationOD(ODId, "package", title, body);
                                 }
                             }
                         })
@@ -359,7 +376,7 @@ public class ReportedUsersAdapter extends ArrayAdapter<UserReport> {
 
     private void cancelReservationsOD(String ODId){
         //dodati za proizvode
-        db.collection("ProductReservation")
+        /*db.collection("ProductReservation")
                 .whereEqualTo("userId", ODId)
                 .get()
                 .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
@@ -369,15 +386,19 @@ public class ReportedUsersAdapter extends ArrayAdapter<UserReport> {
                         String pupvId = "";
 
                         for(DocumentSnapshot doc : queryDocumentSnapshots) {
-                            db.collection("ServiceReservationRequest")
-                                    .document(doc.getId())
-                                    .update("status", "DENIEDBYADMIN");
-                            sendNotification = true;
-                            pupvId = doc.getString("product.pupvId");
+                            if(doc.getString("status").equals("NEW")) {
+                                db.collection("ProductReservation")
+                                        .document(doc.getId())
+                                        .update("status", "DENIEDBYADMIN");
+                                sendNotification = true;
+                                pupvId = doc.getString("product.pupvId");
+                            }
                         }
 
                         if(sendNotification){
-                            sendNotificationToPUPV(pupvId, "product");
+                            String title = "Reservation update";
+                            String body = "Your reservation on product has been canceled by admin.\nUser that reserved it is not eligible to reserve items anymore.";
+                            createNotificationPupv(pupvId, "product", title, body);
                         }
                     }
                 })
@@ -386,7 +407,7 @@ public class ReportedUsersAdapter extends ArrayAdapter<UserReport> {
                     public void onFailure(@NonNull Exception e) {
                         Toast.makeText(context, e.getMessage(), Toast.LENGTH_SHORT).show();
                     }
-                });
+                });*/
 
         db.collection("ServiceReservationRequest")
                 .whereEqualTo("userId", ODId)
@@ -398,15 +419,19 @@ public class ReportedUsersAdapter extends ArrayAdapter<UserReport> {
                         String pupvId = "";
 
                         for(DocumentSnapshot doc : queryDocumentSnapshots) {
-                            db.collection("ServiceReservationRequest")
-                                    .document(doc.getId())
-                                    .update("status", "DENIEDBYADMIN");
-                            sendNotification = true;
-                            pupvId = doc.getString("service.pupvId");
+                            if(doc.getString("status").equals("NEW")) {
+                                db.collection("ServiceReservationRequest")
+                                        .document(doc.getId())
+                                        .update("status", "DENIEDBYADMIN");
+                                sendNotification = true;
+                                pupvId = doc.getString("service.pupvId");
+                            }
                         }
 
                         if(sendNotification){
-                            sendNotificationToPUPV(pupvId, "service");
+                            String title = "Reservation update";
+                            String body = "Your reservation on service has been canceled by admin.\nUser that reserved it is not eligible to reserve items anymore.";
+                            createNotificationPupv(pupvId, "service", title, body);
                         }
                     }
                 })
@@ -427,15 +452,19 @@ public class ReportedUsersAdapter extends ArrayAdapter<UserReport> {
                         String pupvId = "";
 
                         for(DocumentSnapshot doc : queryDocumentSnapshots) {
-                            db.collection("PackageReservationRequest")
-                                    .document(doc.getId())
-                                    .update("status", "DENIEDBYADMIN");
-                            sendNotification = true;
-                            pupvId = doc.getString("service.pupvId");
+                            if(doc.getString("status").equals("NEW")) {
+                                db.collection("PackageReservationRequest")
+                                        .document(doc.getId())
+                                        .update("status", "DENIEDBYADMIN");
+                                sendNotification = true;
+                                pupvId = doc.getString("pupvId");
+                            }
                         }
 
                         if(sendNotification){
-                            sendNotificationToPUPV(pupvId, "package");
+                            String title = "Reservation update";
+                            String body = "Your reservation on package has been canceled by admin.\nUser that reserved it is not eligible to reserve items anymore.";
+                            createNotificationPupv(pupvId, "package", title, body);
                         }
                     }
                 })
@@ -519,6 +548,83 @@ public class ReportedUsersAdapter extends ArrayAdapter<UserReport> {
         httpClient.sendMessageToTopic(serverKey, pupvId + "Topic", jsonPayload);
     }
 
+    private void createNotification(UserReport report, String reasonOfDenying, String fullNameOfReported, String title, String body){
+        Long id = new Random().nextLong();
+        Map<String, Object> doc = new HashMap<>();
+
+        doc.put("title", title);
+        doc.put("body", body);
+        doc.put("read", false);
+        doc.put("userId", report.getReporterId());
+
+        db.collection("Notifications")
+                .document(id.toString())
+                .set(doc)
+                .addOnCompleteListener(new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                        sendNotification(report, reasonOfDenying, fullNameOfReported);
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Toast.makeText(context, e.getMessage(), Toast.LENGTH_SHORT).show();
+                    }
+                });
+    }
+
+    private void createNotificationOD(String userId, String type, String title, String body){
+        Long id = new Random().nextLong();
+        Map<String, Object> doc = new HashMap<>();
+
+        doc.put("title", title);
+        doc.put("body", body);
+        doc.put("read", false);
+        doc.put("userId", userId);
+
+        db.collection("Notifications")
+                .document(id.toString())
+                .set(doc)
+                .addOnCompleteListener(new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                        sendNotificationToOD(userId, type);
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Toast.makeText(context, e.getMessage(), Toast.LENGTH_SHORT).show();
+                    }
+                });
+    }
+    private void createNotificationPupv(String userId, String type, String title, String body){
+        Long id = new Random().nextLong();
+        Map<String, Object> doc = new HashMap<>();
+
+        doc.put("title", title);
+        doc.put("body", body);
+        doc.put("read", false);
+        doc.put("userId", userId);
+
+        db.collection("Notifications")
+                .document(id.toString())
+                .set(doc)
+                .addOnCompleteListener(new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                        sendNotificationToPUPV(userId, type);
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Toast.makeText(context, e.getMessage(), Toast.LENGTH_SHORT).show();
+                    }
+                });
+    }
+
     private void getFullNameForNotification(UserReport report, String reasonOfDenying){
         db.collection("User")
                 .document(report.getReportedId())
@@ -526,7 +632,14 @@ public class ReportedUsersAdapter extends ArrayAdapter<UserReport> {
                 .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
                     @Override
                     public void onSuccess(DocumentSnapshot documentSnapshot) {
-                        sendNotification(report, reasonOfDenying, documentSnapshot.getString("FirstName") + " " + documentSnapshot.getString("LastName"));
+                        String fullNameOfReported = documentSnapshot.getString("FirstName") + " " + documentSnapshot.getString("LastName");
+
+                        String title = "Update on your report";
+                        String body = "Your report on "
+                                + fullNameOfReported +
+                                " has been denied. \nReason: " + reasonOfDenying;
+
+                        createNotification(report, reasonOfDenying, fullNameOfReported, title, body);
                     }
                 })
                 .addOnFailureListener(new OnFailureListener() {
