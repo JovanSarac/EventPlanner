@@ -116,13 +116,13 @@ public class ShowOnePackageActivity extends AppCompatActivity {
             binding.bookPackage.setVisibility(View.GONE);
         }
 
-        Intent intent = new Intent(ShowOnePackageActivity.this, CompanyViewActivity.class);
-        intent.putExtra("pupvId", idPupv);
-        startActivity(intent);
+
         binding.showCompanyInfo.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                System.out.println(idPupv);
+                Intent intent = new Intent(ShowOnePackageActivity.this, CompanyViewActivity.class);
+                intent.putExtra("pupvId", idPupv);
+                startActivity(intent);
             }
         });
     }

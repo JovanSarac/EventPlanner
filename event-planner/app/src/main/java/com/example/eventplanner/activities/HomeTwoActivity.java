@@ -24,6 +24,8 @@ import com.bumptech.glide.Glide;
 import com.example.eventplanner.R;
 import com.example.eventplanner.databinding.ActivityHomeTwoBinding;
 import com.example.eventplanner.model.UserOD;
+import com.example.eventplanner.model.UserPUPV;
+import com.example.eventplanner.model.UserPUPZ;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -59,6 +61,8 @@ public class HomeTwoActivity extends AppCompatActivity {
     TextView userName;
     ImageView userImage;
     private UserOD userOd;
+    private UserPUPZ userPupz;
+    private  UserPUPV userPupv;
     @SuppressLint("NonConstantResourceId")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -85,17 +89,40 @@ public class HomeTwoActivity extends AppCompatActivity {
 
         if(user!= null){
             navigationView.getMenu().findItem(R.id.my_profile).setVisible(true);
+            navigationView.getMenu().findItem(R.id.chats).setVisible(true);
+
+        }
+        if(user != null && (user.getDisplayName().equals("OD")|| user.getDisplayName().equals("ADMIN"))){
+            navigationView.getMenu().findItem(R.id.nav_events).setVisible(true);
             userImage.setVisibility(View.VISIBLE);
             userName.setVisibility(View.VISIBLE);
             loadImage(user.getUid(),userImage);
-
-        }
-        if(user != null && user.getDisplayName().equals("OD")){
-            navigationView.getMenu().findItem(R.id.nav_events).setVisible(true);
             getUserOd(user.getUid()).thenAccept(userOD -> {
                 this.userOd = userOD;
 
                 userName.setText(this.userOd.getFirstName() + " " + this.userOd.getLastName());
+
+            });
+
+        }else if(user != null && user.getDisplayName().equals("PUPZ")){
+            userImage.setVisibility(View.VISIBLE);
+            userName.setVisibility(View.VISIBLE);
+            loadImage(user.getUid(),userImage);
+            getUserPupz(user.getUid()).thenAccept(userPupz -> {
+                this.userPupz = userPupz;
+
+                userName.setText(this.userPupz.getFirstName() + " " + this.userPupz.getLastName());
+
+            });
+
+        }else if(user != null && user.getDisplayName().equals("PUPV")){
+            userImage.setVisibility(View.VISIBLE);
+            userName.setVisibility(View.VISIBLE);
+            loadImage(user.getUid(),userImage);
+            getUserPupv(user.getUid()).thenAccept(userPupv -> {
+                this.userPupv = userPupv;
+
+                userName.setText(this.userPupv.getFirstName() + " " + this.userPupv.getLastName());
 
             });
 
@@ -196,6 +223,101 @@ public class HomeTwoActivity extends AppCompatActivity {
         return NavigationUI.navigateUp(navController, mAppBarConfiguration) || super.onSupportNavigateUp();
     }
 
+    private CompletableFuture<UserPUPZ> getUserPupz(String uid) {
+        CompletableFuture<UserPUPZ> future = new CompletableFuture<>();
+
+        db.collection("User").document(uid)
+                .get()
+                .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                        if (task.isSuccessful()) {
+                            DocumentSnapshot document = task.getResult();
+                            if (document.exists()) {
+                                Log.d("HomeTwoActivity", "DocumentSnapshot data: " + document.getData());
+                                UserPUPZ userPupzz = new UserPUPZ();
+                                userPupzz.setFirstName((String) document.get("firstName"));
+                                userPupzz.setLastName((String) document.get("lastName"));
+                                userPupzz.setEmail((String) document.get("email"));
+                                userPupzz.setPassword((String) document.get("password"));
+                                userPupzz.setPhone((String) document.get("phone"));
+                                userPupzz.setAddress((String) document.get("address"));
+                                userPupzz.setValid((Boolean) document.get("valid"));
+                                userPupzz.setOwnerId((String) document.get("ownerId"));
+
+                                userName.setText(userPupzz.getFirstName() + " " + userPupzz.getLastName());
+
+                                future.complete(userPupzz);
+                            } else {
+                                Log.e("HomeTwoActivity", "No such document");
+                                future.completeExceptionally(new Exception("No such document"));
+                            }
+                        } else {
+                            Log.e("HomeTwoActivity", "Error getting document", task.getException());
+                            future.completeExceptionally(task.getException());
+                        }
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Log.e("HomeTwoActivity", "Error getting document", e);
+                        future.completeExceptionally(e);
+                    }
+                });
+
+        return future;
+    }
+
+    private CompletableFuture<UserPUPV> getUserPupv(String uid) {
+        CompletableFuture<UserPUPV> future = new CompletableFuture<>();
+
+        db.collection("User").document(uid)
+                .get()
+                .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                        if (task.isSuccessful()) {
+                            DocumentSnapshot document = task.getResult();
+                            if (document.exists()) {
+                                Log.d("HomeTwoActivity", "DocumentSnapshot data: " + document.getData());
+                                UserPUPV userPupvv = new UserPUPV();
+                                userPupvv.setFirstName((String) document.get("FirstName"));
+                                userPupvv.setLastName((String) document.get("LastName"));
+                                userPupvv.setEmail((String) document.get("E-mail"));
+                                userPupvv.setPassword((String) document.get("Password"));
+                                userPupvv.setPhone((String) document.get("Phone"));
+                                userPupvv.setAddress((String) document.get("Address"));
+                                userPupvv.setValid((Boolean) document.get("IsValid"));
+                                userPupvv.setCompanyName((String) document.get("CompanyName"));
+                                userPupvv.setCompanyDescription((String) document.get("CompanyDescription"));
+                                userPupvv.setCompanyAddress((String) document.get("CompanyAddress"));
+                                userPupvv.setCompanyemail((String) document.get("CompanyEmail"));
+                                userPupvv.setCompanyPhone((String) document.get("CompanyPhone"));
+                                userPupvv.setWorkTime((String) document.get("WorkTime"));
+
+                                userName.setText(userPupvv.getFirstName() + " " + userPupvv.getLastName());
+                                future.complete(userPupvv);
+                            } else {
+                                Log.e("HomeTwoActivity", "No such document");
+                                future.completeExceptionally(new Exception("No such document"));
+                            }
+                        } else {
+                            Log.e("HomeTwoActivity", "Error getting document", task.getException());
+                            future.completeExceptionally(task.getException());
+                        }
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Log.e("HomeTwoActivity", "Error getting document", e);
+                        future.completeExceptionally(e);
+                    }
+                });
+
+        return future;
+    }
     private CompletableFuture<UserOD> getUserOd(String uid) {
         CompletableFuture<UserOD> future = new CompletableFuture<>();
 

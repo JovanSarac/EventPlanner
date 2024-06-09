@@ -46,6 +46,15 @@
         app:popUpToInclusive="true"
         />
 
+    <fragment
+        android:id="@+id/chats"
+        android:name="com.example.eventplanner.fragments.ChatsFragment"
+        android:label="Chats"
+        tools:layout="@layout/fragment_chats"
+        app:popUpTo="@+id/chats"
+        app:popUpToInclusive="true"
+        />
+
 
 
 

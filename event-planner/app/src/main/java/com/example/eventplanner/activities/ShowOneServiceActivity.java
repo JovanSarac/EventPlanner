@@ -1,5 +1,7 @@
 package com.example.eventplanner.activities;
 
+import static android.content.ContentValues.TAG;
+
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -9,30 +11,42 @@ import android.widget.ArrayAdapter;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.eventplanner.R;
+import com.example.eventplanner.adapters.EmployeeRecyclerViewAdapter;
 import com.example.eventplanner.adapters.ImageAdapter;
 import com.example.eventplanner.databinding.ActivityShowOneServiceBinding;
 import com.example.eventplanner.fragments.ReserveServiceFragment;
 import com.example.eventplanner.model.Category;
 import com.example.eventplanner.model.Subcategory;
+import com.example.eventplanner.model.UserOD;
 import com.example.eventplanner.model.UserPUPV;
+import com.example.eventplanner.model.UserPUPZ;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.Task;
+import com.google.android.gms.tasks.Tasks;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FieldPath;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 
 public class ShowOneServiceActivity extends AppCompatActivity {
     ActivityShowOneServiceBinding binding;
 
     RecyclerView recyclerView;
+
+    RecyclerView recyclerViewForPupz;
     ImageAdapter imageAdapter;
 
     Long idProduct;
@@ -42,7 +56,13 @@ public class ShowOneServiceActivity extends AppCompatActivity {
     Subcategory subcategory;
 
     UserPUPV userPUPV;
+
+    String fullnameSender;
+    ArrayList<UserPUPZ> pupzs;
     FirebaseFirestore db = FirebaseFirestore.getInstance();
+    FirebaseAuth mAuth = FirebaseAuth.getInstance();
+
+    FirebaseUser user = mAuth.getCurrentUser();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -113,15 +133,121 @@ public class ShowOneServiceActivity extends AppCompatActivity {
             binding.bookService.setVisibility(View.GONE);
         }
 
-        Intent intent = new Intent(ShowOneServiceActivity.this, CompanyViewActivity.class);
-        intent.putExtra("pupvId", idPupv);
-        startActivity(intent);
+
         binding.showCompanyInfo.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                System.out.println(idPupv);
+                Intent intent = new Intent(ShowOneServiceActivity.this, CompanyViewActivity.class);
+                intent.putExtra("pupvId", idPupv);
+                startActivity(intent);
             }
         });
+
+
+        if(user != null && user.getDisplayName().equals("OD")){
+            getUserOd(user.getUid()).thenAccept(userOD -> {
+                binding.pupzsEmployeForOd.setVisibility(View.VISIBLE);
+                recyclerViewForPupz = binding.pupzListView;
+                RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(ShowOneServiceActivity.this);
+                recyclerViewForPupz.setLayoutManager(layoutManager);
+
+                findAllPupz(pupIds);
+            });
+
+        }
+    }
+
+    private void findAllPupz(ArrayList<String> pupIds) {
+        pupzs = new ArrayList<>();
+
+        if (pupIds.isEmpty()) {
+            Log.d(TAG, "List of pupIds is empty, nothing to fetch.");
+            return;
+        }
+
+        Map<String, UserPUPZ> pupzMap = new HashMap<>();
+        List<Task<DocumentSnapshot>> tasks = new ArrayList<>();
+
+        for (String id : pupIds) {
+            Task<DocumentSnapshot> task = db.collection("User").document(id).get();
+            tasks.add(task);
+        }
+
+        Tasks.whenAllComplete(tasks)
+                .addOnCompleteListener(new OnCompleteListener<List<Task<?>>>() {
+                    @Override
+                    public void onComplete(@NonNull Task<List<Task<?>>> task) {
+                        if (task.isSuccessful()) {
+                            for (Task<?> t : tasks) {
+                                DocumentSnapshot doc = (DocumentSnapshot) t.getResult();
+                                if (doc.exists()) {
+                                    UserPUPZ user = doc.toObject(UserPUPZ.class);
+                                    pupzMap.put(doc.getId(), user);
+                                } else {
+                                    Log.d(TAG, "No such document: " + doc.getId());
+                                }
+                            }
+
+                            for (String id : pupIds) {
+                                UserPUPZ user = pupzMap.get(id);
+                                if (user != null) {
+                                    pupzs.add(user);
+                                }
+                            }
+
+                            // Pretpostavljam da imate pristup user i fullnameSender varijablama
+                            EmployeeRecyclerViewAdapter adapterEvents = new EmployeeRecyclerViewAdapter(pupzs, pupIds, user.getUid(), fullnameSender);
+                            recyclerViewForPupz.setAdapter(adapterEvents);
+                        } else {
+                            Log.e(TAG, "Error getting documents: ", task.getException());
+                        }
+                    }
+                });
+    }
+
+
+    private CompletableFuture<UserOD> getUserOd(String uid) {
+        CompletableFuture<UserOD> future = new CompletableFuture<>();
+
+        db.collection("User").document(uid)
+                .get()
+                .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                        if (task.isSuccessful()) {
+                            DocumentSnapshot document = task.getResult();
+                            if (document.exists()) {
+                                Log.d("HomeTwoActivity", "DocumentSnapshot data: " + document.getData());
+                                UserOD userOdd = new UserOD();
+                                userOdd.setFirstName((String) document.get("FirstName"));
+                                userOdd.setLastName((String) document.get("LastName"));
+                                userOdd.setEmail((String) document.get("E-mail"));
+                                userOdd.setPassword((String) document.get("Password"));
+                                userOdd.setPhone((String) document.get("Phone"));
+                                userOdd.setAddress((String) document.get("Address"));
+                                userOdd.setValid((Boolean) document.get("IsValid"));
+
+                                fullnameSender = userOdd.getFirstName() + " " + userOdd.getLastName();
+                                future.complete(userOdd);
+                            } else {
+                                Log.e("HomeTwoActivity", "No such document");
+                                future.completeExceptionally(new Exception("No such document"));
+                            }
+                        } else {
+                            Log.e("HomeTwoActivity", "Error getting document", task.getException());
+                            future.completeExceptionally(task.getException());
+                        }
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Log.e("HomeTwoActivity", "Error getting document", e);
+                        future.completeExceptionally(e);
+                    }
+                });
+
+        return future;
     }
 
     private CompletableFuture<UserPUPV> getUserPupv(String uid) {

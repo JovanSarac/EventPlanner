@@ -171,5 +171,10 @@
     <string name="book_a_service">Book a service</string>
     <string name="book_a_package">Book a package</string>
     <string name="show_company_info">Show company info</string>
+    <string name="sent_message_pupv">Send message to PUPV</string>
+    <string name="chats">Chats</string>
+    <string name="message">Message</string>
     <string name="notifications">Notifications</string>
+    <string name="send_message">Send message</string>
+    <string name="pupz_employess">These are employees who provide services:</string>
 </resources>
