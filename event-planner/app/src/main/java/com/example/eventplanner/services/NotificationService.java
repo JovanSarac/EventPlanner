@@ -35,8 +35,6 @@ public class NotificationService extends FirebaseMessagingService {
     public void onMessageReceived(@NonNull RemoteMessage remoteMessage) {
         Bundle bundle = remoteMessage.toIntent().getExtras();
 
-
-
         Object value = bundle.get("title");
         if(value==null)return;
         String title=value.toString();

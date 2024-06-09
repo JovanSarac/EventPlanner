@@ -158,10 +158,14 @@ public class HomeActivity extends AppCompatActivity {
             startActivity(intent);
         });
         binding.approveRegistration.setOnClickListener(v->{
-//            Intent intent = new Intent(HomeActivity.this, ApproveRegistrationActivity.class);
-//            startActivity(intent);
+            Intent intent = new Intent(HomeActivity.this, ApproveRegistrationActivity.class);
+            startActivity(intent);
         });
         binding.signOut.setOnClickListener(v->{
+            FirebaseMessaging.getInstance().unsubscribeFromTopic("PUPV");
+            FirebaseMessaging.getInstance().unsubscribeFromTopic("AdminTopic");
+            FirebaseMessaging.getInstance().unsubscribeFromTopic(mAuth.getCurrentUser().getUid() + "Topic");
+            FirebaseMessaging.getInstance().unsubscribeFromTopic(mAuth.getCurrentUser().getUid() + "PUPZTopic");
             FirebaseAuth.getInstance().signOut();
             Toast.makeText(this, "SingedOut", Toast.LENGTH_SHORT).show();
             this.onResume();
@@ -180,44 +184,42 @@ public class HomeActivity extends AppCompatActivity {
 
         super.onResume();
         FirebaseUser user = mAuth.getCurrentUser();
-        if (user == null) {
-            binding.signOut.setVisibility(View.GONE);
-            binding.pricelist.setVisibility(View.GONE);
-            binding.userReports.setVisibility(View.GONE);
 
+        binding.signOut.setVisibility(View.GONE);
+        binding.pricelist.setVisibility(View.GONE);
+        binding.userReports.setVisibility(View.GONE);
+        binding.registerButton.setVisibility(View.GONE);
+        binding.loginButton.setVisibility(View.GONE);
+        binding.categoriesButton.setVisibility(View.GONE);
+        binding.typesOfEventsButton.setVisibility(View.GONE);
+        binding.approveRegistration.setVisibility(View.GONE);
 
+        if(user==null){
             binding.registerButton.setVisibility(View.VISIBLE);
             binding.loginButton.setVisibility(View.VISIBLE);
             binding.homeact.setVisibility(View.INVISIBLE);
-
-        } else {
+            return;
+        }else{
             binding.signOut.setVisibility(View.VISIBLE);
+        }
 
-            binding.registerButton.setVisibility(View.GONE);
-            binding.loginButton.setVisibility(View.GONE);
-            binding.pricelist.setVisibility(View.GONE);
-            binding.userReports.setVisibility(View.GONE);
-            if(user.getDisplayName().equals("OD")){
-                binding.homeact.setVisibility(View.VISIBLE);
-            }
-            //pupv i pupz i OD
-            else if(!user.getDisplayName().equals("ADMIN")){
-                binding.categoriesButton.setVisibility(View.GONE);
-                binding.typesOfEventsButton.setVisibility(View.GONE);
-                binding.pricelist.setVisibility(View.VISIBLE);
-                binding.reservationViewId.setVisibility(View.VISIBLE);
-            }
-            //admin
-            else{
-                binding.categoriesButton.setVisibility(View.VISIBLE);
-                binding.typesOfEventsButton.setVisibility(View.VISIBLE);
-                binding.userReports.setVisibility(View.VISIBLE);
-            }
-
-            if(user.getDisplayName().equals("PUPV")) {
-            }
+        if(user.getDisplayName().equals("OD")){
+            binding.homeact.setVisibility(View.VISIBLE);
+            binding.pricelist.setVisibility(View.VISIBLE);
+            binding.reservationViewId.setVisibility(View.VISIBLE);
+        }else if(user.getDisplayName().equals("ADMIN")){
+            binding.categoriesButton.setVisibility(View.VISIBLE);
+            binding.typesOfEventsButton.setVisibility(View.VISIBLE);
+            binding.userReports.setVisibility(View.VISIBLE);
+            binding.approveRegistration.setVisibility(View.VISIBLE);
+        }else if(user.getDisplayName().equals("PUPV")){
+            binding.pricelist.setVisibility(View.VISIBLE);
+            binding.reservationViewId.setVisibility(View.VISIBLE);
+        }else if(user.getDisplayName().equals("PUPZ")){
 
         }
+
+
     }
 
     private void askNotificationPermission () {

@@ -46,6 +46,8 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
+import java.util.Random;
 
 
 public class ReserveServiceFragment extends BottomSheetDialogFragment {
@@ -430,11 +432,26 @@ public class ReserveServiceFragment extends BottomSheetDialogFragment {
                                 "}," +
                                 "\"to\":\"/topics/" + "NtN0ByBAvgc4Utxx2m4La3vAtDL2" + "PUPZTopic" + "\"}";
                         sendMessage(serverKey,jsonPayload);
+                        addNotification();
                         getActivity().getSupportFragmentManager().beginTransaction().remove(ReserveServiceFragment.this).commit();
                     } else {
                         Toast.makeText(getContext(), "Failed to add data", Toast.LENGTH_SHORT).show();
                     }
                 });
+    }
+    private void addNotification(){
+        Long id = new Random().nextLong();
+        Map<String,Object> map=new HashMap<>();
+        map.put("body","You have a new reservation!");
+        map.put("title","Reservation");
+        map.put("read",false);
+        map.put("userId",mAuth.getCurrentUser().getUid());
+
+        db.collection("Notifications")
+                .document(id.toString())
+                .set(map);
+
+
     }
 
 

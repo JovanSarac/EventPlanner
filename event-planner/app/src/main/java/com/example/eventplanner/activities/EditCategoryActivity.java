@@ -19,6 +19,7 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.textfield.TextInputEditText;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.messaging.FirebaseMessaging;
 import com.google.firebase.messaging.RemoteMessage;
@@ -36,6 +37,7 @@ public class EditCategoryActivity extends AppCompatActivity {
     boolean isCategoryActive;
     Long categoryId;
     FirebaseFirestore db = FirebaseFirestore.getInstance();
+    FirebaseAuth mAuth=FirebaseAuth.getInstance();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -105,6 +107,7 @@ public class EditCategoryActivity extends AppCompatActivity {
                                 "}," +
                                 "\"to\":\"/topics/" + "PUPV" + "\"}";
                         sendMessage(serverKey,jsonPayload);
+                        addNotification();
                         finish();
                     }
                 })
@@ -115,6 +118,20 @@ public class EditCategoryActivity extends AppCompatActivity {
                     }
                 });
 
+
+
+    }
+    private void addNotification(){
+        Long id = new Random().nextLong();
+        Map<String,Object> map=new HashMap<>();
+        map.put("body",nameInput.getText().toString());
+        map.put("title","New category!");
+        map.put("read",false);
+        map.put("userId",mAuth.getCurrentUser().getUid());
+
+        db.collection("Notifications")
+                .document(id.toString())
+                .set(map);
 
 
     }

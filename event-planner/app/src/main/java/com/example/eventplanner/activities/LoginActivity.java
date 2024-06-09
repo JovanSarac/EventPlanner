@@ -94,6 +94,7 @@ public class LoginActivity extends AppCompatActivity {
             startActivity(intent);
             String s=mAuth.getCurrentUser().getDisplayName();
             Toast.makeText(LoginActivity.this,s,Toast.LENGTH_SHORT).show();
+
             if(mAuth.getCurrentUser()!=null && mAuth.getCurrentUser().getDisplayName().equals("PUPV")){
                 FirebaseMessaging.getInstance().subscribeToTopic("PUPV");
                 FirebaseMessaging.getInstance().subscribeToTopic(mAuth.getCurrentUser().getUid() + "Topic");
