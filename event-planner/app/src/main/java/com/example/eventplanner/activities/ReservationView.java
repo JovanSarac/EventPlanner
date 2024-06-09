@@ -6,7 +6,9 @@ import android.graphics.drawable.ColorDrawable;
 import android.nfc.Tag;
 import android.os.Bundle;
 import android.text.Editable;
+import android.text.SpannableString;
 import android.text.TextWatcher;
+import android.text.style.UnderlineSpan;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -21,6 +23,7 @@ import android.widget.Toast;
 import androidx.activity.EdgeToEdge;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
@@ -251,10 +254,24 @@ public class ReservationView extends AppCompatActivity {
             workerName.setText(full);
         });
         getUserDocument(document.getString("userId")).thenAccept(fullName -> {
-            clientNmae.setText(fullName);
+            SpannableString content = new SpannableString(fullName);
+            content.setSpan(new UnderlineSpan(), 0, content.length(), 0);
+            clientNmae.setText(content);
+
+            int color = ContextCompat.getColor(this, R.color.purple_light);
+            clientNmae.setTextColor(color);
         });
         occurrenceDate.setText(parseDate(document.getString("occurenceDate")));
         duration.setText(document.getString("startHours").concat("-").concat(document.getString("endHours")));
+
+        clientNmae.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(ReservationView.this, UserInfoActivity.class);
+                intent.putExtra("userId", document.getString("userId"));
+                startActivity(intent);
+            }
+        });
 
         approveButton.setOnClickListener(v -> {
             getDocumentCount("Event").thenAccept(count ->{
