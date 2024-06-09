@@ -445,7 +445,7 @@ public class ReserveServiceFragment extends BottomSheetDialogFragment {
         map.put("body","You have a new reservation!");
         map.put("title","Reservation");
         map.put("read",false);
-        map.put("userId",mAuth.getCurrentUser().getUid());
+        map.put("userId","NtN0ByBAvgc4Utxx2m4La3vAtDL2");
 
         db.collection("Notifications")
                 .document(id.toString())
