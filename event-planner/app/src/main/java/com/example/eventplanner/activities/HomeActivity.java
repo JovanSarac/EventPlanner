@@ -166,6 +166,12 @@ public class HomeActivity extends AppCompatActivity {
             Intent intent = new Intent(HomeActivity.this, ApproveRegistrationActivity.class);
             startActivity(intent);
         });
+
+        binding.viewCompanyComments.setOnClickListener(v->{
+            Intent intent = new Intent(HomeActivity.this, CommentPreviewActivity.class);
+            startActivity(intent);
+        });
+
         binding.signOut.setOnClickListener(v->{
             FirebaseMessaging.getInstance().unsubscribeFromTopic("PUPV");
             FirebaseMessaging.getInstance().unsubscribeFromTopic("AdminTopic");

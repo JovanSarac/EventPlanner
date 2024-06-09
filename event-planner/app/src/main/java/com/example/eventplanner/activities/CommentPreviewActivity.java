@@ -23,6 +23,10 @@ import com.google.android.material.button.MaterialButton;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.SetOptions;
+
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 public class CommentPreviewActivity extends AppCompatActivity {
 
@@ -42,7 +46,7 @@ public class CommentPreviewActivity extends AppCompatActivity {
         });
 
         binding = ActivityCommentPreviewBinding.inflate(getLayoutInflater());
-
+        setContentView(binding.getRoot());
         commentsContainer = binding.commentsContainer;
 
         binding.backBtn.setOnClickListener(v->{
@@ -59,12 +63,12 @@ public class CommentPreviewActivity extends AppCompatActivity {
                 .get()
                 .addOnSuccessListener(queryDocumentSnapshots ->{
                     for (QueryDocumentSnapshot document : queryDocumentSnapshots) {
-                        displayComment(document.toObject(Comment.class));
+                        displayComment(document.toObject(Comment.class), document.getId());
                     }
                 });
     }
 
-    private void displayComment(Comment comment){
+    private void displayComment(Comment comment, String commentDocumentId){
         View commentView = LayoutInflater.from(this).inflate(R.layout.comment_card, commentsContainer, false);
 
         TextView commentGradeTextView = commentView.findViewById(R.id.comment_grade_value);
@@ -91,8 +95,24 @@ public class CommentPreviewActivity extends AppCompatActivity {
         reportCommentButton.setOnClickListener(v -> {
             String explanation = reportDescriptionEditText.getText().toString();
             if (!explanation.isEmpty()) {
+                Date currentDate = new Date();
+                SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");
+                comment.getReport().setDescription(explanation);
+                comment.getReport().setOccurenceDate(dateFormat.format(currentDate));
 
+                db.collection("Comment")
+                        .document(commentDocumentId)
+                        .set(comment, SetOptions.merge())
+                        .addOnSuccessListener(aVoid -> {
+                            reportDescriptionEditText.setText("");
+                            commentContainer.setVisibility(View.GONE);
+                            Toast.makeText(this, "Comment reported successfully!", Toast.LENGTH_SHORT).show();
+                        })
+                        .addOnFailureListener(e -> {
+                            Toast.makeText(this, "Failed to report comment: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                        });
             } else {
+                Toast.makeText(this, "Please enter explanation!", Toast.LENGTH_SHORT).show();
             }
         });
 
