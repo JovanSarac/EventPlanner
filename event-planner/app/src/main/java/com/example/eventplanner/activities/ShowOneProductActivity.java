@@ -43,6 +43,7 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Random;
 import java.util.concurrent.CompletableFuture;
 
 public class ShowOneProductActivity extends AppCompatActivity {
@@ -209,6 +210,7 @@ public class ShowOneProductActivity extends AppCompatActivity {
                     @Override
                     public void onSuccess(Void aVoid) {
                         Toast.makeText(ShowOneProductActivity.this, "Send message successfully", Toast.LENGTH_SHORT).show();
+                        createNotification(idPupv, message, fullnameSender);
                     }
                 })
                 .addOnFailureListener(new OnFailureListener() {
@@ -218,6 +220,33 @@ public class ShowOneProductActivity extends AppCompatActivity {
                     }
                 });
 
+    }
+
+    private void createNotification(String userId, String message, String fullnameSender){
+        Long id = new Random().nextLong();
+        Map<String, Object> doc = new HashMap<>();
+
+        doc.put("title", "Message from " + fullnameSender);
+        doc.put("body", message);
+        doc.put("read", false);
+        doc.put("userId", userId);
+
+        db.collection("Notifications")
+                .document(id.toString())
+                .set(doc)
+                .addOnCompleteListener(new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+
+                        //sendNotification();
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Toast.makeText(ShowOneProductActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show();
+                    }
+                });
     }
 
     private CompletableFuture<UserOD> getUserOd(String uid) {

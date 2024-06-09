@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -19,8 +20,10 @@ import com.example.eventplanner.R;
 import com.example.eventplanner.adapters.ChatRecyclerAdapter;
 import com.example.eventplanner.databinding.ActivityShowOneChatBinding;
 import com.example.eventplanner.model.Message;
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentSnapshot;
@@ -40,6 +43,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 
 public class ShowOneChatActivity extends AppCompatActivity {
 
@@ -114,12 +118,40 @@ public class ShowOneChatActivity extends AppCompatActivity {
                     @Override
                     public void onSuccess(Void aVoid) {
                         Log.d("ShowOneChatActivity", "Message sent successfully");
+                        createNotification(recipientId, message, senderFullname);
                     }
                 })
                 .addOnFailureListener(new OnFailureListener() {
                     @Override
                     public void onFailure(@NonNull Exception e) {
                         Log.e(TAG, "Error adding document", e);
+                    }
+                });
+    }
+
+    private void createNotification(String userId, String message, String fullnameSender){
+        Long id = new Random().nextLong();
+        Map<String, Object> doc = new HashMap<>();
+
+        doc.put("title", "Message from " + fullnameSender);
+        doc.put("body", message);
+        doc.put("read", false);
+        doc.put("userId", userId);
+
+        db.collection("Notifications")
+                .document(id.toString())
+                .set(doc)
+                .addOnCompleteListener(new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+
+                        //sendNotification();
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Toast.makeText(ShowOneChatActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show();
                     }
                 });
     }
