@@ -29,6 +29,7 @@ import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QuerySnapshot;
@@ -48,6 +49,7 @@ import java.util.Locale;
 
 public class ReserveServiceFragment extends BottomSheetDialogFragment {
     FirebaseFirestore db = FirebaseFirestore.getInstance();
+    FirebaseAuth mAuth = FirebaseAuth.getInstance();
     List<String> pupz_list_names=new ArrayList<>();
     List<UserPUPZ> pupz_list=new ArrayList<>();
     Service service;
@@ -109,7 +111,7 @@ public class ReserveServiceFragment extends BottomSheetDialogFragment {
                     DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm");
                     LocalTime time = LocalTime.parse(timeString, formatter);
                     if(service.getDuration()!=null){
-                        time=time.plusMinutes((int)(1.6*60));//time.plusMinutes((int)(service.getDuration()*60));
+                        time=time.plusMinutes((int)(service.getDuration()*60));
                     }
                     String endtime=dateScheule.getSchedule().get(dayOfWeek.toUpperCase()).getEndTime().split(" ")[0];
                     LocalTime endTime=LocalTime.parse(endtime, formatter);
@@ -135,9 +137,24 @@ public class ReserveServiceFragment extends BottomSheetDialogFragment {
                         dayOfWeek.toUpperCase(),
                         "RESERVED",
                         "NEW",
-                        service.getId().toString()
+                        service,
+                        mAuth.getCurrentUser().getUid().toString()
                 );
+
+                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm");
+                LocalTime start = LocalTime.parse(from.getText().toString(), formatter);
+                LocalTime end = LocalTime.parse(to.getText().toString(), formatter);
+
+                for (EventPUPZ time:busyDates.get(dayOfWeek.toUpperCase())) {
+                    LocalTime startBusy = LocalTime.parse(time.getStartHours(), formatter);
+                    LocalTime endBusy = LocalTime.parse(time.getEndHours(), formatter);
+                    if(!(start.isAfter(endBusy) || end.isBefore(startBusy))){
+                        Toast.makeText(getContext(), "Please select valid dates!", Toast.LENGTH_SHORT).show();
+                        return;
+                    }
+                }
                 passDataToActivity(event);
+                getActivity().getSupportFragmentManager().beginTransaction().remove(ReserveServiceFragment.this).commit();
             }
 
         });
@@ -336,7 +353,7 @@ public class ReserveServiceFragment extends BottomSheetDialogFragment {
         SimpleDateFormat sdf = new SimpleDateFormat("EEEE", Locale.getDefault());
         dayOfWeek = sdf.format(selectedEvent.getDateEvent());
         TableLayout tableLayout = view.findViewById(R.id.tableLayout);
-        dayOfWeek="Friday";
+        //dayOfWeek="Friday";
 
         Collections.sort(busyDates.get(dayOfWeek.toUpperCase()), new Comparator<EventPUPZ>() {
             @Override
@@ -378,12 +395,28 @@ public class ReserveServiceFragment extends BottomSheetDialogFragment {
                 dayOfWeek.toUpperCase(),
                 "RESERVED",
                 "NEW",
-                service.getId().toString()
+                service,
+                mAuth.getCurrentUser().getUid().toString()
         );
+
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm");
+        LocalTime start = LocalTime.parse(from.getText().toString(), formatter);
+        LocalTime end = LocalTime.parse(to.getText().toString(), formatter);
+
+        for (EventPUPZ time:busyDates.get(dayOfWeek.toUpperCase())) {
+            LocalTime startBusy = LocalTime.parse(time.getStartHours(), formatter);
+            LocalTime endBusy = LocalTime.parse(time.getEndHours(), formatter);
+            if(!(start.isAfter(endBusy) || end.isBefore(startBusy))){
+                Toast.makeText(getContext(), "Please select valid dates!", Toast.LENGTH_SHORT).show();
+                return;
+            }
+        }
+
         db.collection("ServiceReservationRequest").add(event)
                 .addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {
                         Toast.makeText(getContext(), "Data added successfully", Toast.LENGTH_SHORT).show();
+                        getActivity().getSupportFragmentManager().beginTransaction().remove(ReserveServiceFragment.this).commit();
                     } else {
                         Toast.makeText(getContext(), "Failed to add data", Toast.LENGTH_SHORT).show();
                     }

@@ -6,6 +6,7 @@ import android.text.Editable;
 import android.text.TextWatcher;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
+import android.widget.DatePicker;
 import android.widget.SearchView;
 import android.widget.Toast;
 
@@ -20,6 +21,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.eventplanner.R;
 import com.example.eventplanner.adapters.PupvUserCardAdapter;
 import com.example.eventplanner.adapters.SubcategoriesCardAdapter;
+import com.example.eventplanner.fragments.ReasonFragment;
 import com.example.eventplanner.model.Category;
 import com.example.eventplanner.model.EventType;
 import com.example.eventplanner.model.Subcategory;
@@ -35,12 +37,14 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
-public class ApproveRegistrationActivity extends AppCompatActivity {
+public class ApproveRegistrationActivity extends AppCompatActivity implements ReasonFragment.FragmentCloseListener{
     List<UserPUPV> dataList = new ArrayList<>();
     List<UserPUPV> filteredList = new ArrayList<>();
 
@@ -50,11 +54,11 @@ public class ApproveRegistrationActivity extends AppCompatActivity {
     RecyclerView recyclerView;
     PupvUserCardAdapter adapter;
 
-    String selectedCategory;
-    String selectedEvent;
+    String selectedCategory="";
+    String selectedEvent="";
+    String selectedMilis="";
     @Override
-    public void onResume() {
-        super.onResume();
+    public void onFragmentClosed() {
         getUsers();
     }
 
@@ -68,7 +72,7 @@ public class ApproveRegistrationActivity extends AppCompatActivity {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
-        adapter = new PupvUserCardAdapter(filteredList, ApproveRegistrationActivity.this);
+        adapter = new PupvUserCardAdapter(filteredList, ApproveRegistrationActivity.this,this);
         recyclerView = findViewById(R.id.recyclerView);
         recyclerView.setLayoutManager(new LinearLayoutManager(ApproveRegistrationActivity.this));
         recyclerView.setAdapter(adapter);
@@ -83,8 +87,17 @@ public class ApproveRegistrationActivity extends AppCompatActivity {
 
             adapter.notifyDataSetChanged();
         });
+        DatePicker datePicker = findViewById(R.id.datePicker);
+        datePicker.setOnDateChangedListener(new DatePicker.OnDateChangedListener() {
+            @Override
+            public void onDateChanged(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
+                Calendar calendar = Calendar.getInstance();
+                calendar.set(year, monthOfYear, dayOfMonth);
+                selectedMilis = String.valueOf(calendar.getTimeInMillis());
+            }
+        });
 
-
+        getUsers();
         getAllCategories();
         getAllEventTypes();
 
@@ -92,23 +105,20 @@ public class ApproveRegistrationActivity extends AppCompatActivity {
 
     private void filter(String text) {
         filteredList.clear();
-        if (text.isEmpty()) {
-            filteredList.addAll(dataList);
-        } else {
-            text = text.toLowerCase();
-            for (UserPUPV item : dataList) {
-                if (item.getFirstName().toLowerCase().contains(text) || item.getLastName().toLowerCase().contains(text) || item.getCompanyemail().toLowerCase().contains(text) || item.getEmail().toLowerCase().contains(text)) {
-                    filteredList.add(item);
-                }else{
-                    if (item.getCategories().stream().anyMatch(category -> category.getName().equals(selectedCategory)) ||
-                            item.getEventTypes().stream().anyMatch(category -> category.getTypeName().equals(selectedEvent))) {
-
+        text = text.toLowerCase();
+        for (UserPUPV item : dataList) {
+            if (text.isEmpty() || item.getFirstName().toLowerCase().contains(text) || item.getLastName().toLowerCase().contains(text) || item.getCompanyemail().toLowerCase().contains(text) || item.getEmail().toLowerCase().contains(text)) {
+                if ((item.getCategories().stream().anyMatch(category -> category.getName().equals(selectedCategory)) || selectedCategory.isEmpty()) &&
+                        (item.getEventTypes().stream().anyMatch(category -> category.getTypeName().equals(selectedEvent)) || selectedEvent.isEmpty())) {
+                    if(item.getDateTimePosted()==null||selectedMilis.compareTo(item.getDateTimePosted())<0 || selectedMilis.isEmpty()){
                         filteredList.add(item);
                     }
                 }
             }
 
         }
+
+
     }
 
     public void getUsers() {
@@ -123,6 +133,9 @@ public class ApproveRegistrationActivity extends AppCompatActivity {
                     public void onComplete(Task<QuerySnapshot> task) {
                         if (task.isSuccessful()) {
                             for (DocumentSnapshot doc : task.getResult()) {
+                                if(doc.getString("Reason")!=null){
+                                    continue;
+                                }
                                 UserPUPV user = new UserPUPV(
                                         doc.getId(),
                                         doc.getString("FirstName"),
@@ -139,13 +152,14 @@ public class ApproveRegistrationActivity extends AppCompatActivity {
                                         doc.getString("CompanyPhone"),
                                         doc.getString("WorkTime"),
                                         (List<String>) doc.get("EventTypes"),
-                                        (List<String>) doc.get("Categories")
-
+                                        (List<String>) doc.get("Categories"),
+                                        doc.getString("DateTimePosted")
 
                                 );
                                 dataList.add(user);
 
                             }
+                            adapter.notifyDataSetChanged();
                             getEventTypes();
 
                         } else {
@@ -275,5 +289,6 @@ public class ApproveRegistrationActivity extends AppCompatActivity {
                     }
                 });
     }
+
 
 }

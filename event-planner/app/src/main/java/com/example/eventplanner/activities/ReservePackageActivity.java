@@ -24,12 +24,16 @@ import com.example.eventplanner.fragments.ReserveServiceFragment;
 import com.example.eventplanner.model.Event;
 import com.example.eventplanner.model.EventPUPZ;
 import com.example.eventplanner.model.Package;
+import com.example.eventplanner.model.PackageReservationRequest;
+import com.example.eventplanner.model.Product;
 import com.example.eventplanner.model.Service;
 import com.example.eventplanner.model.ServiceReservationRequest;
+import com.example.eventplanner.services.FCMHttpClient;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.textfield.TextInputLayout;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QuerySnapshot;
@@ -41,11 +45,13 @@ import java.util.Map;
 
 public class ReservePackageActivity extends AppCompatActivity implements ReserveServiceFragment.OnDataPass{
     FirebaseFirestore db = FirebaseFirestore.getInstance();
+    FirebaseAuth mAuth= FirebaseAuth.getInstance();
     Package pac;
     List<Service> services=new ArrayList<>();
     Event selectedEvent;
     List<Event> events=new ArrayList<>();
     List<String> event_names=new ArrayList<>();
+    List<Product> products=new ArrayList<>();
 
     List<ServiceReservationRequest> reservations=new ArrayList<>();
     @Override
@@ -145,10 +151,44 @@ public class ReservePackageActivity extends AppCompatActivity implements Reserve
                         Log.d("Firestore", "No such document");
                     }
                     getService();
+                    getProducts();
                 })
                 .addOnFailureListener(e -> {
                     Log.w("Firestore", "Error fetching document", e);
                 });
+    }
+    private void getProducts(){
+        db.collection("Products").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                if (task.isSuccessful()) {
+                    for (DocumentSnapshot doc : task.getResult()) {
+                        if(pac.getProductIds().contains(Long.parseLong(doc.getId()))){
+                            Product product = new Product(
+                                    Long.parseLong(doc.getId()),
+                                    doc.getString("pupvId"),
+                                    Long.parseLong(doc.getString("categoryId")),
+                                    Long.parseLong(doc.getString("subcategoryId")),
+                                    doc.getString("name"),
+                                    doc.getString("description"),
+                                    doc.getDouble("price"),
+                                    doc.getDouble("discount"),
+                                    new ArrayList<>(),
+                                    new ArrayList<>(), //convertStringArrayToLong((ArrayList<String>) doc.get("eventTypeIds")),
+                                    doc.getBoolean("available"),
+                                    doc.getBoolean("visible"),
+                                    doc.getBoolean("pending"),
+                                    doc.getBoolean("deleted")
+                            );
+                            products.add(product);
+                        }
+                    }
+
+                } else {
+                    Log.w("TAG", "Error getting documents.", task.getException());
+                }
+            }
+        });
     }
     private void createTable(){
         TableLayout tableLayout = findViewById(R.id.tableLayout);
@@ -168,7 +208,7 @@ public class ReservePackageActivity extends AppCompatActivity implements Reserve
                 @Override
                 public void onClick(View v) {
                     showBottomSheetDialog(service.getId());
-                    Toast.makeText(getApplicationContext(), "Button clicked for " + service.getName(), Toast.LENGTH_SHORT).show();
+                    button.setVisibility(View.GONE);
                 }
             });
 
@@ -232,6 +272,10 @@ public class ReservePackageActivity extends AppCompatActivity implements Reserve
     }
 
     private void createPackageRequest(){
+        if(services.stream().count()!=reservations.stream().count()){
+            Toast.makeText(getApplicationContext(), "Please register all events", Toast.LENGTH_SHORT).show();
+            return;
+        }
         if(selectedEvent==null) {
             Toast.makeText(getApplicationContext(), "Please select an event", Toast.LENGTH_SHORT).show();
             return;
@@ -239,10 +283,34 @@ public class ReservePackageActivity extends AppCompatActivity implements Reserve
         for (ServiceReservationRequest res:reservations) {
             res.setOccurenceDate(selectedEvent.getDateEvent().toString());
         }
-        Map<String, Object> map = new HashMap<>();
-        map.put("packages", reservations);
+
+        PackageReservationRequest req=new PackageReservationRequest(
+                reservations,
+                mAuth.getCurrentUser().getUid().toString(),
+                pac.getPupvId(),
+                products,
+                "NEW"
+        );
         
-        db.collection("PackageReservationRequest").add(map)
+        db.collection("PackageReservationRequest").add(req)
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        Toast.makeText(this, "Data added successfully", Toast.LENGTH_SHORT).show();
+                        for (Product prod:products) {
+                            if(prod.getAvailable())reserveProduct(prod);
+                        }
+                        finish();
+                    } else {
+                        Toast.makeText(this, "Failed to add data", Toast.LENGTH_SHORT).show();
+                    }
+                });
+    }
+    private void reserveProduct(Product product){
+        Map<String,Object> map= new HashMap<>();
+        map.put("product",product);
+        map.put("userId",mAuth.getCurrentUser().getUid());
+
+        db.collection("ProductReservation").add(map)
                 .addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {
                         Toast.makeText(this, "Data added successfully", Toast.LENGTH_SHORT).show();
@@ -251,5 +319,6 @@ public class ReservePackageActivity extends AppCompatActivity implements Reserve
                     }
                 });
     }
+
 
 }

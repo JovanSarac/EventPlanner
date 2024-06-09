@@ -1,7 +1,9 @@
 package com.example.eventplanner.fragments;
 
+import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -18,6 +20,8 @@ import com.example.eventplanner.R;
 import com.example.eventplanner.activities.ApproveRegistrationActivity;
 import com.example.eventplanner.activities.HomeActivity;
 import com.example.eventplanner.activities.OwnerDashboard;
+import com.example.eventplanner.model.UserPUPV;
+import com.example.eventplanner.utils.MailSender;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
@@ -27,20 +31,71 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.mail.MessagingException;
+
 
 public class ReasonFragment extends BottomSheetDialogFragment {
     FirebaseFirestore db = FirebaseFirestore.getInstance();
-    String id;
+    UserPUPV user;
     View view;
-    public ReasonFragment(String id) {
-        this.id=id;
+    public ReasonFragment(UserPUPV user) {
+        this.user=user;
     }
+
+    private FragmentCloseListener listener;
+
+    public interface FragmentCloseListener {
+        void onFragmentClosed();
+    }
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        if (context instanceof FragmentCloseListener) {
+            listener = (FragmentCloseListener) context;
+        } else {
+            throw new RuntimeException(context.toString()
+                    + " must implement FragmentCloseListener");
+        }
+    }
+
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         view.findViewById(R.id.removeUser).setOnClickListener(v->{
             removeUser();
         });
+    }
+    private static class SendMailTask extends AsyncTask<Void, Void, Void> {
+        private String senderEmail;
+        private String senderPassword;
+        private String recipientEmail;
+        private String subject;
+        private String body;
+
+        public SendMailTask(String senderEmail, String senderPassword, String recipientEmail, String subject, String body) {
+            this.senderEmail = senderEmail;
+            this.senderPassword = senderPassword;
+            this.recipientEmail = recipientEmail;
+            this.subject = subject;
+            this.body = body;
+        }
+
+        @Override
+        protected Void doInBackground(Void... voids) {
+            try {
+                MailSender mailSender = new MailSender(senderEmail, senderPassword);
+                mailSender.sendMail(recipientEmail, subject, body);
+            } catch (MessagingException e) {
+                e.printStackTrace();
+            }
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            super.onPostExecute(aVoid);
+
+        }
     }
 
 
@@ -58,14 +113,16 @@ public class ReasonFragment extends BottomSheetDialogFragment {
             return;
         }
         Map<String, Object> updates = new HashMap<>();
-        updates.put("IsValid", true);
         updates.put("Reason", text.getText().toString());
-        db.collection("User").document(id).update(updates)
+        db.collection("User").document(user.getId()).update(updates)
                 .addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
                     public void onSuccess(Void aVoid) {
                         Log.d("Firestore", "DocumentSnapshot successfully updated!");
                         sendEmail();
+                        listener.onFragmentClosed();
+                        getActivity().getSupportFragmentManager().beginTransaction().remove(ReasonFragment.this).commit();
+
                     }
                 })
                 .addOnFailureListener(new OnFailureListener() {
@@ -76,22 +133,18 @@ public class ReasonFragment extends BottomSheetDialogFragment {
                     }
                 });
     }
-
     private void sendEmail() {
-        String[] recipients = new String[]{"jovan.katanic204@gmail.com"};
-        String subject = "Subject of the email";
-        String message = "Body of the email";
-
-        Intent emailIntent = new Intent(Intent.ACTION_SENDTO, Uri.fromParts(
-                "mailto","", null));
-        emailIntent.putExtra(Intent.EXTRA_EMAIL, recipients);
-        emailIntent.putExtra(Intent.EXTRA_SUBJECT, subject);
-        emailIntent.putExtra(Intent.EXTRA_TEXT, message);
-
-        try {
-            startActivity(Intent.createChooser(emailIntent, "Send email..."));
-        } catch (android.content.ActivityNotFoundException ex) {
-            Toast.makeText(view.getContext(), "mail failed", Toast.LENGTH_SHORT).show();
+        TextInputEditText text=view.findViewById(R.id.reason);
+        if(text.getText()==null){
+            Toast.makeText(view.getContext(), "Reason is empty", Toast.LENGTH_SHORT).show();
+            return;
         }
+        String recipientEmail = user.getEmail();
+        String subject = "Declined account";
+        String body ="Your account registration has been denied! \n Reason: " + text.getText().toString();
+        String senderEmail = "markoradetic67@gmail.com";
+        String senderPassword = "zjhr jitq xent roob";
+
+        new SendMailTask(senderEmail, senderPassword, recipientEmail, subject, body).execute();
     }
 }

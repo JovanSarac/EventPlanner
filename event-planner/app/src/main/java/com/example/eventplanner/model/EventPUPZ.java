@@ -1,5 +1,10 @@
 package com.example.eventplanner.model;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
+
 public class EventPUPZ {
 
     private Long id;
@@ -23,6 +28,17 @@ public class EventPUPZ {
         this.day = day;
         this.type = type;
         this.workerId = workerId;
+    }
+
+    public EventPUPZ(Long id, ServiceReservationRequest serviceReservationRequest){
+        this.id = id;
+        this.startHours = serviceReservationRequest.getStartHours();
+        this.endHours = serviceReservationRequest.getEndHours();
+        this.occurenceDate = serviceReservationRequest.getOccurenceDate();
+        this.dateScheduleId = Long.parseLong(serviceReservationRequest.getDateScheduleId());
+        this.day = getDayOfWeek(serviceReservationRequest.getOccurenceDate());
+        this.type = "RESERVED";
+        this.workerId = Long.parseLong(serviceReservationRequest.getWorkerId());
     }
 
     public Long getWorkerId() {
@@ -87,5 +103,22 @@ public class EventPUPZ {
 
     public void setDay(String day) {
         this.day = day;
+    }
+
+    public static String getDayOfWeek(String dateStr) {
+        SimpleDateFormat originalFormat = new SimpleDateFormat("EEE MMM dd HH:mm:ss zzz yyyy", Locale.ENGLISH);
+
+        try {
+            Date date = originalFormat.parse(dateStr);
+
+            SimpleDateFormat dayFormat = new SimpleDateFormat("EEEE", Locale.ENGLISH);
+            String dayOfWeek = dayFormat.format(date).toUpperCase();
+
+            return dayOfWeek;
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+
+        return null;
     }
 }

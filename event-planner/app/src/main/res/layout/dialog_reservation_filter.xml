@@ -31,6 +31,7 @@
                 android:layout_height="180dp">
 
                 <RadioGroup
+                    android:id="@+id/filter_radio_grp"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     >
@@ -80,6 +81,7 @@
             </ScrollView>
 
             <com.google.android.material.button.MaterialButton
+                android:id="@+id/refresh_btn"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 app:cornerRadius="12dp"
