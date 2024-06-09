@@ -37,6 +37,7 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.button.MaterialButton;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
@@ -44,10 +45,12 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.firestore.SetOptions;
+import com.google.type.DateTime;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
@@ -59,6 +62,7 @@ public class ReservationView extends AppCompatActivity {
 
     ActivityReservationViewBinding binding;
     FirebaseFirestore db;
+    FirebaseAuth mAuth= FirebaseAuth.getInstance();
     List<ServiceReservationRequest> serviceReservations;
     private LinearLayout serviceReservationsContainer;
 
@@ -276,6 +280,31 @@ public class ReservationView extends AppCompatActivity {
         });
 
         denyButton.setOnClickListener(v -> {
+
+            String userType = mAuth.getCurrentUser().getDisplayName();
+            Date date = new Date(parseDate(document.getString("occurenceDate")));
+
+            Calendar calendar = Calendar.getInstance();
+            calendar.setTime(date);
+            calendar.add(Calendar.DAY_OF_MONTH, -Integer.parseInt(service.getCancelationDue()));
+            Date dateMinusOneDay = calendar.getTime();
+
+            Date currentDate = new Date();
+
+            if (currentDate.before(dateMinusOneDay)) {
+                ServiceReservationRequest reservation = document.toObject(ServiceReservationRequest.class);
+                reservation.setStatus("DENIEDBY".concat(userType));
+
+                db.collection("ServiceReservationRequest")
+                        .document(document.getId())
+                        .set(reservation, SetOptions.merge())
+                        .addOnSuccessListener(aVoid -> {
+                            Log.d("Firestore", "Reservation updated successfully!");
+                        })
+                        .addOnFailureListener(e -> {
+                            Log.w("Firestore", "Error updating reservation", e);
+                        });
+            }
         });
 
         serviceReservationsContainer.addView(view);
