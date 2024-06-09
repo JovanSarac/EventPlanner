@@ -1,5 +1,7 @@
 package com.example.eventplanner.activities;
 
+import static android.content.ContentValues.TAG;
+
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -9,29 +11,36 @@ import android.widget.ArrayAdapter;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.eventplanner.R;
+import com.example.eventplanner.adapters.EmployeeRecyclerViewAdapter;
 import com.example.eventplanner.adapters.ImageAdapter;
 import com.example.eventplanner.databinding.ActivityShowOneServiceBinding;
 import com.example.eventplanner.model.Category;
 import com.example.eventplanner.model.Subcategory;
 import com.example.eventplanner.model.UserPUPV;
+import com.example.eventplanner.model.UserPUPZ;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.Task;
+import com.google.android.gms.tasks.Tasks;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FieldPath;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
 public class ShowOneServiceActivity extends AppCompatActivity {
     ActivityShowOneServiceBinding binding;
 
     RecyclerView recyclerView;
+
+    RecyclerView recyclerViewForPupz;
     ImageAdapter imageAdapter;
 
     Long idProduct;
@@ -41,6 +50,8 @@ public class ShowOneServiceActivity extends AppCompatActivity {
     Subcategory subcategory;
 
     UserPUPV userPUPV;
+
+    ArrayList<UserPUPZ> pupzs;
     FirebaseFirestore db = FirebaseFirestore.getInstance();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -121,6 +132,54 @@ public class ShowOneServiceActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
+
+        recyclerViewForPupz = binding.pupzListView;
+        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(ShowOneServiceActivity.this);
+        recyclerViewForPupz.setLayoutManager(layoutManager);
+
+        findAllPupz(pupIds);
+    }
+
+    private void findAllPupz(ArrayList<String> pupIds) {
+        pupzs = new ArrayList<>();
+
+        // Provera da li lista nije prazna
+        if (pupIds.isEmpty()) {
+            Log.d(TAG, "List of pupIds is empty, nothing to fetch.");
+            return;
+        }
+
+        // Lista taskova za paralelno izvršavanje više get upita
+        List<Task<DocumentSnapshot>> tasks = new ArrayList<>();
+        for (String id : pupIds) {
+            Task<DocumentSnapshot> task = db.collection("User").document(id).get();
+            tasks.add(task);
+        }
+
+        // Očekivanje rezultata svih taskova
+        Tasks.whenAllComplete(tasks)
+                .addOnCompleteListener(new OnCompleteListener<List<Task<?>>>() {
+                    @Override
+                    public void onComplete(@NonNull Task<List<Task<?>>> task) {
+                        if (task.isSuccessful()) {
+                            for (Task<?> t : tasks) {
+                                DocumentSnapshot doc = (DocumentSnapshot) t.getResult();
+                                if (doc.exists()) {
+                                    // Mapiranje podataka na objekat korisnika (User)
+                                    UserPUPZ user = doc.toObject(UserPUPZ.class);
+                                    pupzs.add(user);
+                                } else {
+                                    Log.d(TAG, "No such document: " + doc.getId());
+                                }
+                            }
+                            // Ažuriranje UI ili drugih delova aplikacije nakon preuzimanja podataka
+                            EmployeeRecyclerViewAdapter adapterEvents = new EmployeeRecyclerViewAdapter(pupzs);
+                            recyclerViewForPupz.setAdapter(adapterEvents);
+                        } else {
+                            Log.e(TAG, "Error getting documents: ", task.getException());
+                        }
+                    }
+                });
     }
 
     private CompletableFuture<UserPUPV> getUserPupv(String uid) {
