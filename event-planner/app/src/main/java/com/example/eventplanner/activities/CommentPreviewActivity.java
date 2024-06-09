@@ -49,6 +49,8 @@ public class CommentPreviewActivity extends AppCompatActivity {
             Intent intent = new Intent(this, HomeActivity.class);
             startActivity(intent);
         });
+
+        retrieveCommentsByCompanyId(mAuth.getCurrentUser().getUid());
     }
 
     private void retrieveCommentsByCompanyId(String companyId){
@@ -89,7 +91,7 @@ public class CommentPreviewActivity extends AppCompatActivity {
         reportCommentButton.setOnClickListener(v -> {
             String explanation = reportDescriptionEditText.getText().toString();
             if (!explanation.isEmpty()) {
-                
+
             } else {
             }
         });

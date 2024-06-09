@@ -199,6 +199,7 @@ public class HomeActivity extends AppCompatActivity {
         binding.typesOfEventsButton.setVisibility(View.GONE);
         binding.approveRegistration.setVisibility(View.GONE);
         binding.addCommentBtn.setVisibility(View.GONE);
+        binding.viewCompanyComments.setVisibility(View.GONE);
 
         if(user==null){
             binding.registerButton.setVisibility(View.VISIBLE);
@@ -222,6 +223,7 @@ public class HomeActivity extends AppCompatActivity {
         }else if(user.getDisplayName().equals("PUPV")){
             binding.pricelist.setVisibility(View.VISIBLE);
             binding.reservationViewId.setVisibility(View.VISIBLE);
+            binding.viewCompanyComments.setVisibility(View.VISIBLE);
         }else if(user.getDisplayName().equals("PUPZ")){
 
         }
