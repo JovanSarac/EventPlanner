@@ -11,7 +11,7 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         android:paddingVertical="8dp"
-        android:paddingHorizontal="12dp">
+        android:paddingHorizontal="24dp">
 
         <LinearLayout
             android:layout_width="wrap_content"
@@ -58,6 +58,8 @@
     </LinearLayout>
 
     <LinearLayout
+        android:id="@+id/comment_container"
+        android:paddingHorizontal="24dp"
         android:layout_marginVertical="12dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -67,7 +69,6 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Enter grade"
-            android:layout_marginStart="12dp"
             android:layout_marginBottom="8dp"
             android:layout_marginTop="16dp"
             android:textSize="16dp"/>
@@ -85,14 +86,12 @@
             android:background="@drawable/custom_input"
             android:hint="eg. 5"
             android:paddingHorizontal="12dp"
-            android:paddingVertical="12dp"
-            android:layout_marginHorizontal="12dp"/>
+            android:paddingVertical="12dp" />
 
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Enter comment"
-            android:layout_marginStart="12dp"
             android:layout_marginBottom="8dp"
             android:layout_marginTop="16dp"
             android:textSize="16dp"/>
@@ -110,18 +109,15 @@
             android:background="@drawable/custom_input"
             android:hint="Type text here..."
             android:paddingHorizontal="12dp"
-            android:paddingVertical="12dp"
-            android:layout_marginHorizontal="12dp"/>
+            android:paddingVertical="12dp" />
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/add_comment_btn"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginRight="12dp"
             app:cornerRadius="12dp"
             android:text="Add comment"
-            android:layout_marginTop="8dp"
-            android:layout_marginLeft="12dp"/>
+            android:layout_marginTop="8dp" />
 
     </LinearLayout>
 
