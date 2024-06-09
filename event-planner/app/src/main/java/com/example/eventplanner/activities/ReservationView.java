@@ -282,7 +282,23 @@ public class ReservationView extends AppCompatActivity {
         denyButton.setOnClickListener(v -> {
 
             String userType = mAuth.getCurrentUser().getDisplayName();
-            Date date = new Date(parseDate(document.getString("occurenceDate")));
+            String dateString = parseDate(document.getString("occurenceDate"));
+
+            if (dateString == null) {
+                Toast.makeText(this, "Failed to parse the date.", Toast.LENGTH_SHORT).show();
+                return;
+            }
+            SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy", Locale.ENGLISH);
+            Date date = null;
+
+            try {
+                date = dateFormat.parse(dateString);
+            } catch (ParseException e) {
+                e.printStackTrace();
+                Toast.makeText(this, "Failed to parse the date.", Toast.LENGTH_SHORT).show();
+                return;
+            }
+
 
             Calendar calendar = Calendar.getInstance();
             calendar.setTime(date);
@@ -300,6 +316,11 @@ public class ReservationView extends AppCompatActivity {
                         .set(reservation, SetOptions.merge())
                         .addOnSuccessListener(aVoid -> {
                             Log.d("Firestore", "Reservation updated successfully!");
+
+                            serviceReservationsContainer.removeAllViews();
+                            serviceReservations.clear();
+
+                            retrieveAllServiceReservationRequests();
                         })
                         .addOnFailureListener(e -> {
                             Log.w("Firestore", "Error updating reservation", e);
