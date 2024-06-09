@@ -520,7 +520,7 @@ public class ReportedUsersAdapter extends ArrayAdapter<UserReport> {
 
         String jsonPayload = "{\"data\":{" +
                 "\"title\":\"Update on your report\"," +
-                "\"body\":\"Your report on  " + fullNameOfReported + " has been denied. \\nReason: \" + reasonOfDenying + \"," +
+                "\"body\":\"Your report on  " + fullNameOfReported + " has been denied. \nReason: " + reasonOfDenying + "\"," +
                 "\"topic\":\"" + report.getReporterId() + "Topic\"" +
                 "}," +
                 "\"to\":\"/topics/" + report.getReporterId() + "Topic" + "\"}";
