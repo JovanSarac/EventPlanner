@@ -70,6 +70,20 @@
 
         </LinearLayout>
 
+        <EditText
+            android:layout_marginBottom="6dp"
+            android:id="@+id/search_service_reservations_input"
+            android:inputType="text"
+            android:lines="1"
+            android:drawablePadding="8dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/custom_input"
+            android:hint="Search"
+            android:paddingHorizontal="12dp"
+            android:paddingVertical="12dp"
+            android:layout_marginTop="4dp"/>
+
         <HorizontalScrollView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

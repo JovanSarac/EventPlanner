@@ -19,6 +19,7 @@ import com.example.eventplanner.R;
 import com.example.eventplanner.adapters.EmployeeRecyclerViewAdapter;
 import com.example.eventplanner.adapters.ImageAdapter;
 import com.example.eventplanner.databinding.ActivityShowOneServiceBinding;
+import com.example.eventplanner.fragments.ReserveServiceFragment;
 import com.example.eventplanner.model.Category;
 import com.example.eventplanner.model.Subcategory;
 import com.example.eventplanner.model.UserOD;
@@ -129,11 +130,11 @@ public class ShowOneServiceActivity extends AppCompatActivity {
         binding.cancelationReservation.setText(cancellationDue);
         if(available){
             binding.availability.setChecked(true);
-            //TO DO implementirati rezervaciju usluge
             binding.bookService.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-
+                    ReserveServiceFragment fragment = new ReserveServiceFragment(idService,true,null);
+                    fragment.show(getSupportFragmentManager(), "ReserveServiceFragment");
                 }
             });
         }else{

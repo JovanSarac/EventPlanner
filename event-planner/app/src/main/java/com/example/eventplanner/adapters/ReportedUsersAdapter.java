@@ -518,9 +518,12 @@ public class ReportedUsersAdapter extends ArrayAdapter<UserReport> {
     private void sendNotification(UserReport report, String reasonOfDenying, String fullNameOfReported){
         String serverKey="AAAA8GYmoZ8:APA91bHsjyzOSa2JtO_cQWFO-X1p9nMuHRO8DTfD1zhcY4mnqZ-2EZmIn8tMf1ISmnM31WB68Mzn2soeUgEISXlSc9WjRvcRhyYbmBgi7whJuYXX-24wkODByasquofLaMZydpg78esK";
 
-        String jsonPayload = "{\"data\":{\"title\":\"Update on your report\",\"body\":\"Your report on "
-                + fullNameOfReported +
-                " has been denied. \nReason: " + reasonOfDenying + " \"},\"to\":\"/topics/" + report.getReporterId() + "Topic" + "\"}";
+        String jsonPayload = "{\"data\":{" +
+                "\"title\":\"Update on your report\"," +
+                "\"body\":\"Your report on  " + fullNameOfReported + " has been denied. \\nReason: \" + reasonOfDenying + \"," +
+                "\"topic\":\"" + report.getReporterId() + "Topic\"" +
+                "}," +
+                "\"to\":\"/topics/" + report.getReporterId() + "Topic" + "\"}";
 
         FCMHttpClient httpClient = new FCMHttpClient();
         httpClient.sendMessageToTopic(serverKey, report.getReporterId() + "Topic", jsonPayload);
@@ -529,9 +532,12 @@ public class ReportedUsersAdapter extends ArrayAdapter<UserReport> {
     private void sendNotificationToOD(String ODId, String itemType){
         String serverKey="AAAA8GYmoZ8:APA91bHsjyzOSa2JtO_cQWFO-X1p9nMuHRO8DTfD1zhcY4mnqZ-2EZmIn8tMf1ISmnM31WB68Mzn2soeUgEISXlSc9WjRvcRhyYbmBgi7whJuYXX-24wkODByasquofLaMZydpg78esK";
 
-        String jsonPayload = "{\"data\":{\"title\":\"Reservation update\",\"body\":\"Your reservation on "
-                + itemType +
-                " has been canceled by admin. \nCompany you've reserved it from is no longer in function.\"},\"to\":\"/topics/" + ODId + "Topic" + "\"}";
+        String jsonPayload = "{\"data\":{" +
+                "\"title\":\"Reservation update\"," +
+                "\"body\":\"Your reservation on " + itemType + " has been canceled by admin. \nCompany you've reserved it from is no longer in function.\"," +
+                "\"topic\":\"" + ODId + "Topic\"" +
+                "}," +
+                "\"to\":\"/topics/" + ODId + "Topic" + "\"}";
 
         FCMHttpClient httpClient = new FCMHttpClient();
         httpClient.sendMessageToTopic(serverKey, ODId + "Topic", jsonPayload);
@@ -540,9 +546,12 @@ public class ReportedUsersAdapter extends ArrayAdapter<UserReport> {
     private void sendNotificationToPUPV(String pupvId, String itemType){
         String serverKey="AAAA8GYmoZ8:APA91bHsjyzOSa2JtO_cQWFO-X1p9nMuHRO8DTfD1zhcY4mnqZ-2EZmIn8tMf1ISmnM31WB68Mzn2soeUgEISXlSc9WjRvcRhyYbmBgi7whJuYXX-24wkODByasquofLaMZydpg78esK";
 
-        String jsonPayload = "{\"data\":{\"title\":\"Reservation update\",\"body\":\"Your reservation on "
-                + itemType +
-                " has been canceled by admin. \nUser that reserved it is not eligible to reserve items anymore.\"},\"to\":\"/topics/" + pupvId + "Topic" + "\"}";
+        String jsonPayload = "{\"data\":{" +
+                "\"title\":\"Reservation update\"," +
+                "\"body\":\"Your reservation on " + itemType + " has been canceled by admin. \nUser that reserved it is not eligible to reserve items anymore.\"," +
+                "\"topic\":\"" + pupvId + "Topic\"" +
+                "}," +
+                "\"to\":\"/topics/" + pupvId + "Topic" + "\"}";
 
         FCMHttpClient httpClient = new FCMHttpClient();
         httpClient.sendMessageToTopic(serverKey, pupvId + "Topic", jsonPayload);

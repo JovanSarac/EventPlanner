@@ -42,9 +42,6 @@
             android:name=".activities.UserInfoActivity"
             android:exported="false" />
         <activity
-            android:name=".activities.ReserveServiceActivity"
-            android:exported="false" />
-        <activity
             android:name=".activities.ReservePackageActivity"
             android:exported="false" />
         <activity
@@ -55,9 +52,6 @@
             android:exported="false" />
         <activity
             android:name=".activities.UserReportsViewActivity"
-            android:exported="false" />
-        <activity
-            android:name=".activities.UserInfoActivity"
             android:exported="false" />
         <activity
             android:name=".activities.CompanyViewActivity"

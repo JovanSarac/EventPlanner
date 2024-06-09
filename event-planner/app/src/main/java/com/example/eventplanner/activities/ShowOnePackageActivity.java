@@ -120,11 +120,12 @@ public class ShowOnePackageActivity extends AppCompatActivity {
         binding.cancelationReservationPackage.setText(cancellationDue);
         if(available){
             binding.availability.setChecked(true);
-            //TO DO Implementirati rezervaciju paketa
             binding.bookPackage.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-
+                    Intent intent = new Intent(ShowOnePackageActivity.this, ReservePackageActivity.class);
+                    intent.putExtra("id",idPackage.toString());
+                    startActivity(intent);
                 }
             });
         }else{

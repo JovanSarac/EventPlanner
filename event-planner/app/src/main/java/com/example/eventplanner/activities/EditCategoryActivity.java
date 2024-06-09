@@ -19,7 +19,10 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.textfield.TextInputEditText;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.messaging.FirebaseMessaging;
 import com.google.firebase.messaging.RemoteMessage;
 
@@ -36,6 +39,7 @@ public class EditCategoryActivity extends AppCompatActivity {
     boolean isCategoryActive;
     Long categoryId;
     FirebaseFirestore db = FirebaseFirestore.getInstance();
+    FirebaseAuth mAuth=FirebaseAuth.getInstance();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -98,8 +102,14 @@ public class EditCategoryActivity extends AppCompatActivity {
                     @Override
                     public void onComplete(@NonNull Task<Void> task) {
                         Toast.makeText(v.getContext(), "Product created", Toast.LENGTH_SHORT).show();
-                        String jsonPayload = "{\"data\":{\"title\":\"New category!\",\"body\":\""+item.get("Name").toString()+"\"},\"to\":\"/topics/" + "PUPV" + "\"}";
+                        String jsonPayload = "{\"data\":{" +
+                                "\"title\":\"New category!\"," +
+                                "\"body\":\"" + item.get("Name").toString() + "\"," +
+                                "\"topic\":\"PUPV_Category\"" +
+                                "}," +
+                                "\"to\":\"/topics/" + "PUPV" + "\"}";
                         sendMessage(serverKey,jsonPayload);
+                        addNotification();
                         finish();
                     }
                 })
@@ -109,6 +119,39 @@ public class EditCategoryActivity extends AppCompatActivity {
                         Toast.makeText(v.getContext(), e.getMessage(), Toast.LENGTH_SHORT).show();
                     }
                 });
+
+
+
+    }
+    private void addNotification(){
+
+
+        db.collection("User").whereEqualTo("UserType","PUPV").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                if (task.isSuccessful()) {
+                    // Task was successful, process the documents
+                    QuerySnapshot querySnapshot = task.getResult();
+                    if (querySnapshot != null) {
+                        for (DocumentSnapshot document : querySnapshot.getDocuments()) {
+                            Long id = new Random().nextLong();
+                            Map<String,Object> map=new HashMap<>();
+                            map.put("body",nameInput.getText().toString());
+                            map.put("title","New category!");
+                            map.put("read",false);
+                            map.put("userId",document.getId());
+
+                            db.collection("Notifications")
+                                    .document(id.toString())
+                                    .set(map);
+                        }
+                    }
+                } else {
+                    // Task failed, handle the error
+                    System.out.println("Error getting documents: " + task.getException());
+                }
+            }
+        });
 
 
 

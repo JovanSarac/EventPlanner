@@ -2,6 +2,7 @@ package com.example.eventplanner.activities;
 
 import static android.content.ContentValues.TAG;
 
+import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
@@ -89,6 +90,15 @@ public class ShowOneChatActivity extends AppCompatActivity {
             public void onClick(View v) {
                 sendMessage(binding.inputMessage.getText().toString());
                 binding.inputMessage.setText("");
+            }
+        });
+
+        binding.imageRecipientProfile.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(ShowOneChatActivity.this, UserInfoActivity.class);
+                intent.putExtra("userId", recipientId);
+                startActivity(intent);
             }
         });
     }

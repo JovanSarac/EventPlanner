@@ -24,6 +24,7 @@ import com.example.eventplanner.model.EventPUPZ;
 import com.example.eventplanner.model.Service;
 import com.example.eventplanner.model.ServiceReservationRequest;
 import com.example.eventplanner.model.UserPUPZ;
+import com.example.eventplanner.services.FCMHttpClient;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
@@ -45,6 +46,8 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
+import java.util.Random;
 
 
 public class ReserveServiceFragment extends BottomSheetDialogFragment {
@@ -113,7 +116,8 @@ public class ReserveServiceFragment extends BottomSheetDialogFragment {
                     if(service.getDuration()!=null){
                         time=time.plusMinutes((int)(service.getDuration()*60));
                     }
-                    String endtime=dateScheule.getSchedule().get(dayOfWeek.toUpperCase()).getEndTime().split(" ")[0];
+                    String endtime=timeString;
+                    if(dateScheule!=null)endtime=dateScheule.getSchedule().get(dayOfWeek.toUpperCase()).getEndTime().split(" ")[0];
                     LocalTime endTime=LocalTime.parse(endtime, formatter);
                     if(time.isBefore(endTime)){
                         to.setText(time.toString());
@@ -385,6 +389,11 @@ public class ReserveServiceFragment extends BottomSheetDialogFragment {
             tableLayout.addView(newRow);
         };
     }
+    String serverKey="AAAA8GYmoZ8:APA91bHsjyzOSa2JtO_cQWFO-X1p9nMuHRO8DTfD1zhcY4mnqZ-2EZmIn8tMf1ISmnM31WB68Mzn2soeUgEISXlSc9WjRvcRhyYbmBgi7whJuYXX-24wkODByasquofLaMZydpg78esK";
+    public static void sendMessage(String serverKey, String jsonPayload) {
+        FCMHttpClient httpClient = new FCMHttpClient();
+        httpClient.sendMessageToTopic(serverKey, "", jsonPayload);
+    }
     void createReservation(){
         ServiceReservationRequest event = new ServiceReservationRequest(
                 from.getText().toString(),
@@ -416,11 +425,33 @@ public class ReserveServiceFragment extends BottomSheetDialogFragment {
                 .addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {
                         Toast.makeText(getContext(), "Data added successfully", Toast.LENGTH_SHORT).show();
+                        String jsonPayload = "{\"data\":{" +
+                                "\"title\":\"Reservation\"," +
+                                "\"body\":\"" + "You have a new reservation!" + "\"," +
+                                "\"topic\":\"" + "NtN0ByBAvgc4Utxx2m4La3vAtDL2" + "PUPZTopic\"" +//treba skloniti zakucane vrijednosti
+                                "}," +
+                                "\"to\":\"/topics/" + "NtN0ByBAvgc4Utxx2m4La3vAtDL2" + "PUPZTopic" + "\"}";
+                        sendMessage(serverKey,jsonPayload);
+                        addNotification();
                         getActivity().getSupportFragmentManager().beginTransaction().remove(ReserveServiceFragment.this).commit();
                     } else {
                         Toast.makeText(getContext(), "Failed to add data", Toast.LENGTH_SHORT).show();
                     }
                 });
+    }
+    private void addNotification(){
+        Long id = new Random().nextLong();
+        Map<String,Object> map=new HashMap<>();
+        map.put("body","You have a new reservation!");
+        map.put("title","Reservation");
+        map.put("read",false);
+        map.put("userId","NtN0ByBAvgc4Utxx2m4La3vAtDL2");
+
+        db.collection("Notifications")
+                .document(id.toString())
+                .set(map);
+
+
     }
 
 

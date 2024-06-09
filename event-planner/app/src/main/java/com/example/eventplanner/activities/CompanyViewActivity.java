@@ -64,6 +64,10 @@ public class CompanyViewActivity extends AppCompatActivity {
 
         getCompany();
 
+        if(!user.getDisplayName().equals("OD")){
+            binding.reportCompany.setVisibility(View.GONE);
+        }
+
         binding.reportCompany.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -303,9 +307,12 @@ public class CompanyViewActivity extends AppCompatActivity {
     }
     private void sendNotification(){
         String serverKey="AAAA8GYmoZ8:APA91bHsjyzOSa2JtO_cQWFO-X1p9nMuHRO8DTfD1zhcY4mnqZ-2EZmIn8tMf1ISmnM31WB68Mzn2soeUgEISXlSc9WjRvcRhyYbmBgi7whJuYXX-24wkODByasquofLaMZydpg78esK";
-        String jsonPayload = "{\"data\":{\"title\":\"New company report\",\"body\":\"Company "
-                + company.getCompanyName() +
-                " has been reported\"},\"to\":\"/topics/" + "AdminTopic" + "\"}";
+        String jsonPayload = "{\"data\":{" +
+                "\"title\":\"New company report\"," +
+                "\"body\":\"Company " + company.getCompanyName() + " has been reported\"," +
+                "\"topic\":\"AdminTopic\"" +
+                "}," +
+                "\"to\":\"/topics/" + "AdminTopic" + "\"}";
 
         FCMHttpClient httpClient = new FCMHttpClient();
         httpClient.sendMessageToTopic(serverKey, "AdminTopic", jsonPayload);
