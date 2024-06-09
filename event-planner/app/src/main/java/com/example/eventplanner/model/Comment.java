@@ -1,7 +1,7 @@
 package com.example.eventplanner.model;
 
 public class Comment {
-    private int grade;
+    private String grade;
     private String description;
     private String occurenceDate;
     private String status;
