@@ -78,6 +78,10 @@ public class UserInfoActivity extends AppCompatActivity {
 
         getUser();
 
+        if(!user.getDisplayName().equals("PUPV")){
+            binding.reportOD.setVisibility(View.GONE);
+        }
+
         binding.reportOD.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -113,7 +117,7 @@ public class UserInfoActivity extends AppCompatActivity {
                                     @Override
                                     public void onComplete(@NonNull Task<Void> task) {
                                         popupWindow.dismiss();
-                                        sendNotification();
+                                        createNotification();
                                         Toast.makeText(UserInfoActivity.this, "Report sent successfully", Toast.LENGTH_SHORT).show();
                                     }
                                 })
@@ -127,6 +131,35 @@ public class UserInfoActivity extends AppCompatActivity {
                 });
             }
         });
+    }
+
+    private void createNotification(){
+        Long id = new Random().nextLong();
+        Map<String, Object> doc = new HashMap<>();
+
+        String firstName = (reportedUser instanceof UserOD) ? ((UserOD) reportedUser).getFirstName() : ((UserPUPV) reportedUser).getFirstName();
+        String lastName = (reportedUser instanceof UserOD) ? ((UserOD) reportedUser).getLastName() : ((UserPUPV) reportedUser).getLastName();
+
+        doc.put("title", "New user report");
+        doc.put("body", "User " + firstName + " " + lastName + " has been reported");
+        doc.put("read", false);
+        doc.put("userId", "e1ktzSoZY9ZdfEuL7PyShaRWI522");
+
+        db.collection("Notifications")
+                .document(id.toString())
+                .set(doc)
+                .addOnCompleteListener(new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                        sendNotification();
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Toast.makeText(UserInfoActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show();
+                    }
+                });
     }
 
     private void sendNotification(){
