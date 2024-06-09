@@ -93,6 +93,9 @@ public class HomeTwoActivity extends AppCompatActivity {
 
         }
         if(user != null && (user.getDisplayName().equals("OD")|| user.getDisplayName().equals("ADMIN"))){
+            if(user.getDisplayName().equals("OD")){
+                navigationView.getMenu().findItem(R.id.favouritespsp).setVisible(true);
+            }
             navigationView.getMenu().findItem(R.id.nav_events).setVisible(true);
             userImage.setVisibility(View.VISIBLE);
             userName.setVisibility(View.VISIBLE);

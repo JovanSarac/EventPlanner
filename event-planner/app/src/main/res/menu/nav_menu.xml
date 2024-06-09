@@ -24,6 +24,11 @@
             android:orderInCategory="200"
             android:visible="false"/>
 
+        <item android:id="@+id/favouritespsp"
+            android:title="@string/favourites_psp"
+            android:orderInCategory="200"
+            android:visible="false"/>
+
 
     </group>
 </menu>

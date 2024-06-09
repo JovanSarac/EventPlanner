@@ -55,6 +55,15 @@
         app:popUpToInclusive="true"
         />
 
+    <fragment
+        android:id="@+id/favouritespsp"
+        android:name="com.example.eventplanner.fragments.ShowFavouritesPspFragment"
+        android:label="Favourites"
+        tools:layout="@layout/fragment_show_favourites_psp"
+        app:popUpTo="@+id/favouritespsp"
+        app:popUpToInclusive="true"
+        />
+
 
 
 
