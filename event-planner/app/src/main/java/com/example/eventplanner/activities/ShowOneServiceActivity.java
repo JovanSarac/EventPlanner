@@ -129,7 +129,9 @@ public class ShowOneServiceActivity extends AppCompatActivity {
         binding.deadlineReservation.setText(reservationDue);
         binding.cancelationReservation.setText(cancellationDue);
 
-        if(!user.getDisplayName().equals("OD")){
+        if(user==null){
+            binding.bookService.setVisibility(View.GONE);
+        }else if(!user.getDisplayName().equals("OD")){
             binding.bookService.setVisibility(View.GONE);
         }
         if(available){

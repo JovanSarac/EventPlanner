@@ -112,7 +112,10 @@ public class ShowOneProductActivity extends AppCompatActivity {
         binding.priceProduct.setText(String.valueOf(price) + " $");
         binding.discountPrice.setText(String.valueOf(discount) + " %");
         binding.priceWithDiscount.setText(String.valueOf(price - (price * discount/100)) + " $");
-        if(!user.getDisplayName().equals("OD")){
+
+        if(user==null){
+            binding.buyProduct.setVisibility(View.GONE);
+        }else  if(!user.getDisplayName().equals("OD")){
             binding.buyProduct.setVisibility(View.GONE);
         }
         if(available){
